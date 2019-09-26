@@ -1,12 +1,11 @@
 package net.gas.contactbook.ui.splash
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import com.example.contactbook_kotlin.R
-
-//import net.gas.contactbook_kotlin.R
-//import net.gas.contactbook_kotlin.ui.organizations_list.OrganizationsListActivity
+import net.gas.contactbook.ui.download.DownloadActivity
 
 
 class SplashActivity : AppCompatActivity() {
@@ -14,12 +13,12 @@ class SplashActivity : AppCompatActivity() {
     private val SPLASH_DELAY: Long = 2000 //2 seconds
 
     internal val mRunnable: Runnable = Runnable {
-        /*if (!isFinishing) {
+        if (!isFinishing) {
 
-            val intent = Intent(applicationContext, OrganizationsListActivity::class.java)
+            val intent = Intent(applicationContext, DownloadActivity::class.java)
             startActivity(intent)
             finish()
-        }*/
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
