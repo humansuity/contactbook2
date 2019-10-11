@@ -19,59 +19,67 @@ import kotlinx.android.synthetic.main.activity_download.*
 
 class DownloadActivity : AppCompatActivity() {
 
-    private val STORAGE_PERMISSION_CODE: Int= 1000
+    private val STORAGE_PERMISSION_CODE: Int = 1000
 
-        //Нужно переделать фунцию, чтобы устанавливала на внутренюю память, поправить Manifest
+    //Нужно переделать фунцию, чтобы устанавливала на внутренюю память, поправить Manifest
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_download)
-        downloadBtn.setOnClickListener{
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+
+
+        downloadBtn.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                    PackageManager.PERMISSION_DENIED) {
-                    requestPermissions (arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
-                }
-                else{
+                    PackageManager.PERMISSION_DENIED
+                ) {
+                    requestPermissions(
+                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        STORAGE_PERMISSION_CODE
+                    )
+                } else {
                     startDownloading()
                 }
-            }
-            else {
+            } else {
                 startDownloading()
             }
         }
     }
 
     //Должно выкачивать базу, но нет!!!
-    private fun startDownloading(){
-        val url = "http://contactbook.oblgaz/contacts.db"
+    private fun startDownloading() {
+        val url = "http://contactbook.oblgaz/contactbook-ionic.apk"
         val request = DownloadManager.Request(Uri.parse(url))
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         request.setTitle("Download")
         request.setDescription("The base is downloading ...")
+        //request.allowScanningByMediaScanner()
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOCUMENTS, "${System.currentTimeMillis()}")
+        request.setDestinationInExternalPublicDir(
+            Environment.DIRECTORY_DOCUMENTS,
+            "${System.currentTimeMillis()}"
+        )
 
         val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         manager.enqueue(request)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-       when(requestCode){
-           STORAGE_PERMISSION_CODE -> {
-               if (grantResults.isNotEmpty() && grantResults[0] ==
-                           PackageManager.PERMISSION_DENIED) {
-                   startDownloading()
-               }
-               else{
-                   Toast.makeText(this, "Permission denied!", Toast.LENGTH_LONG).show()
-               }
-           }
-       }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            STORAGE_PERMISSION_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED
+                ) {
+                    startDownloading()
+                } else {
+                    Toast.makeText(this, "Permission denied!", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+
     }
-
-    //fun toastMe(view: View) {
-      //  val myToast = Toast.makeText(this, "Начинается загрузка", Toast.LENGTH_SHORT )
-        //myToast.show()
-
 }
-
