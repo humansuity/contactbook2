@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='contactbook_kotlin'
+rootProject.name='contactbook'
