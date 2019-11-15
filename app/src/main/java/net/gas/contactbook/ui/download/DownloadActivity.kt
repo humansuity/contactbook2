@@ -47,7 +47,7 @@ class DownloadActivity : AppCompatActivity() {
 
     //Должно выкачивать базу, но нет!!!
     private fun startDownloading() {
-        val url = "http://contactbook.oblgaz/contactbook-ionic.apk"
+        val url = "http://contactbook.oblgaz/contacts.db"
         val request = DownloadManager.Request(Uri.parse(url))
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         request.setTitle("Download")
