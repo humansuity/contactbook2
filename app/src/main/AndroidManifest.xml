@@ -6,6 +6,7 @@
     <!--Add permissions-->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:icon="@mipmap/ic_launcher"
@@ -14,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
-        >
+
+        android:usesCleartextTraffic="true">
         <activity
             android:name="net.gas.contactbook.ui.splash.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

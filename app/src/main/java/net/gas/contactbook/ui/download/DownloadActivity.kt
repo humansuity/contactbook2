@@ -15,6 +15,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.contactbook.R
 import kotlinx.android.synthetic.main.activity_download.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class DownloadActivity : AppCompatActivity() {
@@ -47,20 +52,11 @@ class DownloadActivity : AppCompatActivity() {
 
     //Должно выкачивать базу, но нет!!!
     private fun startDownloading() {
-        val url = "http://contactbook.oblgaz/contacts.db"
-        val request = DownloadManager.Request(Uri.parse(url))
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-        request.setTitle("Download")
-        request.setDescription("The base is downloading ...")
-        //request.allowScanningByMediaScanner()
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        request.setDestinationInExternalPublicDir(
-            Environment.DIRECTORY_DOCUMENTS,
-            "${System.currentTimeMillis()}"
-        )
 
-        val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        manager.enqueue(request)
+        val dbmanager = DataBaseDownloadTask(this)
+        dbmanager.execute()
+
+
     }
 
     override fun onRequestPermissionsResult(
