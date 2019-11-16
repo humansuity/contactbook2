@@ -6,7 +6,6 @@ import android.content.Context
 import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Build
-import android.os.Environment
 import androidx.core.app.NotificationCompat
 import com.example.contactbook.R
 import java.io.File
@@ -36,9 +35,9 @@ class DataBaseDownloadTask(private val context: Context) : AsyncTask<Void, Void,
         connection.requestMethod = "GET"
         connection.connect()
 
-        val path = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)!!.toURI())
-        val fullPath = File(path, "base.db")
-        val fos = FileOutputStream(fullPath)
+        val path = File(context.filesDir.toURI())
+        val fullPath = File(path, url.path.split("/").last())
+        val fileOutPutStream = FileOutputStream(fullPath)
         val inputStream = connection.inputStream
         val buffer = ByteArray(1024)
 
@@ -49,7 +48,7 @@ class DataBaseDownloadTask(private val context: Context) : AsyncTask<Void, Void,
             if (len == -1) {
                 break
             } else {
-                fos.write(buffer, 0, len)
+                fileOutPutStream.write(buffer, 0, len)
             }
         }
 
@@ -57,7 +56,7 @@ class DataBaseDownloadTask(private val context: Context) : AsyncTask<Void, Void,
 
     }
 
-
+    
     override fun onPostExecute(result: Void?) {
         super.onPostExecute(result)
         //showing final notification

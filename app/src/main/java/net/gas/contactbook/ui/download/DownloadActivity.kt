@@ -23,8 +23,7 @@ class DownloadActivity : AppCompatActivity() {
         downloadBtn.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                    PackageManager.PERMISSION_DENIED
-                ) {
+                    PackageManager.PERMISSION_DENIED) {
                     requestPermissions(
                         arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                         STORAGE_PERMISSION_CODE
