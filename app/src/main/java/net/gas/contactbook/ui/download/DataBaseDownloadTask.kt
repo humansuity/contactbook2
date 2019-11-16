@@ -34,7 +34,7 @@ class DataBaseDownloadTask(private val context: Context) : AsyncTask<Void, Void,
 
 
         while(true) {
-            var len = inputStream.read(buffer)
+            val len = inputStream.read(buffer)
 
             if (len == -1) {
                 break
