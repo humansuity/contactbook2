@@ -1,10 +1,14 @@
 package net.gas.contactbook.ui.download
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.graphics.Color
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Environment
-import android.util.Log
-import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import com.example.contactbook.R
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
@@ -12,10 +16,18 @@ import java.net.URL
 
 class DataBaseDownloadTask(private val context: Context) : AsyncTask<Void, Void, Void>() {
 
-    override fun onPostExecute(result: Void?) {
-        super.onPostExecute(result)
-        Toast.makeText(context, "It's ok", Toast.LENGTH_SHORT).show()
+    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    var notificationBuilder: NotificationCompat.Builder? = null
+    val notificationID = 1
+
+
+    override fun onPreExecute() {
+        super.onPreExecute()
+        //showing initial notification
+        notificationBuilder = initNotificationBuilder()
+        showNotification("Downloading database...", true)
     }
+
 
     override fun doInBackground(vararg params: Void?): Void? {
 
@@ -23,8 +35,6 @@ class DataBaseDownloadTask(private val context: Context) : AsyncTask<Void, Void,
         val connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
         connection.connect()
-        Log.d("connection", context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString())
-
 
         val path = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)!!.toURI())
         val fullPath = File(path, "base.db")
@@ -46,5 +56,42 @@ class DataBaseDownloadTask(private val context: Context) : AsyncTask<Void, Void,
         return null
 
     }
+
+
+    override fun onPostExecute(result: Void?) {
+        super.onPostExecute(result)
+        //showing final notification
+        showNotification("Database downloaded!", false)
+    }
+
+
+    private fun showNotification(notificationText: String, downloadFlag: Boolean) {
+        notificationBuilder!!.setContentTitle(notificationText).setProgress(0, 0, downloadFlag)
+        notificationManager.notify(notificationID, notificationBuilder?.build())
+    }
+
+
+    private fun initNotificationBuilder() : NotificationCompat.Builder {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channelID = "DOWNLOAD_CHANNEL_ID"
+            val notificationChannel = NotificationChannel(channelID, "Download channel", NotificationManager.IMPORTANCE_LOW)
+            notificationChannel.apply {
+                description = "Channel description"
+                enableLights(true)
+                lightColor = Color.RED
+                enableVibration(true)
+            }
+
+            notificationManager.createNotificationChannel(notificationChannel)
+            NotificationCompat.Builder(context, channelID)
+                .setSmallIcon(R.drawable.database_download_ic)
+                .setProgress(0, 0, true)
+        } else {
+            NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.database_download_ic)
+                .setProgress(0, 0, true)
+        }
+    }
+
 
 }

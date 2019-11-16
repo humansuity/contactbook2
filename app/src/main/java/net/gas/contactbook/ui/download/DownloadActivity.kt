@@ -1,25 +1,13 @@
 package net.gas.contactbook.ui.download
 
 import android.Manifest
-import android.app.DownloadManager
-import android.content.Context
 import android.content.pm.PackageManager
-import android.net.Network
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.contactbook.R
 import kotlinx.android.synthetic.main.activity_download.*
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
 
 class DownloadActivity : AppCompatActivity() {
@@ -50,12 +38,11 @@ class DownloadActivity : AppCompatActivity() {
         }
     }
 
-    //Должно выкачивать базу, но нет!!!
+    //Выкачивает базу через HttpURLConnection
     private fun startDownloading() {
 
         val dbmanager = DataBaseDownloadTask(this)
         dbmanager.execute()
-
 
     }
 
