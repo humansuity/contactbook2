@@ -41,10 +41,10 @@ class DataBaseDownloadTask(private val context: Context) : AsyncTask<Void, Void,
         val fos = FileOutputStream(fullPath)
         val inputStream = connection.inputStream
         val buffer = ByteArray(1024)
-        var len = 0
+
 
         while(true) {
-            len = inputStream.read(buffer)
+            val len = inputStream.read(buffer)
 
             if (len == -1) {
                 break

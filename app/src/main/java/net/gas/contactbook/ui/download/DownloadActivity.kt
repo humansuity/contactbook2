@@ -14,7 +14,7 @@ class DownloadActivity : AppCompatActivity() {
 
     private val STORAGE_PERMISSION_CODE: Int = 1000
 
-    //Нужно переделать фунцию, чтобы устанавливала на внутренюю память, поправить Manifest
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_download)
@@ -38,7 +38,11 @@ class DownloadActivity : AppCompatActivity() {
         }
     }
 
+<<<<<<< HEAD
     //Выкачивает базу через HttpURLConnection
+=======
+
+>>>>>>> 50cbfe8c9804d2706770d1d8928a8b41919f3b6f
     private fun startDownloading() {
 
         val dbmanager = DataBaseDownloadTask(this)
