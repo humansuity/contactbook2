@@ -37,7 +37,7 @@ class DataBaseDownloadTask(private val context: Context) : AsyncTask<Void, Void,
 
         val path = File(context.filesDir.toURI())
         val fullPath = File(path, url.path.split("/").last())
-        val fileOutPutStream = FileOutputStream(fullPath)
+        val fileOutputStream = FileOutputStream(fullPath)
         val inputStream = connection.inputStream
         val buffer = ByteArray(1024)
 
@@ -48,7 +48,7 @@ class DataBaseDownloadTask(private val context: Context) : AsyncTask<Void, Void,
             if (len == -1) {
                 break
             } else {
-                fileOutPutStream.write(buffer, 0, len)
+                fileOutputStream.write(buffer, 0, len)
             }
         }
 
