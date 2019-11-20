@@ -44,7 +44,7 @@ class DownloadActivity : AppCompatActivity() {
 
     private fun startDownloading() {
 
-        val dbManager = DataBaseDownloadTask(this)
+        val dbManager = DataBaseDownloadTask(application, constraintLayout)
         dbManager.execute()
 
     }
