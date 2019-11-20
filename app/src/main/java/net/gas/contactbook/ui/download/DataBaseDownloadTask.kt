@@ -15,9 +15,9 @@ import java.net.URL
 
 class DataBaseDownloadTask(private val context: Context) : AsyncTask<Void, Void, Void>() {
 
-    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    var notificationBuilder: NotificationCompat.Builder? = null
-    val notificationID = 1
+    private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private var notificationBuilder: NotificationCompat.Builder? = null
+    private val notificationID = 1
 
 
     override fun onPreExecute() {
@@ -53,6 +53,7 @@ class DataBaseDownloadTask(private val context: Context) : AsyncTask<Void, Void,
         }
 
         return null
+
 
     }
 
