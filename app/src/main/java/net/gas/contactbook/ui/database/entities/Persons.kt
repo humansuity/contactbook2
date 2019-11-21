@@ -2,10 +2,32 @@ package net.gas.contactbook.ui.database.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 
-@Entity(tableName = "persons")
+@Entity(
+    tableName = "persons",
+    foreignKeys =
+    [
+        ForeignKey(
+            entity = Units::class,
+            parentColumns = ["id"],
+            childColumns = ["unit_id"]),
+        ForeignKey(
+            entity = Departments::class,
+            parentColumns = ["id"],
+            childColumns = ["department_id"]),
+        ForeignKey(
+            entity = Posts::class,
+            parentColumns = ["id"],
+            childColumns = ["post_id"]),
+        ForeignKey(
+            entity = Photos::class,
+            parentColumns = ["id"],
+            childColumns = ["photo_id"])
+    ]
+)
 data class Persons (
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "firstname") val firstName: String?,
