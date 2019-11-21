@@ -21,7 +21,7 @@
 
 
     <Button
-        android:id="@+id/rbkBtn"
+        android:id="@+id/catalogBtn"
         android:layout_width="745dp"
         android:layout_height="50dp"
         android:layout_marginStart="5dp"

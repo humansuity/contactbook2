@@ -26,9 +26,8 @@ class DataBaseDownloadTask(private val context: Context, private val rootView: V
     private var notificationBuilder: NotificationCompat.Builder? = null
     private val notificationID = 1
     private var isConnected = true
-    private val notificationManager =
-        mContextRef.get()?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
+    private val notificationManager = mContextRef.get()?.
+        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
 
     override fun onPreExecute() {
@@ -50,7 +49,6 @@ class DataBaseDownloadTask(private val context: Context, private val rootView: V
             isConnected = false
             return null
         }
-
         return null
     }
 
@@ -59,7 +57,6 @@ class DataBaseDownloadTask(private val context: Context, private val rootView: V
         super.onPostExecute(result)
         val context = mContextRef.get()
 
-        //showing final notification
         if (isConnected) {
             Snackbar.make(rootView, "Загрузка базы данных завершена", Snackbar.LENGTH_LONG).show()
             showNotification("Database downloaded!", false)
@@ -87,7 +84,6 @@ class DataBaseDownloadTask(private val context: Context, private val rootView: V
                 lightColor = Color.RED
                 enableVibration(true)
             }
-
             notificationManager.createNotificationChannel(notificationChannel)
             NotificationCompat.Builder(context!!, channelID)
                 .setSmallIcon(R.drawable.database_download_ic)
