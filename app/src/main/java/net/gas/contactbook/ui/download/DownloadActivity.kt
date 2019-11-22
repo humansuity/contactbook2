@@ -2,18 +2,20 @@ package net.gas.contactbook.ui.download
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.contactbook.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_download.*
+import net.gas.contactbook.ui.UnitsListActivity
 import net.gas.contactbook.ui.database.ContactbookDatabase
 import net.gas.contactbook.ui.database.daos.UnitsDao
 import net.gas.contactbook.ui.database.entities.Units
-import java.io.File
 
 
 class DownloadActivity : AppCompatActivity() {
@@ -25,13 +27,15 @@ class DownloadActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_download)
 
-        Toast.makeText(applicationContext, applicationContext.getDatabasePath("contacts.db").toString(), Toast.LENGTH_LONG).show()
+        Toast.makeText(applicationContext, applicationContext.getDatabasePath("qcontacts.db").toString(), Toast.LENGTH_LONG).show()
 
 
         downloadBtn.setOnClickListener {
             if (checkInternetConnection()) {
-                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                    requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                    PackageManager.PERMISSION_DENIED) {
+                    requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        STORAGE_PERMISSION_CODE)
                 } else { startDownloading() }
             } else { Snackbar.make(constraintLayout,
                         "Проверьте подключение к интернету",
@@ -40,16 +44,8 @@ class DownloadActivity : AppCompatActivity() {
 
 
         catalogBtn.setOnClickListener {
-            if (ContactbookDatabase.getInstance(applicationContext) != null) ContactbookDatabase.destroyInstance()
-            val path = File(applicationContext.getDatabasePath("contacts.db").toURI())
             val unitsData = ContactbookDatabase.getInstance(applicationContext)?.unitsDao()
-            if (path.exists()) {
-                Toast.makeText(applicationContext, "Path found", Toast.LENGTH_LONG).show()
-                val list = getListOfUnits(unitsData)
-                Toast.makeText(applicationContext, "Name of unit is: " + list[0].name, Toast.LENGTH_LONG).show()
-            } else { Toast.makeText(applicationContext,
-                "База данных не обнаружена", Toast.LENGTH_LONG).show()
-            }
+            getListOfUnits(unitsData)
         }
     }
 
@@ -87,15 +83,38 @@ class DownloadActivity : AppCompatActivity() {
     }
 
 
-    fun getListOfUnits(unitsData: UnitsDao?) : List<Units> {
-        var unitsList = listOf<Units>()
-        if (unitsData != null) {
-            unitsList = unitsData.getEntities()
-        } else {
-            Toast.makeText(applicationContext, "Database not created yet",
-                Toast.LENGTH_LONG).show()
+    fun getListOfUnits(unitsData: UnitsDao?) {
+        val tmp = UnitsListTask(this).execute(unitsData)
+    }
+
+
+    private fun openUnitsListActivity(units: List<Units>?) {
+        val unitsNameList = arrayListOf<String?>()
+        units?.let {
+            for(unit in it) {
+                unitsNameList.add(unit.name)
+            }
         }
-        return unitsList
+        val intent = Intent(applicationContext, UnitsListActivity::class.java)
+        intent.putExtra("ARRAY", unitsNameList)
+        startActivity(intent)
+    }
+
+    companion object {
+        class UnitsListTask(private val downloadActivity: DownloadActivity) : AsyncTask<UnitsDao?, Void, List<Units>>() {
+
+
+            override fun doInBackground(vararg params: UnitsDao?): List<Units> {
+                return params[0]!!.getEntities()
+            }
+
+
+            override fun onPostExecute(result: List<Units>?) {
+                super.onPostExecute(result)
+                //Toast.makeText(downloadActivity.applicationContext, result!![0].name, Toast.LENGTH_LONG).show()
+                downloadActivity.openUnitsListActivity(result)
+            }
+        }
     }
 
 

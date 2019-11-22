@@ -39,7 +39,7 @@ class DataBaseDownloadTask(private val context: Context, private val rootView: V
 
     override fun doInBackground(vararg params: Void?): Void? {
         try {
-            val url = URL("http://contactbook.oblgaz/contacts.db")
+            val url = URL("http://contactbook.oblgaz/qcontacts.db")
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.readTimeout = 10*1000     //set 10 seconds to get response

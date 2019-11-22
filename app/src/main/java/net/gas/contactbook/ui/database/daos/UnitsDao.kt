@@ -11,4 +11,7 @@ interface UnitsDao {
     @Query("select * from units")
     fun getEntities() : List<Units>
 
+//    @Query("select name from units")
+//    fun getUnitsNames() : ArrayList<String>
+
 }

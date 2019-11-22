@@ -28,7 +28,7 @@ abstract class ContactbookDatabase : RoomDatabase() {
 
     companion object {
         private var INSTANCE: ContactbookDatabase? = null
-        private val DB_NAME = "contacts.db"
+        private val DB_NAME = "qcontacts.db"
 
         fun getInstance(context: Context) : ContactbookDatabase? {
 
@@ -43,9 +43,6 @@ abstract class ContactbookDatabase : RoomDatabase() {
                         .createFromFile(File(pathToDatabase))
                         .build()
                 }
-                Toast.makeText(context, "Database created!", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Instance of database is not null!", Toast.LENGTH_SHORT).show()
             }
 
 
