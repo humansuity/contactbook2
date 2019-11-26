@@ -44,8 +44,6 @@ abstract class ContactbookDatabase : RoomDatabase() {
                         .build()
                 }
             }
-
-
             return INSTANCE
         }
 
