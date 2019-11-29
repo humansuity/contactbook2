@@ -12,7 +12,4 @@ interface UnitsDao {
     @Query("select * from units")
     fun getEntities() : LiveData<List<Units>>
 
-//    @Query("select name from units")
-//    fun getUnitsNames() : ArrayList<String>
-
 }

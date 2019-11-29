@@ -35,11 +35,10 @@ data class Persons (
     @ColumnInfo(name = "home_phone") val homePhone: String?,
     @ColumnInfo(name = "mobile_phone") val mobilePhone: String?,
     @ColumnInfo(name = "work_phone") val workPhone: String?,
-    @ColumnInfo(name = "unit_id") val unitID: Short,
-    @ColumnInfo(name = "department_id") val departmentID: Short,
-    @ColumnInfo(name = "post_id") val postID: Short,
-    @ColumnInfo(name = "photo_id") val photoID: Int,
-    val mail: String?,
+    @ColumnInfo(name = "unit_id") val unitID: Short?,
+    @ColumnInfo(name = "department_id") val departmentID: Short?,
+    @ColumnInfo(name = "post_id") val postID: Short?,
+    @ColumnInfo(name = "photo_id") val photoID: Int?,
     val patronymic: String?,
     val birthday: String?
 )

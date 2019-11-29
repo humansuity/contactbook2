@@ -10,6 +10,7 @@ import android.view.View
 import androidx.core.app.NotificationCompat
 import com.example.contactbook.R
 import com.google.android.material.snackbar.Snackbar
+import net.gas.contactbook.utils.Var
 import java.io.*
 import java.lang.ref.WeakReference
 import java.net.ConnectException
@@ -36,7 +37,7 @@ class DataBaseDownloadTask(private val context: Context, private val rootView: V
 
     override fun doInBackground(vararg params: Void?): Void? {
         try {
-            val url = URL("http://contactbook.oblgaz/qcontacts.db")
+            val url = URL(Var.URL_TO_DATABASE)
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.readTimeout = 10*1000     //set 10 seconds to get response
@@ -114,6 +115,8 @@ class DataBaseDownloadTask(private val context: Context, private val rootView: V
             inputStream?.close()
         }
     }
+
+
 
 
 }

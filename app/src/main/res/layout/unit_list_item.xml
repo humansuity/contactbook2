@@ -1,19 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/list_item"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/txt"
+    <data>
+        <variable
+            name="unit"
+            type="String" />
+        <variable
+            name="id"
+            type="Integer" />
+        <variable
+            name="viewModel"
+            type="net.gas.contactbook.business.viewmodel.UnitListViewModel" />
+    </data>
+
+
+    <LinearLayout
+        android:id="@+id/list_item"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="10dp"
-        android:gravity="center_vertical"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColor="#E36A22"
-        android:textSize="15sp" />
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="?android:attr/selectableItemBackground"
+        android:onClick="@{ () -> viewModel.onItemClick(id) }">
+
+        <TextView
+            android:id="@+id/txt"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="#E36A22"
+            android:textSize="15sp"
+            android:text="@{unit}"/>
+    </LinearLayout>
+
+
+</layout>

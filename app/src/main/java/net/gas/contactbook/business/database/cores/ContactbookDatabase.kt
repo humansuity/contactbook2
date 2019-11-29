@@ -1,11 +1,13 @@
 package net.gas.contactbook.business.database.cores
 
 import android.content.Context
+import android.widget.Toast
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import net.gas.contactbook.business.database.daos.UnitsDao
 import net.gas.contactbook.business.database.entities.*
+import net.gas.contactbook.utils.Var
 import java.io.File
 
 
@@ -27,7 +29,7 @@ abstract class ContactbookDatabase : RoomDatabase() {
 
     companion object {
         private var INSTANCE: ContactbookDatabase? = null
-        private val DB_NAME = "qcontacts.db"
+        private val DB_NAME = Var.DATABASE_NAME
 
         fun getInstance(context: Context) : ContactbookDatabase? {
 
