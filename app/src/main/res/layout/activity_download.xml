@@ -11,7 +11,7 @@
     <Button
         android:id="@+id/downloadBtn"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_marginTop="342dp"
         android:max="100"
         android:progress="0"
@@ -23,7 +23,7 @@
     <Button
         android:id="@+id/catalogBtn"
         android:layout_width="745dp"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_marginStart="5dp"
         android:text="Справочник"
         app:layout_constraintEnd_toEndOf="parent"

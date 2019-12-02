@@ -13,7 +13,6 @@
             type="net.gas.contactbook.business.viewmodel.UnitListViewModel" />
     </data>
 
-
     <LinearLayout
         android:id="@+id/list_item"
         android:layout_width="match_parent"
