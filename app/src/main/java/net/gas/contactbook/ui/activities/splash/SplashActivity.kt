@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import com.example.contactbook.R
-import net.gas.contactbook.ui.UnitListActivity
 import net.gas.contactbook.ui.activities.DownloadActivity
 
 

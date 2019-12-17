@@ -10,7 +10,10 @@
             type="Integer" />
         <variable
             name="viewModel"
-            type="net.gas.contactbook.business.viewmodel.UnitListViewModel" />
+            type="net.gas.contactbook.business.viewmodel.UnitsListViewModel" />
+        <variable
+            name="listType"
+            type="String" />
     </data>
 
 
@@ -20,7 +23,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="?android:attr/selectableItemBackground"
-        android:onClick="@{ () -> viewModel.onItemClick(id) }">
+        android:onClick="@{ () -> viewModel.onItemClick(id, listType) }">
 
         <TextView
             android:id="@+id/txt"

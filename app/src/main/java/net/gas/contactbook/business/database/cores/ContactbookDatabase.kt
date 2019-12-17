@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import net.gas.contactbook.business.database.daos.DepartmentsDao
 import net.gas.contactbook.business.database.daos.UnitsDao
 import net.gas.contactbook.business.database.entities.*
 import net.gas.contactbook.utils.Var
@@ -26,6 +27,7 @@ import java.io.File
 abstract class ContactbookDatabase : RoomDatabase() {
 
     abstract fun unitsDao(): UnitsDao
+    abstract fun departmentsDao() : DepartmentsDao
 
     companion object {
         private var INSTANCE: ContactbookDatabase? = null

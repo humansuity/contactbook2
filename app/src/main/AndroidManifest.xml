@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity android:name="net.gas.contactbook.ui.activities.DownloadActivity"/>
-        <activity android:name="net.gas.contactbook.ui.UnitListActivity" />
+        <activity android:name="net.gas.contactbook.ui.activities.UnitsListActivity" />
 
     </application>
 

@@ -5,17 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
-import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.contactbook.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_download.*
-import net.gas.contactbook.ui.UnitListActivity
-import net.gas.contactbook.business.database.cores.ContactbookDatabase
-import net.gas.contactbook.business.database.daos.UnitsDao
-import net.gas.contactbook.business.database.entities.Units
 import net.gas.contactbook.business.network.DataBaseDownloadTask
 import net.gas.contactbook.utils.Var
 import java.io.File
@@ -46,7 +41,7 @@ class DownloadActivity : AppCompatActivity() {
             val pathToDownloadedDatabase = application.filesDir.path + "/" + Var.DATABASE_NAME
             val pathToRoomDatabase = application.getDatabasePath(Var.DATABASE_NAME)
             if (File(pathToDownloadedDatabase).exists() || pathToRoomDatabase.exists()) {
-                val unitActivity = Intent(this, UnitListActivity::class.java)
+                val unitActivity = Intent(this, UnitsListActivity::class.java)
                 startActivity(unitActivity)
             } else {
                 Snackbar.make(constraintLayout,
@@ -66,12 +61,15 @@ class DownloadActivity : AppCompatActivity() {
 
 
     private fun startDownloading() {
-        val dbManager =
-            DataBaseDownloadTask(
-                application,
-                constraintLayout
-            )
-        dbManager.execute()
+        val pathToRoomDatabase = application.getDatabasePath(Var.DATABASE_NAME)
+        if (pathToRoomDatabase.exists()) {
+            Snackbar.make(constraintLayout,
+                "База данных уже установлена",
+                Snackbar.LENGTH_LONG).show()
+        } else {
+            val dbManager = DataBaseDownloadTask(application, constraintLayout)
+            dbManager.execute()
+        }
     }
 
 

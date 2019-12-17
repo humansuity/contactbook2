@@ -16,7 +16,10 @@ abstract class DataBoundListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataBoundViewHolder {
         val binding = createBinding(parent, viewType)
-        val viewHolder = DataBoundViewHolder(binding)
+        val viewHolder =
+            DataBoundViewHolder(
+                binding
+            )
         binding.lifecycleOwner = viewHolder
         return viewHolder
     }
