@@ -36,9 +36,10 @@ class DataBaseDownloadTask(private val context: Context, private val rootView: V
 
 
     override fun doInBackground(vararg params: Void?): Void? {
+        var connection: HttpURLConnection? = null
         try {
             val url = URL(Var.URL_TO_DATABASE)
-            val connection = url.openConnection() as HttpURLConnection
+            connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.readTimeout = 10*1000     //set 10 seconds to get response
             connection.connect()
@@ -46,6 +47,8 @@ class DataBaseDownloadTask(private val context: Context, private val rootView: V
         } catch (e: ConnectException) {
             isConnected = false
             return null
+        } finally {
+            connection?.disconnect()
         }
         return null
     }
@@ -53,7 +56,6 @@ class DataBaseDownloadTask(private val context: Context, private val rootView: V
     
     override fun onPostExecute(result: Void?) {
         super.onPostExecute(result)
-        val context = mContextRef.get()
 
         if (isConnected) {
             Snackbar.make(rootView, "Загрузка базы данных завершена", Snackbar.LENGTH_LONG).show()
@@ -95,24 +97,22 @@ class DataBaseDownloadTask(private val context: Context, private val rootView: V
 
 
     private fun downloadViaHttpConnection(connection: HttpURLConnection, url: URL) {
-        var inputStream: InputStream? = null
         var fileOutputStream: FileOutputStream? = null
         try {
             val buffer = ByteArray(1024)
-            val path = File(context.filesDir.toURI())
-            val fullPath = File(path, url.path.split("/").last())
+            val pathToSaveFile = File(context.filesDir.toURI())
+            val fullPath = File(pathToSaveFile, url.path.split("/").last())
             fileOutputStream = FileOutputStream(fullPath)
-            inputStream = connection.inputStream
 
             while(true) {
-                val len = inputStream.read(buffer)
-                if (len == -1) break
-                else fileOutputStream.write(buffer, 0, len)
+                val len = connection.inputStream.read(buffer)
+                if (len != -1) fileOutputStream.write(buffer, 0, len)
+                else break
             }
         } catch (e: Exception) {
             isConnected = false
+        } finally {
             fileOutputStream?.close()
-            inputStream?.close()
         }
     }
 
