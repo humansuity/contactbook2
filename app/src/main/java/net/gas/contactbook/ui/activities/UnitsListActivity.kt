@@ -7,15 +7,16 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.example.contactbook.R
 import com.example.contactbook.databinding.ActivityUnitsListBinding
-import net.gas.contactbook.business.viewmodel.UnitsListViewModel
+import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.ui.fragments.DepartmentListFragment
+import net.gas.contactbook.ui.fragments.PersonListFragment
 import net.gas.contactbook.ui.fragments.UnitListFragment
 import net.gas.contactbook.utils.FragmentManagerHelper
 import net.gas.contactbook.utils.Var.viewModelFactory
 
 class UnitsListActivity : AppCompatActivity() {
 
-    lateinit var viewModel: UnitsListViewModel
+    lateinit var viewModel: BranchListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,15 +26,19 @@ class UnitsListActivity : AppCompatActivity() {
 
         val fragmentManagerHelper = FragmentManagerHelper(this)
         viewModel = ViewModelProvider(this, viewModelFactory {
-            UnitsListViewModel(applicationContext, fragmentManagerHelper)
-        }).get(UnitsListViewModel::class.java)
+            BranchListViewModel(applicationContext, fragmentManagerHelper)
+        }).get(BranchListViewModel::class.java)
 
-        viewModel.fragmentCallback = {
+        viewModel.unitFragmentCallback = {
             createDepartmentFragment()
-            viewModel.unitFragmentState = true
+            viewModel.isUnitFragmentActive = true
         }
 
-        if (!viewModel.unitFragmentState)
+        viewModel.departmentFragmentCallback = {
+            createPersonFragment()
+        }
+
+        if (!viewModel.isUnitFragmentActive)
             createUnitListFragment()
     }
 
@@ -53,6 +58,20 @@ class UnitsListActivity : AppCompatActivity() {
     private fun createDepartmentFragment() {
         if (isDestroyed) return
         val fragment = DepartmentListFragment()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction
+            .setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
+                R.animator.enter_from_left, R.animator.exit_to_right)
+            .replace(R.id.fragmentHolder, fragment)
+            .addToBackStack(null)
+        if (!this.isDestroyed) {
+            fragmentTransaction.commit()
+        }
+    }
+
+    private fun createPersonFragment() {
+        if (isDestroyed) return
+        val fragment = PersonListFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
             .setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,

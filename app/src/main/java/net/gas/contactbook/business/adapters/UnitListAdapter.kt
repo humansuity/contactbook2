@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.DiffUtil
 import com.example.contactbook.R
 import com.example.contactbook.databinding.UnitsListItemBinding
 import net.gas.contactbook.business.database.entities.Units
-import net.gas.contactbook.business.viewmodel.UnitsListViewModel
+import net.gas.contactbook.business.viewmodel.BranchListViewModel
 
-class UnitListAdapter(private val viewModel: UnitsListViewModel) :
+class UnitListAdapter(private val viewModel: BranchListViewModel) :
     DataBoundListAdapter<Units>(diffCallback = object: DiffUtil.ItemCallback<Units>() {
 
     override fun areItemsTheSame(oldItem: Units, newItem: Units): Boolean {

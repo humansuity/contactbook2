@@ -16,7 +16,7 @@ import com.example.contactbook.R
 import com.example.contactbook.databinding.DepartmentsListFragmentBinding
 import kotlinx.android.synthetic.main.units_list_fragment.*
 import net.gas.contactbook.business.adapters.DepartmentListAdapter
-import net.gas.contactbook.business.viewmodel.UnitsListViewModel
+import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.utils.FragmentManagerHelper
 import net.gas.contactbook.utils.Var
 
@@ -24,7 +24,7 @@ class DepartmentListFragment : Fragment() {
 
 
     private lateinit var binding: ViewDataBinding
-    private lateinit var viewModel: UnitsListViewModel
+    private lateinit var viewModel: BranchListViewModel
 
 
     override fun onCreateView(
@@ -44,11 +44,11 @@ class DepartmentListFragment : Fragment() {
         viewModel = ViewModelProvider(
             requireActivity(),
             Var.viewModelFactory {
-                UnitsListViewModel(
+                BranchListViewModel(
                     context!!,
                     FragmentManagerHelper(context as AppCompatActivity)
                 )
-            }).get(UnitsListViewModel::class.java)
+            }).get(BranchListViewModel::class.java)
 
         when (binding) {
             is DepartmentsListFragmentBinding -> {

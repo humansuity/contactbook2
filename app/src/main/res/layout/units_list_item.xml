@@ -10,7 +10,7 @@
             type="Integer" />
         <variable
             name="viewModel"
-            type="net.gas.contactbook.business.viewmodel.UnitsListViewModel" />
+            type="net.gas.contactbook.business.viewmodel.BranchListViewModel" />
         <variable
             name="listType"
             type="String" />

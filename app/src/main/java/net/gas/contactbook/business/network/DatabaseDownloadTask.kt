@@ -18,7 +18,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.Exception
 
-class DataBaseDownloadTask(private val context: Context, private val rootView: View) : AsyncTask<Void, Void, Void>() {
+class DatabaseDownloadTask(private val context: Context, private val rootView: View) : AsyncTask<Void, Void, Void>() {
 
     private val mContextRef = WeakReference<Context>(context)
     private var notificationBuilder: NotificationCompat.Builder? = null

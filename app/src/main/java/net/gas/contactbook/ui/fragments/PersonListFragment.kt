@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -14,14 +13,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.contactbook.R
-import com.example.contactbook.databinding.UnitsListFragmentBinding
+import com.example.contactbook.databinding.PersonListFragmentBinding
 import kotlinx.android.synthetic.main.units_list_fragment.*
-import net.gas.contactbook.business.adapters.UnitListAdapter
+import net.gas.contactbook.business.adapters.PersonListAdapter
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.utils.FragmentManagerHelper
 import net.gas.contactbook.utils.Var
 
-class UnitListFragment : Fragment() {
+class PersonListFragment : Fragment() {
 
     private lateinit var binding: ViewDataBinding
     private lateinit var viewModel: BranchListViewModel
@@ -34,7 +33,7 @@ class UnitListFragment : Fragment() {
 
 
         binding = DataBindingUtil.inflate(
-            inflater, R.layout.units_list_fragment,
+            inflater, R.layout.person_list_fragment,
             container, false
         )
         binding.lifecycleOwner = viewLifecycleOwner
@@ -56,8 +55,8 @@ class UnitListFragment : Fragment() {
 
 
         when (binding) {
-            is UnitsListFragmentBinding -> {
-                val adapter = UnitListAdapter(viewModel)
+            is PersonListFragmentBinding -> {
+                val adapter = PersonListAdapter(viewModel)
                 binding.apply {
                     recyclerView.layoutManager = LinearLayoutManager(context)
                     recyclerView.adapter = adapter
@@ -65,7 +64,7 @@ class UnitListFragment : Fragment() {
                         DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
                     )
                 }
-                viewModel.unitList.observe(viewLifecycleOwner, Observer {
+                viewModel.personList.observe(viewLifecycleOwner, Observer {
                     adapter.submitList(it)
                 })
             }

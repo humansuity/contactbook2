@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.contactbook.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_download.*
-import net.gas.contactbook.business.network.DataBaseDownloadTask
+import net.gas.contactbook.business.network.DatabaseDownloadTask
 import net.gas.contactbook.utils.Var
 import java.io.File
 
@@ -67,7 +67,7 @@ class DownloadActivity : AppCompatActivity() {
                 "База данных уже установлена",
                 Snackbar.LENGTH_LONG).show()
         } else {
-            val dbManager = DataBaseDownloadTask(application, constraintLayout)
+            val dbManager = DatabaseDownloadTask(application, constraintLayout)
             dbManager.execute()
         }
     }

@@ -5,11 +5,12 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import net.gas.contactbook.business.database.cores.ContactbookDatabase
 import net.gas.contactbook.business.database.entities.Departments
+import net.gas.contactbook.business.database.entities.Persons
 import net.gas.contactbook.business.database.entities.Units
 import net.gas.contactbook.utils.Var
 import java.io.File
 
-class UnitsListModel(context: Context) {
+class DataModel(context: Context) {
 
     private val database = ContactbookDatabase.getInstance(context)
 
@@ -17,5 +18,8 @@ class UnitsListModel(context: Context) {
 
     fun getDepartmentEntitiesById(id: Int) : LiveData<List<Departments>>
             = database?.departmentsDao()!!.getEntitiesById(id)
+
+    fun getPersonsEntitiesByIds(unitId: Int, departmentId: Int) : LiveData<List<Persons>>
+            = database?.PersonsDao()!!.getEntitiesByIds(unitId, departmentId)
 
 }
