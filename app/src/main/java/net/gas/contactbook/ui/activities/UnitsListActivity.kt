@@ -55,7 +55,8 @@ class UnitsListActivity : AppCompatActivity() {
         val fragment = DepartmentListFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
-            .setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left, R.animator.enter_from_left, R.animator.exit_to_right)
+            .setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
+                R.animator.enter_from_left, R.animator.exit_to_right)
             .replace(R.id.fragmentHolder, fragment)
             .addToBackStack(null)
         if (!this.isDestroyed) {
