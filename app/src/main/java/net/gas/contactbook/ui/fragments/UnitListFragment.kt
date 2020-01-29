@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -14,10 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.contactbook.R
-import com.example.contactbook.databinding.DepartmentsListFragmentBinding
 import com.example.contactbook.databinding.UnitsListFragmentBinding
 import kotlinx.android.synthetic.main.units_list_fragment.*
-import net.gas.contactbook.business.adapters.DepartmentListAdapter
 import net.gas.contactbook.business.adapters.UnitListAdapter
 import net.gas.contactbook.business.viewmodel.UnitsListViewModel
 import net.gas.contactbook.utils.FragmentManagerHelper
@@ -27,25 +25,20 @@ class UnitListFragment : Fragment() {
 
     private lateinit var binding: ViewDataBinding
     private lateinit var viewModel: UnitsListViewModel
+    private var isTapped = false
+    var onUnitClicked: (() -> Unit)? = null
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         binding = DataBindingUtil.inflate(
             inflater, R.layout.units_list_fragment,
             container, false
         )
         binding.lifecycleOwner = viewLifecycleOwner
-        return binding.root
 
-    }
-
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(
             this,
             Var.viewModelFactory {
@@ -53,7 +46,20 @@ class UnitListFragment : Fragment() {
                     context!!,
                     FragmentManagerHelper(context as AppCompatActivity)
                 )
-            }).get(UnitsListViewModel::class.java)
+            }
+        ).get(UnitsListViewModel::class.java)
+
+        viewModel.firstFragmentCreated.observe(viewLifecycleOwner, Observer<Int> {
+            Toast.makeText(context, it.toString(), Toast.LENGTH_SHORT).show()
+            isTapped = true
+            onUnitClicked?.invoke()
+        })
+        return binding.root
+    }
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         when (binding) {
             is UnitsListFragmentBinding -> {

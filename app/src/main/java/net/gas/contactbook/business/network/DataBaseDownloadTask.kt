@@ -73,6 +73,7 @@ class DataBaseDownloadTask(private val context: Context, private val rootView: V
     }
 
 
+
     private fun initNotificationBuilder() : NotificationCompat.Builder {
         val context = mContextRef.get()
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
