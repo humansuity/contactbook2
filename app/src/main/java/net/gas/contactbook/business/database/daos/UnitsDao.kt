@@ -9,7 +9,7 @@ import net.gas.contactbook.business.database.entities.Units
 @Dao
 interface UnitsDao {
 
-    @Query("select * from units")
+    @Query("select * from units group by rangir")
     fun getEntities() : LiveData<List<Units>>
 
 }

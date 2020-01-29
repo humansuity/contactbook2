@@ -14,10 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.contactbook.R
-import com.example.contactbook.databinding.DepartmentsListFragmentBinding
 import com.example.contactbook.databinding.UnitsListFragmentBinding
 import kotlinx.android.synthetic.main.units_list_fragment.*
-import net.gas.contactbook.business.adapters.DepartmentListAdapter
 import net.gas.contactbook.business.adapters.UnitListAdapter
 import net.gas.contactbook.business.viewmodel.UnitsListViewModel
 import net.gas.contactbook.utils.FragmentManagerHelper
@@ -27,6 +25,7 @@ class UnitListFragment : Fragment() {
 
     private lateinit var binding: ViewDataBinding
     private lateinit var viewModel: UnitsListViewModel
+    var temp: (() -> Unit)? = null
 
 
     override fun onCreateView(
@@ -34,26 +33,30 @@ class UnitListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+
         binding = DataBindingUtil.inflate(
             inflater, R.layout.units_list_fragment,
             container, false
         )
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
-
     }
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(
-            this,
+            requireActivity(),
             Var.viewModelFactory {
                 UnitsListViewModel(
                     context!!,
                     FragmentManagerHelper(context as AppCompatActivity)
                 )
             }).get(UnitsListViewModel::class.java)
+
+        temp?.invoke()
+
+
 
         when (binding) {
             is UnitsListFragmentBinding -> {
