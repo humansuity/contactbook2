@@ -42,7 +42,7 @@ class DepartmentListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(
-            this,
+            requireActivity(),
             Var.viewModelFactory {
                 UnitsListViewModel(
                     context!!,
