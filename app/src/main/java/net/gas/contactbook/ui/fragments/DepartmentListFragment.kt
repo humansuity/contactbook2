@@ -41,14 +41,9 @@ class DepartmentListFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(
-            requireActivity(),
-            Var.viewModelFactory {
-                BranchListViewModel(
-                    context!!,
-                    FragmentManagerHelper(context as AppCompatActivity)
-                )
-            }).get(BranchListViewModel::class.java)
+
+        viewModel = ViewModelProvider(requireActivity())
+            .get(BranchListViewModel::class.java)
 
         when (binding) {
             is DepartmentsListFragmentBinding -> {

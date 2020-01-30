@@ -1,25 +1,32 @@
 package net.gas.contactbook.business.model
 
 import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import net.gas.contactbook.business.database.cores.ContactbookDatabase
-import net.gas.contactbook.business.database.entities.Departments
-import net.gas.contactbook.business.database.entities.Persons
-import net.gas.contactbook.business.database.entities.Units
-import net.gas.contactbook.utils.Var
-import java.io.File
+import net.gas.contactbook.business.database.entities.*
 
 class DataModel(context: Context) {
 
     private val database = ContactbookDatabase.getInstance(context)
 
-    fun getUnitEntities() : LiveData<List<Units>> = database?.unitsDao()!!.getEntities()
+    fun getUnitEntities() : LiveData<List<Units>>
+            = database?.unitsDao()!!.getEntities()
 
     fun getDepartmentEntitiesById(id: Int) : LiveData<List<Departments>>
             = database?.departmentsDao()!!.getEntitiesById(id)
 
     fun getPersonsEntitiesByIds(unitId: Int, departmentId: Int) : LiveData<List<Persons>>
-            = database?.PersonsDao()!!.getEntitiesByIds(unitId, departmentId)
+            = database?.personsDao()!!.getEntitiesByIds(unitId, departmentId)
+
+    fun getPersonEntityById(id: Int) : LiveData<Persons>
+            = database?.personsDao()!!.getEntityById(id)
+
+    fun getPhotoEntityById(id: Int) : LiveData<Photos>
+            = database?.photosDao()!!.getEntityById(id)
+
+    fun getPostsEntityById(id: Int) : LiveData<Posts>
+            = database?.postsDao()!!.getEntityById(id)
+
+
 
 }

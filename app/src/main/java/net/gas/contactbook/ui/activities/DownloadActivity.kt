@@ -37,12 +37,12 @@ class DownloadActivity : AppCompatActivity() {
                         Snackbar.LENGTH_LONG).show() }
         }
 
-        catalogBtn.setOnClickListener{
+        catalogBtn.setOnClickListener {
             val pathToDownloadedDatabase = application.filesDir.path + "/" + Var.DATABASE_NAME
             val pathToRoomDatabase = application.getDatabasePath(Var.DATABASE_NAME)
             if (File(pathToDownloadedDatabase).exists() || pathToRoomDatabase.exists()) {
-                val unitActivity = Intent(this, UnitsListActivity::class.java)
-                startActivity(unitActivity)
+                val branchActivity = Intent(this, MainListActivity::class.java)
+                startActivity(branchActivity)
             } else {
                 Snackbar.make(constraintLayout,
                     "База данных отсутствует на устройстве",
