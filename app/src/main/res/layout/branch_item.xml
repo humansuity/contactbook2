@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="unit"
+            type="String" />
+        <variable
+            name="id"
+            type="Integer" />
+        <variable
+            name="viewModel"
+            type="net.gas.contactbook.business.viewmodel.BranchListViewModel" />
+        <variable
+            name="listType"
+            type="String" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/list_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="?android:attr/selectableItemBackground"
+        android:onClick="@{ () -> viewModel.onBranchItemClick(id, listType) }">
+
+        <TextView
+            android:id="@+id/txt"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="#E36A22"
+            android:textSize="15sp"
+            android:text="@{unit}"/>
+    </LinearLayout>
+
+
+</layout>
