@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
         <variable
@@ -16,27 +18,45 @@
             type="String" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/list_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:background="?android:attr/selectableItemBackground"
-        android:onClick="@{ () -> viewModel.onBranchItemClick(id, listType) }">
+        android:onClick="@{ () -> viewModel.onBranchItemClick(id, listType) }"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/txt"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="10dp"
+            android:layout_width="0dp"
+            android:layout_height="23dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/amiko_semibold"
             android:gravity="center_vertical"
+            android:text="@{unit}"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="#E36A22"
-            android:textSize="15sp"
-            android:text="@{unit}"/>
-    </LinearLayout>
+            android:textColor="#5C5B5B"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintBottom_toBottomOf="@+id/txt"
+            app:layout_constraintEnd_toStartOf="@+id/txt"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txt"
+            app:srcCompat="@drawable/ic_star_20" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>

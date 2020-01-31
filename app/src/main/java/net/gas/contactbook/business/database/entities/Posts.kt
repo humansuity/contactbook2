@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class Posts (
     @PrimaryKey val id: Short,
     val name: String?,
-    val rangir: String?
+    val rangir: Int?
 )

@@ -8,7 +8,7 @@ import net.gas.contactbook.business.database.entities.Persons
 @Dao
 interface PersonsDao {
 
-    @Query("select * from persons where unit_id = :unitId and department_id = :departmentId")
+    @Query("select persons.* from persons, posts where unit_id = :unitId and department_id = :departmentId and persons.post_id = posts.id order by rangir, lastname")
     fun getEntitiesByIds(unitId: Int, departmentId: Int) : LiveData<List<Persons>>
 
     @Query("select * from persons where id = :id")

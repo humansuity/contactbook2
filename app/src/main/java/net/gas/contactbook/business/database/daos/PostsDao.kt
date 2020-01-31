@@ -3,7 +3,6 @@ package net.gas.contactbook.business.database.daos
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import net.gas.contactbook.business.database.entities.Photos
 import net.gas.contactbook.business.database.entities.Posts
 
 

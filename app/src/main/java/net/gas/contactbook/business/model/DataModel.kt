@@ -27,6 +27,12 @@ class DataModel(context: Context) {
     fun getPostsEntityById(id: Int) : LiveData<Posts>
             = database?.postsDao()!!.getEntityById(id)
 
+    fun getDepartmentEntityById(id: Int) : LiveData<Departments>
+    = database?.departmentsDao()!!.getEntityById(id)
+
+    fun getUnitEntityById(id: Int) : LiveData<Units>
+            = database?.unitsDao()!!.getEntityById(id)
+
 
 
 }

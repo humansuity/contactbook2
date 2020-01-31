@@ -59,9 +59,15 @@ class BranchListViewModel(application: Application)
         photoEntity = dataModel.getPhotoEntityById(id!!)
     }
 
-    fun setupPostsEntity(id: Int?) {
+    fun setupPostEntity(id: Int?) {
         postEntity = dataModel.getPostsEntityById(id!!)
     }
+
+    fun getDepartmentEntity(id: Int) : LiveData<Departments>
+            = dataModel.getDepartmentEntityById(id)
+
+    fun getUnitEntity(id: Int) : LiveData<Units>
+            = dataModel.getUnitEntityById(id)
 
 
 

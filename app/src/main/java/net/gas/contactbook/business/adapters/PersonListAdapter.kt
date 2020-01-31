@@ -8,6 +8,8 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.example.contactbook.R
 import com.example.contactbook.databinding.PersonItemBinding
 import net.gas.contactbook.business.database.entities.Persons
@@ -34,23 +36,29 @@ class PersonListAdapter(private val viewModel: BranchListViewModel, private val 
         when(binding) {
             is PersonItemBinding -> {
                 val context = binding.root.context
-                viewModel.setupPhotoEntity(item.photoID)
-                viewModel.setupPostsEntity(item.postID?.toInt())
+                if (item.photoID != null) {
+                    viewModel.setupPhotoEntity(item.photoID)
+                    viewModel.photoEntity.observe(lifecycleOwner, Observer {
+                        val decodedString = it.photo!!.decodeToString()
+                        val byteArray = Base64.decode(decodedString, Base64.DEFAULT)
+                        GlideApp.with(context)
+                            .asBitmap()
+                            .placeholder(R.drawable.ic_user_30)
+                            .load(byteArray)
+                            .apply(RequestOptions().transform(RoundedCorners(30)))
+                            .into(binding.image)
+                    })
+                } else {
+                    GlideApp.with(context)
+                        .asDrawable()
+                        .load(context.resources.getDrawable(R.drawable.ic_user_30))
+                        .into(binding.image)
+                }
 
                 binding.viewModel = viewModel
                 binding.id = item.id
                 binding.name = item.lastName + " " + item.firstName + " " + item.patronymic
-
-                viewModel.photoEntity.observe(lifecycleOwner, Observer {
-                    val decodedString = it.photo!!.decodeToString()
-                    val byteArray = Base64.decode(decodedString, Base64.DEFAULT)
-                    GlideApp.with(context)
-                        .asBitmap()
-                        .placeholder(R.drawable.ic_user_30)
-                        .load(byteArray)
-                        .into(binding.image)
-                })
-
+                viewModel.setupPostEntity(item.postID?.toInt())
                 viewModel.postEntity.observe(lifecycleOwner, Observer {
                     binding.post = it.name
                 })
