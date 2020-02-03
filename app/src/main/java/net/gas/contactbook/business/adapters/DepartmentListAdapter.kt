@@ -12,7 +12,7 @@ import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.utils.GlideApp
 
 class DepartmentListAdapter(private val viewModel: BranchListViewModel) :
-    DataBoundListAdapter<Departments>(diffCallback = object: DiffUtil.ItemCallback<Departments>() {
+    DataBoundListAdapter<Departments>(diffCallback = object : DiffUtil.ItemCallback<Departments>() {
         override fun areItemsTheSame(oldItem: Departments, newItem: Departments)
                 : Boolean = oldItem == newItem
 
@@ -21,12 +21,14 @@ class DepartmentListAdapter(private val viewModel: BranchListViewModel) :
     }) {
 
     override fun createBinding(parent: ViewGroup, viewType: Int): ViewDataBinding {
-        return DataBindingUtil.inflate(LayoutInflater.from(parent.context),
-            R.layout.branch_item, parent, false)
+        return DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.branch_item, parent, false
+        )
     }
 
     override fun bind(binding: ViewDataBinding, item: Departments) {
-        when(binding) {
+        when (binding) {
             is BranchItemBinding -> {
                 binding.viewModel = viewModel
                 binding.id = item.id.toInt()

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -18,8 +17,6 @@ import com.example.contactbook.databinding.UnitsListFragmentBinding
 import kotlinx.android.synthetic.main.units_list_fragment.*
 import net.gas.contactbook.business.adapters.UnitListAdapter
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
-import net.gas.contactbook.utils.FragmentManagerHelper
-import net.gas.contactbook.utils.Var
 
 class UnitListFragment : Fragment() {
 

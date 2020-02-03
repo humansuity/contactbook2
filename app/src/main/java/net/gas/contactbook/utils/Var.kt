@@ -1,7 +1,9 @@
 package net.gas.contactbook.utils
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import java.util.concurrent.TimeUnit
 
 object Var {
 
@@ -16,5 +18,13 @@ object Var {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(aClass: Class<T>):T = f() as T
         }
+
+    inline fun <T> measureExecution(logMessage: String, logLevel: Int = Log.DEBUG, function: () -> T): T {
+        val startTime = System.nanoTime()
+        return function.invoke().also {
+            val difference = System.nanoTime() - startTime
+            Log.e("Time", "$logMessage; took ${TimeUnit.NANOSECONDS.toMillis(difference)}ms")
+        }
+    }
 
 }

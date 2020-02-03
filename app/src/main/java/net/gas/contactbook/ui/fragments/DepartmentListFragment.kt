@@ -1,10 +1,10 @@
 package net.gas.contactbook.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -15,9 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.contactbook.R
 import com.example.contactbook.databinding.DepartmentsListFragmentBinding
 import kotlinx.android.synthetic.main.units_list_fragment.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.gas.contactbook.business.adapters.DepartmentListAdapter
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
-import net.gas.contactbook.utils.FragmentManagerHelper
 import net.gas.contactbook.utils.Var
 
 class DepartmentListFragment : Fragment() {

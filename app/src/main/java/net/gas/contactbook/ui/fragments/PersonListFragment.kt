@@ -1,10 +1,10 @@
 package net.gas.contactbook.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -17,8 +17,7 @@ import com.example.contactbook.databinding.PersonListFragmentBinding
 import kotlinx.android.synthetic.main.units_list_fragment.*
 import net.gas.contactbook.business.adapters.PersonListAdapter
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
-import net.gas.contactbook.utils.FragmentManagerHelper
-import net.gas.contactbook.utils.Var
+import kotlin.system.measureTimeMillis
 
 class PersonListFragment : Fragment() {
 
@@ -58,7 +57,7 @@ class PersonListFragment : Fragment() {
                     )
                 }
                 viewModel.personList.observe(viewLifecycleOwner, Observer {
-                    adapter.submitList(it)
+                        adapter.submitList(it)
                 })
             }
         }

@@ -2,10 +2,13 @@ package net.gas.contactbook.business.viewmodel
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.*
 import net.gas.contactbook.business.database.entities.*
 import net.gas.contactbook.business.model.DataModel
 import net.gas.contactbook.utils.Var
@@ -30,25 +33,25 @@ class BranchListViewModel(application: Application)
     var isUnitFragmentActive = false
     private var unitId = 0
 
-
-    init { unitList = dataModel.getUnitEntities() }
+    init { GlobalScope.launch(Dispatchers.IO) { unitList = dataModel.getUnitEntities() } }
 
 
     fun onBranchItemClick(id: Int, listType: String) {
         when (listType) {
             Units::class.java.name -> {
-                departmentList = dataModel.getDepartmentEntitiesById(id)
-                unitFragmentCallback?.invoke()
-                unitId = id
+                GlobalScope.launch(Dispatchers.IO) {
+                    departmentList = dataModel.getDepartmentEntitiesById(id)
+                    unitId = id
+                    unitFragmentCallback?.invoke()
+                }
             }
             Departments::class.java.name -> {
-                personList = dataModel.getPersonsEntitiesByIds(unitId, id)
+                GlobalScope.launch(Dispatchers.IO) { personList = dataModel.getPersonsEntitiesByIds(unitId, id) }
                 departmentFragmentCallback?.invoke()
             }
         }
         deleteDownloadedDatabase(context)
     }
-
 
     fun onPersonItemClick(id: Int) {
         personEntity = dataModel.getPersonEntityById(id)
@@ -70,8 +73,6 @@ class BranchListViewModel(application: Application)
             = dataModel.getUnitEntityById(id)
 
 
-
-
     private fun deleteDownloadedDatabase(context: Context) {
         val pathToDownloadedDatabase = context.filesDir.path + "/" + Var.DATABASE_NAME
         if (File(pathToDownloadedDatabase).exists()) {
@@ -79,6 +80,10 @@ class BranchListViewModel(application: Application)
             Toast.makeText(context, if (isDeleted) "okay" else "not okay", Toast.LENGTH_SHORT)
                 .show()
         }
+    }
+
+    private fun getDepartmentList(id: Int) {
+
     }
 
 }

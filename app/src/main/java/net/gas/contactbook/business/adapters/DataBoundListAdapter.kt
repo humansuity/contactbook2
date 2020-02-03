@@ -9,6 +9,10 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 abstract class DataBoundListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
     ListAdapter<T, DataBoundViewHolder>(AsyncDifferConfig.Builder<T>(diffCallback).build()) {
@@ -50,7 +54,8 @@ abstract class DataBoundListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
 }
 
 
-class DataBoundViewHolder constructor(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root), LifecycleOwner {
+class DataBoundViewHolder constructor(val binding: ViewDataBinding) :
+    RecyclerView.ViewHolder(binding.root), LifecycleOwner {
 
     private val lifecycleRegistry = LifecycleRegistry(this)
 
