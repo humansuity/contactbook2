@@ -78,6 +78,7 @@ class SearchFragment : Fragment() {
                         } else {
                             adapter.submitList(emptyList())
                         }
+                        (binding as SearchFragmentBinding).personList.smoothScrollToPosition(0)
                         return false
                     }
                 })
