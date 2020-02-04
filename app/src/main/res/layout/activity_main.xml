@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/unit_list_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F6F4F4"
+    android:orientation="vertical">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#9DB2B8"
+        android:elevation="6dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Справочник"
+        app:titleMargins="4dp">
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="#292929"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="18dp" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+        <FrameLayout
+            android:id="@+id/fragmentHolder"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_marginRight="25dp"
+                android:layout_marginBottom="35dp"
+                android:backgroundTint="#8DB4C0"
+                android:clickable="true"
+                android:padding="0dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_search_float_button_50"
+                android:tint="#000000"
+                app:backgroundTint="@null"
+                app:borderWidth="0dp"
+                app:elevation="10dp"
+                app:useCompatPadding="false" />
+
+
+        </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
+import android.widget.Toast
 import androidx.core.view.isVisible
+
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -13,23 +16,31 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.contactbook.R
-import com.example.contactbook.databinding.PersonListFragmentBinding
+import com.example.contactbook.databinding.SearchFragmentBinding
+import com.example.contactbook.databinding.UnitsListFragmentBinding
+import kotlinx.android.synthetic.main.search_fragment.*
 import kotlinx.android.synthetic.main.units_list_fragment.*
+import kotlinx.android.synthetic.main.units_list_fragment.recyclerView
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.gas.contactbook.business.adapters.PersonListAdapter
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 
-class PersonListFragment : Fragment() {
+class SearchFragment : Fragment() {
 
     private lateinit var binding: ViewDataBinding
     private lateinit var viewModel: BranchListViewModel
+    var searchFragmentCallBack: (() -> Unit)? = null
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
         binding = DataBindingUtil.inflate(
-            inflater, R.layout.person_list_fragment,
+            inflater, R.layout.search_fragment,
             container, false
         )
         binding.lifecycleOwner = viewLifecycleOwner
@@ -44,27 +55,34 @@ class PersonListFragment : Fragment() {
             .get(BranchListViewModel::class.java)
 
         when (binding) {
-            is PersonListFragmentBinding -> {
+            is SearchFragmentBinding -> {
                 val adapter = PersonListAdapter(viewModel, viewLifecycleOwner)
                 binding.apply {
-                    recyclerView.layoutManager = LinearLayoutManager(context)
-                    recyclerView.adapter = adapter
-                    recyclerView.addItemDecoration(
+                    person_list.layoutManager = LinearLayoutManager(context)
+                    person_list.adapter = adapter
+                    person_list.addItemDecoration(
                         DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
                     )
                 }
-                viewModel.personList.observe(viewLifecycleOwner, Observer {
-                        adapter.submitList(it)
-                })
-                viewModel.spinnerState.observe(viewLifecycleOwner, Observer {
-                    (binding as PersonListFragmentBinding).progressBar.isVisible = it
-                })
-                viewModel.departmentEntity.observe(viewLifecycleOwner, Observer {
-                    if (!viewModel.toolbarTitle.value?.contains(it.name!!)!!)
-                    viewModel.toolbarTitle.value = viewModel.toolbarTitle.value + "\n> " + it.name
-                    else viewModel.toolbarTitle.value = viewModel.toolbarTitle.value
+                searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        return false
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        if (newText!!.isNotEmpty()) {
+                            viewModel.findPersonsByTag("$newText%")
+                                .observe(viewLifecycleOwner, Observer {
+                                    adapter.submitList(it)
+                            })
+                        } else {
+                            adapter.submitList(emptyList())
+                        }
+                        return false
+                    }
                 })
             }
         }
+        searchFragmentCallBack?.invoke()
     }
 }

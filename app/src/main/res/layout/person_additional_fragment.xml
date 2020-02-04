@@ -1,35 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="name"
             type="String" />
+
         <variable
             name="post"
             type="String" />
+
         <variable
             name="unit"
             type="String" />
+
         <variable
             name="department"
             type="String" />
+
         <variable
             name="birthday"
             type="String" />
+
         <variable
             name="mobileNumber"
             type="String" />
+
         <variable
             name="workNumber"
             type="String" />
+
         <variable
             name="homeNumber"
             type="String" />
+
         <variable
             name="email"
             type="String" />
+
         <variable
             name="viewModel"
             type="net.gas.contactbook.business.viewmodel.BranchListViewModel" />
@@ -42,275 +53,292 @@
         android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_name"
-            android:layout_width="0dp"
+        <ScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:fontFamily="@font/amiko_semibold"
-            android:text="@{ name }"
-            android:textColor="#2E2E2E"
-            android:textSize="17sp"
-            android:textStyle="bold"
+            android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="100dp"
-            android:layout_height="110dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/text_birthday"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/text_post"
-            app:srcCompat="@drawable/ic_user_30" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/text_post"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@{ post }"
-            android:textColor="#2E2E2E"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/text_department"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/image"
-            app:layout_constraintTop_toBottomOf="@+id/text_name" />
+                <TextView
+                    android:id="@+id/text_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/amiko_semibold"
+                    android:text="@{ name }"
+                    android:textColor="#2E2E2E"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/text_department"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="8dp"
-            android:text="@{ department }"
-            app:layout_constraintBottom_toTopOf="@+id/text_unit"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/image"
-            app:layout_constraintTop_toBottomOf="@+id/text_post" />
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="110dp"
+                    android:layout_height="120dp"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_birthday"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_post" />
 
-        <TextView
-            android:id="@+id/text_unit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp"
-            android:text="@{ unit }"
-            app:layout_constraintBottom_toTopOf="@+id/text_birthday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/image"
-            app:layout_constraintTop_toBottomOf="@+id/text_department" />
+                <TextView
+                    android:id="@+id/text_post"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@{ post }"
+                    android:textColor="#2E2E2E"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@+id/text_department"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/image"
+                    app:layout_constraintTop_toBottomOf="@+id/text_name" />
 
-        <TextView
-            android:id="@+id/text_birthday"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/amiko_semibold"
-            android:text="@{ birthday }"
-            android:textColor="#0B0B0B"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toBottomOf="@+id/text_unit" />
+                <TextView
+                    android:id="@+id/text_department"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@{ department }"
+                    app:layout_constraintBottom_toTopOf="@+id/text_unit"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/image"
+                    app:layout_constraintTop_toBottomOf="@+id/text_post" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toBottomOf="@+id/text_birthday"
-            app:layout_constraintEnd_toStartOf="@+id/text_birthday"
-            app:layout_constraintStart_toEndOf="@+id/image"
-            app:layout_constraintTop_toTopOf="@+id/text_birthday"
-            app:srcCompat="@drawable/ic_calendar_25" />
+                <TextView
+                    android:id="@+id/text_unit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@{ unit }"
+                    app:layout_constraintBottom_toTopOf="@+id/text_birthday"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/image"
+                    app:layout_constraintTop_toBottomOf="@+id/text_department" />
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp"
-            android:background="#A9A9A9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+                <TextView
+                    android:id="@+id/text_birthday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/amiko_semibold"
+                    android:text="@{ birthday }"
+                    android:textColor="#0B0B0B"
+                    android:textSize="15sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/imageView2"
+                    app:layout_constraintTop_toBottomOf="@+id/text_unit" />
 
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="5dp"
-            android:text="Контактные данные"
-            android:textSize="13sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider" />
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="4dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_birthday"
+                    app:layout_constraintEnd_toStartOf="@+id/text_birthday"
+                    app:layout_constraintStart_toEndOf="@+id/image"
+                    app:layout_constraintTop_toTopOf="@+id/text_birthday"
+                    app:srcCompat="@drawable/ic_calendar_25" />
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView9"
-            app:layout_constraintEnd_toStartOf="@+id/text_mobile"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/text_mobile"
-            app:srcCompat="@drawable/ic_phone_30" />
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#A9A9A9"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
-        <TextView
-            android:id="@+id/text_mobile"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/amiko_semibold"
-            android:text="@{ mobileNumber }"
-            android:textColor="#0B0B0B"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toTopOf="@+id/text_work_mobile"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Контактные данные"
+                    android:textSize="13sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-        <TextView
-            android:id="@+id/text_work_mobile"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="35dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/amiko_semibold"
-            android:text="@{ workNumber }"
-            android:textColor="#0B0B0B"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toTopOf="@+id/text_home_mobile"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/imageView4"
-            app:layout_constraintTop_toBottomOf="@+id/text_mobile" />
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView9"
+                    app:layout_constraintEnd_toStartOf="@+id/text_mobile"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_mobile"
+                    app:srcCompat="@drawable/ic_phone_30" />
 
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/textView10"
-            app:layout_constraintEnd_toEndOf="@+id/imageView3"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="@+id/text_work_mobile"
-            app:srcCompat="@drawable/ic_phone_call_20" />
+                <TextView
+                    android:id="@+id/text_mobile"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/amiko_semibold"
+                    android:text="@{ mobileNumber }"
+                    android:textColor="#0B0B0B"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toTopOf="@+id/text_work_mobile"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/imageView3"
+                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="Мобильный"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/text_mobile"
-            app:layout_constraintTop_toBottomOf="@+id/text_mobile" />
+                <TextView
+                    android:id="@+id/text_work_mobile"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/amiko_semibold"
+                    android:text="@{ workNumber }"
+                    android:textColor="#0B0B0B"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toTopOf="@+id/text_home_mobile"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/imageView4"
+                    app:layout_constraintTop_toBottomOf="@+id/text_mobile" />
 
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="Рабочий"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/text_work_mobile"
-            app:layout_constraintTop_toBottomOf="@+id/text_work_mobile" />
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView10"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView3"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="@+id/text_work_mobile"
+                    app:srcCompat="@drawable/ic_phone_call_20" />
 
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/textView12"
-            app:layout_constraintEnd_toEndOf="@+id/imageView4"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/imageView4"
-            app:layout_constraintTop_toTopOf="@+id/text_home_mobile"
-            app:srcCompat="@drawable/ic_home_run_30" />
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Мобильный"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/text_mobile"
+                    app:layout_constraintTop_toBottomOf="@+id/text_mobile" />
 
-        <TextView
-            android:id="@+id/text_home_mobile"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="35dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/amiko_semibold"
-            android:text="@{ homeNumber }"
-            android:textColor="#2D2D2D"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toTopOf="@+id/text_email"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/imageView5"
-            app:layout_constraintTop_toBottomOf="@+id/text_work_mobile" />
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Рабочий"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/text_work_mobile"
+                    app:layout_constraintTop_toBottomOf="@+id/text_work_mobile" />
 
-        <TextView
-            android:id="@+id/textView12"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="Домашний"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/text_home_mobile"
-            app:layout_constraintTop_toBottomOf="@+id/text_home_mobile" />
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView12"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView4"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="@+id/imageView4"
+                    app:layout_constraintTop_toTopOf="@+id/text_home_mobile"
+                    app:srcCompat="@drawable/ic_home_run_30" />
 
-        <ImageView
-            android:id="@+id/imageView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/textView14"
-            app:layout_constraintEnd_toEndOf="@+id/imageView5"
-            app:layout_constraintStart_toStartOf="@+id/imageView5"
-            app:layout_constraintTop_toTopOf="@+id/text_email"
-            app:srcCompat="@drawable/ic_mail_30" />
+                <TextView
+                    android:id="@+id/text_home_mobile"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/amiko_semibold"
+                    android:text="@{ homeNumber }"
+                    android:textColor="#2D2D2D"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toTopOf="@+id/text_email"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/imageView5"
+                    app:layout_constraintTop_toBottomOf="@+id/text_work_mobile" />
 
-        <TextView
-            android:id="@+id/text_email"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="35dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/amiko_semibold"
-            android:text="@{ email }"
-            android:textColor="#2D2D2D"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.482"
-            app:layout_constraintStart_toEndOf="@+id/imageView6"
-            app:layout_constraintTop_toBottomOf="@+id/text_home_mobile" />
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Домашний"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/text_home_mobile"
+                    app:layout_constraintTop_toBottomOf="@+id/text_home_mobile" />
 
-        <TextView
-            android:id="@+id/textView14"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="E-mail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/text_email"
-            app:layout_constraintTop_toBottomOf="@+id/text_email" />
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView14"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView5"
+                    app:layout_constraintStart_toStartOf="@+id/imageView5"
+                    app:layout_constraintTop_toTopOf="@+id/text_email"
+                    app:srcCompat="@drawable/ic_mail_30" />
+
+                <TextView
+                    android:id="@+id/text_email"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/amiko_semibold"
+                    android:text="@{ email }"
+                    android:textColor="#2D2D2D"
+                    android:textSize="15sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.482"
+                    app:layout_constraintStart_toEndOf="@+id/imageView6"
+                    app:layout_constraintTop_toBottomOf="@+id/text_home_mobile" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="E-mail"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/text_email"
+                    app:layout_constraintTop_toBottomOf="@+id/text_email" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

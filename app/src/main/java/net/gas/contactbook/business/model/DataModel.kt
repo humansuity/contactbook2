@@ -30,10 +30,20 @@ class DataModel(context: Context) {
             = database?.postsDao()!!.getEntityById(id)
 
     fun getDepartmentEntityById(id: Int) : LiveData<Departments>
-    = database?.departmentsDao()!!.getEntityById(id)
+            = database?.departmentsDao()!!.getEntityById(id)
+
 
     fun getUnitEntityById(id: Int) : LiveData<Units>
             = database?.unitsDao()!!.getEntityById(id)
+
+    suspend fun getPersonListByTag(tag: String) : LiveData<List<Persons>>
+            = withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByTag(tag) }
+
+    suspend fun getUnitEntityByIdAsync(id: Int) : LiveData<Units>
+            = withContext(Dispatchers.IO) { database?.unitsDao()!!.getEntityById(id) }
+
+    suspend fun getDepartmentEntityByIdAsync(id: Int) : LiveData<Departments>
+            = withContext(Dispatchers.IO) { database?.departmentsDao()!!.getEntityById(id) }
 
 
 

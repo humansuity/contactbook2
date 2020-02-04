@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -58,7 +60,11 @@ class UnitListFragment : Fragment() {
                 viewModel.unitList.observe(viewLifecycleOwner, Observer {
                     adapter.submitList(it)
                 })
+                viewModel.spinnerState.observe(viewLifecycleOwner, Observer {
+                    (binding as UnitsListFragmentBinding).progressBar2.isVisible = it
+                })
             }
         }
+        viewModel.toolbarTitle.value = "Справочник"
     }
 }

@@ -14,5 +14,4 @@ interface DepartmentsDao {
 
     @Query("select * from departments where id = :id")
     fun getEntityById(id: Int) : LiveData<Departments>
-
 }

@@ -5,6 +5,7 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -14,6 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.contactbook.R
 import com.example.contactbook.databinding.PersonAdditionalFragmentBinding
+import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.contactbook.business.database.entities.Persons
 import net.gas.contactbook.business.database.entities.Photos
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
@@ -23,6 +25,7 @@ class PersonAdditionalFragment : Fragment() {
 
     private lateinit var binding: PersonAdditionalFragmentBinding
     private lateinit var viewModel: BranchListViewModel
+    var personAdditionalFragmentCallback: (() -> Unit)? = null
 
 
     @ExperimentalStdlibApi
@@ -54,6 +57,7 @@ class PersonAdditionalFragment : Fragment() {
                 if (personEntity.email.isNullOrBlank()) "Не указан" else personEntity.email
 
             startObserveEntities(personEntity)
+            personAdditionalFragmentCallback?.invoke()
         })
 
         binding.lifecycleOwner = viewLifecycleOwner
@@ -76,6 +80,7 @@ class PersonAdditionalFragment : Fragment() {
                 binding.department = it.name
             })
         startObservePhoto(viewModel.photoEntity, personEntity.photoID)
+
     }
 
     @ExperimentalStdlibApi

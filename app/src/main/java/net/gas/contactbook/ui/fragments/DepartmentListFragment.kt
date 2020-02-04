@@ -5,6 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -14,6 +16,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.contactbook.R
 import com.example.contactbook.databinding.DepartmentsListFragmentBinding
+import com.example.contactbook.databinding.UnitsListFragmentBinding
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.units_list_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -60,6 +64,12 @@ class DepartmentListFragment : Fragment() {
                 }
                 viewModel.departmentList.observe(viewLifecycleOwner, Observer {
                     adapter.submitList(it)
+                })
+                viewModel.spinnerState.observe(viewLifecycleOwner, Observer {
+                    (binding as DepartmentsListFragmentBinding).progressBar3.isVisible = it
+                })
+                viewModel.unitEntity.observe(viewLifecycleOwner, Observer {
+                    viewModel.toolbarTitle.value = it.name
                 })
             }
         }
