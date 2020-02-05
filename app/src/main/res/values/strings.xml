@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">contactbook</string>
     <string name="logo_title">Logp</string>
+    <string name="settings_res">Настройки</string>
+    <string name="update_database_res">Update database</string>
+    <string name="database_info_res">База данных</string>
 </resources>

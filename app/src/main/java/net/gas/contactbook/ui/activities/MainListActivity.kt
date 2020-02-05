@@ -1,13 +1,10 @@
 package net.gas.contactbook.ui.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
+import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -24,8 +21,8 @@ class MainListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
-        toolbar.navigationIcon = getDrawable(R.drawable.ic_back_20)
+        setSupportActionBar(main_toolbar)
+        main_toolbar.navigationIcon = getDrawable(R.drawable.ic_back_20)
 
         viewModel = ViewModelProvider(this).get(BranchListViewModel::class.java)
 
@@ -47,10 +44,11 @@ class MainListActivity : AppCompatActivity() {
         floatingActionButton.setOnClickListener {
             createSearchFragment()
             floatingActionButton.isVisible = false
+            invalidateOptionsMenu()
         }
 
         viewModel.toolbarTitle.observe(this, Observer {
-            if (it.contains("\n")) {
+            if (it.length >= 20) {
                 val textSize = TypedValue
                     .applyDimension(TypedValue.COMPLEX_UNIT_SP, 5.5f, resources.displayMetrics)
                 title_text.textSize = textSize
@@ -64,8 +62,36 @@ class MainListActivity : AppCompatActivity() {
                 title_text.textSize = textSize
                 title_text.text = it
             }
-            if (it != "Поиск") floatingActionButton.isVisible = true
+            invalidateOptionsMenu()
+            if (it != "Меню") floatingActionButton.isVisible = true
+            if (it == "Справочник") main_toolbar.navigationIcon = null
+            else main_toolbar.navigationIcon = getDrawable(R.drawable.ic_back_20)
+            if (title_text.text == "") floatingActionButton.isVisible = false
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        if (title_text.text == "Меню") {
+            val databaseItem = menu?.findItem(R.id.action_db_update)
+            databaseItem?.isVisible = true
+            val settingsItem = menu?.findItem(R.id.action_settings)
+            settingsItem?.isVisible = true
+            val dbInfoItem = menu?.findItem(R.id.db_info)
+            dbInfoItem?.isVisible = true
+        } else {
+            val databaseItem = menu?.findItem(R.id.action_db_update)
+            databaseItem?.isVisible = false
+            val settingsItem = menu?.findItem(R.id.action_settings)
+            settingsItem?.isVisible = false
+            val dbInfoItem = menu?.findItem(R.id.db_info)
+            dbInfoItem?.isVisible = false
+        }
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -118,6 +144,10 @@ class MainListActivity : AppCompatActivity() {
         fragment.personAdditionalFragmentCallback = {
             if (title_text.text == "Поиск")
                 viewModel.toolbarTitle.value = viewModel.toolbarTitle.value
+            main_toolbar.navigationIcon = getDrawable(R.drawable.ic_back_20)
+            floatingActionButton.isVisible = false
+            title_text.text = ""
+            invalidateOptionsMenu()
         }
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
@@ -126,6 +156,7 @@ class MainListActivity : AppCompatActivity() {
             .replace(R.id.fragmentHolder, fragment)
             .addToBackStack(null)
             .commit()
+
     }
 
     private fun createSearchFragment() {
@@ -138,7 +169,8 @@ class MainListActivity : AppCompatActivity() {
                 resources.displayMetrics
             )
             title_text.textSize = textSize
-            title_text.text = "Поиск"
+            title_text.text = "Меню"
+            invalidateOptionsMenu()
         }
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction

@@ -61,7 +61,7 @@ class PersonListFragment : Fragment() {
                 })
                 viewModel.departmentEntity.observe(viewLifecycleOwner, Observer {
                     if (!viewModel.toolbarTitle.value?.contains(it.name!!)!!)
-                    viewModel.toolbarTitle.value = viewModel.toolbarTitle.value + "\n> " + it.name
+                    viewModel.toolbarTitle.value = it.name
                     else viewModel.toolbarTitle.value = viewModel.toolbarTitle.value
                 })
             }

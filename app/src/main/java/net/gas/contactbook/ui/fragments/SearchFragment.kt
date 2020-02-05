@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import android.widget.Toast
-import androidx.core.view.isVisible
 
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -17,12 +15,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.contactbook.R
 import com.example.contactbook.databinding.SearchFragmentBinding
-import com.example.contactbook.databinding.UnitsListFragmentBinding
 import kotlinx.android.synthetic.main.search_fragment.*
-import kotlinx.android.synthetic.main.units_list_fragment.*
 import kotlinx.android.synthetic.main.units_list_fragment.recyclerView
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import net.gas.contactbook.business.adapters.PersonListAdapter
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 
@@ -58,12 +52,14 @@ class SearchFragment : Fragment() {
             is SearchFragmentBinding -> {
                 val adapter = PersonListAdapter(viewModel, viewLifecycleOwner)
                 binding.apply {
-                    person_list.layoutManager = LinearLayoutManager(context)
-                    person_list.adapter = adapter
-                    person_list.addItemDecoration(
+                    personList.layoutManager = LinearLayoutManager(context)
+                    personList.adapter = adapter
+                    personList.addItemDecoration(
                         DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
                     )
                 }
+                searchView.queryHint = "Поиск по фамилии"
+                searchView.onActionViewExpanded()
                 searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         return false

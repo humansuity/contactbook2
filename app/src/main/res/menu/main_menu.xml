@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/settings_res"/>
+
+    <item
+        android:id="@+id/db_info"
+        android:title="@string/database_info_res"/>
+
+    <item
+        android:id="@+id/action_db_update"
+        android:icon="@drawable/database_download_ic_option"
+        android:title="@string/update_database_res"
+        app:showAsAction="always"/>
+</menu>

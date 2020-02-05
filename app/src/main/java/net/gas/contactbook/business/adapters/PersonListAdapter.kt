@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -16,7 +17,7 @@ import net.gas.contactbook.business.database.entities.Persons
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.utils.GlideApp
 
-class PersonListAdapter(private val viewModel: BranchListViewModel, private val lifecycleOwner: LifecycleOwner) :
+class PersonListAdapter(private val viewModel: ViewModel, private val lifecycleOwner: LifecycleOwner) :
     DataBoundListAdapter<Persons>(diffCallback = object: DiffUtil.ItemCallback<Persons>() {
         override fun areItemsTheSame(oldItem: Persons, newItem: Persons)
                 : Boolean = oldItem == newItem
@@ -24,6 +25,8 @@ class PersonListAdapter(private val viewModel: BranchListViewModel, private val 
         override fun areContentsTheSame(oldItem: Persons, newItem: Persons)
                 : Boolean = oldItem == newItem
     }) {
+
+    private val mViewModel = viewModel as BranchListViewModel
 
     override fun createBinding(parent: ViewGroup, viewType: Int): ViewDataBinding {
         return DataBindingUtil.inflate(
@@ -37,8 +40,8 @@ class PersonListAdapter(private val viewModel: BranchListViewModel, private val 
             is PersonItemBinding -> {
                 val context = binding.root.context
                 if (item.photoID != null) {
-                    viewModel.setupPhotoEntity(item.photoID)
-                    viewModel.photoEntity.observe(lifecycleOwner, Observer {
+                    mViewModel.setupPhotoEntity(item.photoID)
+                    mViewModel.photoEntity.observe(lifecycleOwner, Observer {
                         val decodedString = it.photo!!.decodeToString()
                         val byteArray = Base64.decode(decodedString, Base64.DEFAULT)
                         GlideApp.with(context)
@@ -55,11 +58,11 @@ class PersonListAdapter(private val viewModel: BranchListViewModel, private val 
                         .into(binding.image)
                 }
 
-                binding.viewModel = viewModel
+                binding.viewModel = mViewModel
                 binding.id = item.id
                 binding.name = item.lastName + " " + item.firstName + " " + item.patronymic
-                viewModel.setupPostEntity(item.postID?.toInt())
-                viewModel.postEntity.observe(lifecycleOwner, Observer {
+                mViewModel.setupPostEntity(item.postID?.toInt())
+                mViewModel.postEntity.observe(lifecycleOwner, Observer {
                     binding.post = it.name
                 })
             }

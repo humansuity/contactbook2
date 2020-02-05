@@ -57,9 +57,9 @@ class PersonAdditionalFragment : Fragment() {
                 if (personEntity.email.isNullOrBlank()) "Не указан" else personEntity.email
 
             startObserveEntities(personEntity)
-            personAdditionalFragmentCallback?.invoke()
         })
 
+        personAdditionalFragmentCallback?.invoke()
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         return binding.root
