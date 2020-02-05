@@ -46,6 +46,10 @@
             type="String" />
 
         <variable
+            name="person"
+            type="net.gas.contactbook.business.database.entities.Persons" />
+
+        <variable
             name="viewModel"
             type="net.gas.contactbook.business.viewmodel.BranchListViewModel" />
     </data>
@@ -105,7 +109,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="4dp"
                     android:text="@{ post }"
                     android:textColor="#2E2E2E"
                     android:textSize="16sp"
@@ -125,7 +129,8 @@
                     app:layout_constraintBottom_toTopOf="@+id/text_unit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/image" />
+                    app:layout_constraintStart_toEndOf="@+id/image"
+                    app:layout_constraintTop_toBottomOf="@+id/text_post" />
 
                 <TextView
                     android:id="@+id/text_unit"
@@ -133,12 +138,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="4dp"
                     android:text="@{ unit }"
                     app:layout_constraintBottom_toTopOf="@+id/text_birthday"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/image" />
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/image"
+                    app:layout_constraintTop_toBottomOf="@+id/text_department" />
 
                 <TextView
                     android:id="@+id/text_birthday"
@@ -353,10 +359,10 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:backgroundTint="#95BAC6"
-                    android:fontFamily="sans-serif-thin"
+                    android:fontFamily="sans-serif-medium"
+                    android:onClick="@{ () -> viewModel.onAddContactClick(person) }"
                     android:text="Добавить контакт"
                     android:textSize="15sp"
-                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

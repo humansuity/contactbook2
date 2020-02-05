@@ -37,6 +37,13 @@ class MainListActivity : AppCompatActivity() {
             createDepartmentFragment()
             viewModel.isUnitFragmentActive = true
         }
+
+        viewModel.addContactIntentCallBack = {
+            if (it.mobilePhone?.length == 13)
+            else Snackbar.make(unit_list_layout,
+                "Невозможно определить номер!", Snackbar.LENGTH_LONG).show()
+        }
+
         viewModel.departmentFragmentCallback = {
             createPersonFragment()
         }

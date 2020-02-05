@@ -35,6 +35,7 @@ class BranchListViewModel(application: Application)
     var departmentFragmentCallback: (() -> Unit) ? = null
     var personFragmentCallBack: (() -> Unit)? = null
     var callIntentCallback: ((Intent, Int) -> Unit)? = null
+    var addContactIntentCallBack: ((Persons) -> Unit)? = null
     var isUnitFragmentActive = false
     private var unitId = 0
 
@@ -66,6 +67,10 @@ class BranchListViewModel(application: Application)
     fun onPhoneNumberClick(phoneNumber: String) {
         val callIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
         callIntentCallback?.invoke(callIntent, phoneNumber.length)
+    }
+
+    fun onAddContactClick(person: Persons) {
+        addContactIntentCallBack?.invoke(person)
     }
 
     fun setupUnitList() {

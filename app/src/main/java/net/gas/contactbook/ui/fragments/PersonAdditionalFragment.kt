@@ -41,6 +41,7 @@ class PersonAdditionalFragment : Fragment() {
         viewModel.personEntity.observe(viewLifecycleOwner, Observer { personEntity ->
             binding.name = personEntity.lastName + " " + personEntity.firstName + " " + personEntity.patronymic
             binding.birthday = personEntity.birthday
+            binding.person = personEntity
             binding.devPhoneNumber = personEntity.mobilePhone
             viewModel.setupPostEntity(personEntity.postID!!.toInt())
             if (personEntity.photoID != null) viewModel.setupPhotoEntity(personEntity.photoID)
