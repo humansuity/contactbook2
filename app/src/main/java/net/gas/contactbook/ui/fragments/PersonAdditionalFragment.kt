@@ -5,7 +5,6 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -15,7 +14,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.contactbook.R
 import com.example.contactbook.databinding.PersonAdditionalFragmentBinding
-import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.contactbook.business.database.entities.Persons
 import net.gas.contactbook.business.database.entities.Photos
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
@@ -25,7 +23,6 @@ class PersonAdditionalFragment : Fragment() {
 
     private lateinit var binding: PersonAdditionalFragmentBinding
     private lateinit var viewModel: BranchListViewModel
-    var personAdditionalFragmentCallback: (() -> Unit)? = null
 
 
     @ExperimentalStdlibApi
@@ -44,29 +41,44 @@ class PersonAdditionalFragment : Fragment() {
         viewModel.personEntity.observe(viewLifecycleOwner, Observer { personEntity ->
             binding.name = personEntity.lastName + " " + personEntity.firstName + " " + personEntity.patronymic
             binding.birthday = personEntity.birthday
+            binding.devPhoneNumber = personEntity.mobilePhone
             viewModel.setupPostEntity(personEntity.postID!!.toInt())
             if (personEntity.photoID != null) viewModel.setupPhotoEntity(personEntity.photoID)
 
             binding.mobileNumber =
-                if (personEntity.mobilePhone.isNullOrBlank()) "Не указан" else personEntity.mobilePhone
+                if (personEntity.mobilePhone.isNullOrBlank()) "Не указан" else formatNumber(personEntity.mobilePhone)
             binding.workNumber =
                 if (personEntity.workPhone.isNullOrBlank()) "Не указан" else "8-0212-" + personEntity.workPhone
             binding.homeNumber =
                 if (personEntity.homePhone.isNullOrBlank()) "Не указан" else "8-0212-" + personEntity.homePhone
             binding.email =
-                if (personEntity.email.isNullOrBlank()) "Не указан" else personEntity.email
+                if (personEntity.email.isNullOrBlank() || !personEntity.email.contains(".")) "Не указан" else personEntity.email
 
             startObserveEntities(personEntity)
         })
 
-        personAdditionalFragmentCallback?.invoke()
+        viewModel.floatingButtonState.value = false
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         return binding.root
     }
 
+    private fun formatNumber(phoneNumber: String): String {
+        return if (phoneNumber.contains("+")) {
+            val code = phoneNumber.substring(0, 4)
+            val prefix = phoneNumber.substring(4, 6)
+            val number = phoneNumber.substring(6, phoneNumber.length)
+            val firstNumber = number.substring(0, 3)
+            val secondNumber = number.substring(3, 5)
+            val thirdNumber = number.substring(5, number.length)
+            "$code ($prefix) $firstNumber-$secondNumber-$thirdNumber"
+        } else {
+            phoneNumber
+        }
+    }
+
     @ExperimentalStdlibApi
-    fun startObserveEntities(personEntity: Persons) {
+    private fun startObserveEntities(personEntity: Persons) {
         viewModel.postEntity
             .observe(viewLifecycleOwner, Observer {
                 binding.post = it.name
@@ -84,7 +96,7 @@ class PersonAdditionalFragment : Fragment() {
     }
 
     @ExperimentalStdlibApi
-    fun startObservePhoto(photoEntity: LiveData<Photos>, photoID: Int?) {
+    private fun startObservePhoto(photoEntity: LiveData<Photos>, photoID: Int?) {
         photoEntity.observe(viewLifecycleOwner, Observer {
             if (photoID != null) {
                 val decodedString = it.photo!!.decodeToString()

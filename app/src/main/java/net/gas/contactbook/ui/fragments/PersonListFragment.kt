@@ -59,12 +59,8 @@ class PersonListFragment : Fragment() {
                 viewModel.spinnerState.observe(viewLifecycleOwner, Observer {
                     (binding as PersonListFragmentBinding).progressBar.isVisible = it
                 })
-                viewModel.departmentEntity.observe(viewLifecycleOwner, Observer {
-                    if (!viewModel.toolbarTitle.value?.contains(it.name!!)!!)
-                    viewModel.toolbarTitle.value = it.name
-                    else viewModel.toolbarTitle.value = viewModel.toolbarTitle.value
-                })
             }
         }
+        viewModel.floatingButtonState.value = true
     }
 }

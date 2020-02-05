@@ -46,6 +46,7 @@ class UnitListFragment : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
+        viewModel.setupUnitList()
 
         when (binding) {
             is UnitsListFragmentBinding -> {
@@ -60,11 +61,8 @@ class UnitListFragment : Fragment() {
                 viewModel.unitList.observe(viewLifecycleOwner, Observer {
                     adapter.submitList(it)
                 })
-                viewModel.spinnerState.observe(viewLifecycleOwner, Observer {
-                    (binding as UnitsListFragmentBinding).progressBar2.isVisible = it
-                })
             }
         }
-        viewModel.toolbarTitle.value = "Справочник"
+        viewModel.floatingButtonState.value = true
     }
 }

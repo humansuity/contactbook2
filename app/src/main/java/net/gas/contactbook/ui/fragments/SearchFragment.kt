@@ -24,7 +24,6 @@ class SearchFragment : Fragment() {
 
     private lateinit var binding: ViewDataBinding
     private lateinit var viewModel: BranchListViewModel
-    var searchFragmentCallBack: (() -> Unit)? = null
 
 
     override fun onCreateView(
@@ -80,6 +79,6 @@ class SearchFragment : Fragment() {
                 })
             }
         }
-        searchFragmentCallBack?.invoke()
+        viewModel.floatingButtonState.value = false
     }
 }

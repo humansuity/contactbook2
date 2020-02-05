@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.contactbook.R
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.ui.fragments.*
@@ -25,6 +26,12 @@ class MainListActivity : AppCompatActivity() {
         main_toolbar.navigationIcon = getDrawable(R.drawable.ic_back_20)
 
         viewModel = ViewModelProvider(this).get(BranchListViewModel::class.java)
+
+        viewModel.callIntentCallback = { intent, numberLength ->
+            if (numberLength == 13) startActivity(intent)
+            else Snackbar.make(unit_list_layout,
+                "Невозможно определить номер!", Snackbar.LENGTH_LONG).show()
+        }
 
         viewModel.unitFragmentCallback = {
             createDepartmentFragment()
@@ -43,30 +50,13 @@ class MainListActivity : AppCompatActivity() {
 
         floatingActionButton.setOnClickListener {
             createSearchFragment()
-            floatingActionButton.isVisible = false
-            invalidateOptionsMenu()
         }
 
-        viewModel.toolbarTitle.observe(this, Observer {
-            if (it.length >= 20) {
-                val textSize = TypedValue
-                    .applyDimension(TypedValue.COMPLEX_UNIT_SP, 5.5f, resources.displayMetrics)
-                title_text.textSize = textSize
-                title_text.text = it
-            } else {
-                val textSize = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_SP,
-                    7f,
-                    resources.displayMetrics
-                )
-                title_text.textSize = textSize
-                title_text.text = it
-            }
-            invalidateOptionsMenu()
-            if (it != "Меню") floatingActionButton.isVisible = true
-            if (it == "Справочник") main_toolbar.navigationIcon = null
-            else main_toolbar.navigationIcon = getDrawable(R.drawable.ic_back_20)
-            if (title_text.text == "") floatingActionButton.isVisible = false
+        viewModel.floatingButtonState.observe(this, Observer {
+            floatingActionButton.isVisible = it
+        })
+        viewModel.spinnerState.observe(this, Observer {
+            unitProgressbar.isVisible = it
         })
     }
 
@@ -76,21 +66,21 @@ class MainListActivity : AppCompatActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        if (title_text.text == "Меню") {
-            val databaseItem = menu?.findItem(R.id.action_db_update)
-            databaseItem?.isVisible = true
-            val settingsItem = menu?.findItem(R.id.action_settings)
-            settingsItem?.isVisible = true
-            val dbInfoItem = menu?.findItem(R.id.db_info)
-            dbInfoItem?.isVisible = true
-        } else {
-            val databaseItem = menu?.findItem(R.id.action_db_update)
-            databaseItem?.isVisible = false
-            val settingsItem = menu?.findItem(R.id.action_settings)
-            settingsItem?.isVisible = false
-            val dbInfoItem = menu?.findItem(R.id.db_info)
-            dbInfoItem?.isVisible = false
-        }
+//        if (title_text.text == "Меню") {
+//            val databaseItem = menu?.findItem(R.id.action_db_update)
+//            databaseItem?.isVisible = true
+//            val settingsItem = menu?.findItem(R.id.action_settings)
+//            settingsItem?.isVisible = true
+//            val dbInfoItem = menu?.findItem(R.id.db_info)
+//            dbInfoItem?.isVisible = true
+//        } else {
+//            val databaseItem = menu?.findItem(R.id.action_db_update)
+//            databaseItem?.isVisible = false
+//            val settingsItem = menu?.findItem(R.id.action_settings)
+//            settingsItem?.isVisible = false
+//            val dbInfoItem = menu?.findItem(R.id.db_info)
+//            dbInfoItem?.isVisible = false
+//        }
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -99,12 +89,16 @@ class MainListActivity : AppCompatActivity() {
             android.R.id.home -> {
                 onBackPressed()
             }
+            R.id.action_db_update -> {
+
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
 
     private fun createUnitListFragment() {
+        viewModel.spinnerState.value = true
         if (isDestroyed) return
         val fragment = UnitListFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
@@ -141,14 +135,6 @@ class MainListActivity : AppCompatActivity() {
     private fun createPersonAdditionalFragment() {
         if (isDestroyed) return
         val fragment = PersonAdditionalFragment()
-        fragment.personAdditionalFragmentCallback = {
-            if (title_text.text == "Поиск")
-                viewModel.toolbarTitle.value = viewModel.toolbarTitle.value
-            main_toolbar.navigationIcon = getDrawable(R.drawable.ic_back_20)
-            floatingActionButton.isVisible = false
-            title_text.text = ""
-            invalidateOptionsMenu()
-        }
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
             .setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
@@ -156,22 +142,12 @@ class MainListActivity : AppCompatActivity() {
             .replace(R.id.fragmentHolder, fragment)
             .addToBackStack(null)
             .commit()
-
+        floatingActionButton.isVisible = false
     }
 
     private fun createSearchFragment() {
         if (isDestroyed) return
         val fragment = SearchFragment()
-        fragment.searchFragmentCallBack = {
-            val textSize = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_SP,
-                7f,
-                resources.displayMetrics
-            )
-            title_text.textSize = textSize
-            title_text.text = "Меню"
-            invalidateOptionsMenu()
-        }
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)

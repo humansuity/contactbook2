@@ -68,11 +68,9 @@ class DepartmentListFragment : Fragment() {
                 viewModel.spinnerState.observe(viewLifecycleOwner, Observer {
                     (binding as DepartmentsListFragmentBinding).progressBar3.isVisible = it
                 })
-                viewModel.unitEntity.observe(viewLifecycleOwner, Observer {
-                    viewModel.toolbarTitle.value = it.name
-                })
             }
         }
+        viewModel.floatingButtonState.value = true
     }
 
 

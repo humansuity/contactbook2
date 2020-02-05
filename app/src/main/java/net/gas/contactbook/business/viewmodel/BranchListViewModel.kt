@@ -2,8 +2,11 @@ package net.gas.contactbook.business.viewmodel
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.*
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -26,24 +29,15 @@ class BranchListViewModel(application: Application)
     var photoEntity: LiveData<Photos> = MutableLiveData<Photos>()
     var postEntity: LiveData<Posts> = MutableLiveData<Posts>()
     var spinnerState: MutableLiveData<Boolean> = MutableLiveData()
-    var toolbarTitle: MutableLiveData<String> = MutableLiveData()
-    var departmentEntity: LiveData<Departments> = MutableLiveData()
-    var personListMapping: LiveData<List<Persons>> = MutableLiveData()
-    var unitEntity: LiveData<Units> = MutableLiveData()
+    var floatingButtonState: MutableLiveData<Boolean> = MutableLiveData()
 
     var unitFragmentCallback: (() -> Unit)? = null
     var departmentFragmentCallback: (() -> Unit) ? = null
     var personFragmentCallBack: (() -> Unit)? = null
+    var callIntentCallback: ((Intent, Int) -> Unit)? = null
     var isUnitFragmentActive = false
     private var unitId = 0
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            spinnerState.postValue(true)
-            unitList = dataModel.getUnitEntities()
-            spinnerState.postValue(false)
-        }
-    }
 
 
     fun onBranchItemClick(id: Int, listType: String) {
@@ -52,7 +46,6 @@ class BranchListViewModel(application: Application)
                 viewModelScope.launch(Dispatchers.IO) {
                     spinnerState.postValue(true)
                     departmentList = dataModel.getDepartmentEntitiesById(id)
-                    unitEntity = dataModel.getUnitEntityByIdAsync(id)
                     spinnerState.postValue(false)
                 }
                 unitId = id
@@ -62,13 +55,24 @@ class BranchListViewModel(application: Application)
                 viewModelScope.launch(Dispatchers.IO) {
                     spinnerState.postValue(true)
                     personList = dataModel.getPersonsEntitiesByIds(unitId, id)
-                    departmentEntity = dataModel.getDepartmentEntityByIdAsync(id)
                     spinnerState.postValue(false)
                 }
                 departmentFragmentCallback?.invoke()
             }
         }
         deleteDownloadedDatabase(context)
+    }
+
+    fun onPhoneNumberClick(phoneNumber: String) {
+        val callIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
+        callIntentCallback?.invoke(callIntent, phoneNumber.length)
+    }
+
+    fun setupUnitList() {
+        unitList = liveData {
+            emitSource(dataModel.getUnitEntities())
+            spinnerState.postValue(false)
+        }
     }
 
     fun findPersonsByTag(sequence: String): LiveData<List<Persons>> {

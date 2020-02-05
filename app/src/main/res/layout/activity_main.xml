@@ -21,20 +21,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Справочник"
-        app:titleMargins="4dp">
-
-        <TextView
-            android:id="@+id/title_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="0dp"
-            android:fontFamily="sans-serif-condensed"
-            android:textColor="#292929"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="18dp" />
-
-    </androidx.appcompat.widget.Toolbar>
+        app:title="Contactbook"
+        app:titleMargins="4dp" />
 
 
         <FrameLayout
@@ -64,8 +52,17 @@
                 app:borderWidth="0dp"
                 app:elevation="10dp"
                 app:useCompatPadding="false" />
-
-
         </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/unitProgressbar"
+        style="@android:style/Widget.DeviceDefault.ProgressBar.Large"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:indeterminateDuration="4500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

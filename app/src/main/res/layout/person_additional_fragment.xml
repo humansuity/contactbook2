@@ -42,6 +42,10 @@
             type="String" />
 
         <variable
+            name="devPhoneNumber"
+            type="String" />
+
+        <variable
             name="viewModel"
             type="net.gas.contactbook.business.viewmodel.BranchListViewModel" />
     </data>
@@ -58,6 +62,7 @@
             android:layout_height="wrap_content"
             android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -74,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="8dp"
                     android:fontFamily="@font/amiko_semibold"
                     android:text="@{ name }"
                     android:textColor="#2E2E2E"
@@ -120,8 +125,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/text_unit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/image"
-                    app:layout_constraintTop_toBottomOf="@+id/text_post" />
+                    app:layout_constraintStart_toEndOf="@+id/image" />
 
                 <TextView
                     android:id="@+id/text_unit"
@@ -129,13 +133,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginBottom="20dp"
                     android:text="@{ unit }"
                     app:layout_constraintBottom_toTopOf="@+id/text_birthday"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/image"
-                    app:layout_constraintTop_toBottomOf="@+id/text_department" />
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/image" />
 
                 <TextView
                     android:id="@+id/text_birthday"
@@ -191,6 +194,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:onClick="@{ () -> viewModel.onPhoneNumberClick(devPhoneNumber) }"
                     app:layout_constraintBottom_toBottomOf="@+id/textView9"
                     app:layout_constraintEnd_toStartOf="@+id/text_mobile"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -205,10 +210,12 @@
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="8dp"
+                    android:background="?android:attr/selectableItemBackground"
                     android:fontFamily="@font/amiko_semibold"
+                    android:onClick="@{ () -> viewModel.onPhoneNumberClick(devPhoneNumber) }"
                     android:text="@{ mobileNumber }"
                     android:textColor="#0B0B0B"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@+id/text_work_mobile"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -225,7 +232,7 @@
                     android:fontFamily="@font/amiko_semibold"
                     android:text="@{ workNumber }"
                     android:textColor="#0B0B0B"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@+id/text_home_mobile"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -248,6 +255,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:onClick="@{ () -> viewModel.onPhoneNumberClick(devPhoneNumber) }"
                     android:text="Мобильный"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/text_mobile"
@@ -284,7 +293,7 @@
                     android:fontFamily="@font/amiko_semibold"
                     android:text="@{ homeNumber }"
                     android:textColor="#2D2D2D"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@+id/text_email"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -337,8 +346,25 @@
                     app:layout_constraintStart_toStartOf="@+id/text_email"
                     app:layout_constraintTop_toBottomOf="@+id/text_email" />
 
+                <Button
+                    android:id="@+id/button4"
+                    android:layout_width="250dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:backgroundTint="#95BAC6"
+                    android:fontFamily="sans-serif-thin"
+                    android:text="Добавить контакт"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
