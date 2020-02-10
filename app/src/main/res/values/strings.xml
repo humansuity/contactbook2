@@ -4,4 +4,23 @@
     <string name="settings_res">Настройки</string>
     <string name="update_database_res">Update database</string>
     <string name="database_info_res">База данных</string>
+    <string name="contactData">Контактные данные</string>
+    <string name="mobileType">Мобильный</string>
+    <string name="workType">Рабочий</string>
+    <string name="homeType">Домашний</string>
+    <string name="email">E-mail</string>
+    <string name="addContact">Добавить контакт</string>
+    <string name="phoneNumber">Мобильный телефон</string>
+    <string name="middleName">Отчество</string>
+    <string name="name">Имя</string>
+    <string name="cancel">Отмена</string>
+    <string name="addAction">Добавить</string>
+    <string name="addingContact">Добавление контакта</string>
+    <string name="lastname">Фамилия</string>
+    <string name="databaseLoadingAction">Database is loading…</string>
+    <string name="wait">Please wait</string>
+    <string name="download">Загрузить</string>
+    <string name="notification">Уведомление</string>
+    <string name="databaseMissing">База данных не была найдена на вашем устройстве. Вы можете загрузить последнюю версию, нажав на кнопку ниже.</string>
+    <string name="reportToDeveloper">Если вы видите данное сообщение после установки базы данных, обратитесь к разработчикам.</string>
 </resources>

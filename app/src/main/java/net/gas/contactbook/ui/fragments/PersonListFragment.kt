@@ -53,9 +53,6 @@ class PersonListFragment : Fragment() {
                         DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
                     )
                 }
-                viewModel.spinnerState.observe(viewLifecycleOwner, Observer {
-                    (binding as PersonListFragmentBinding).progressBar.isVisible = it
-                })
                 viewModel.personList.observe(viewLifecycleOwner, Observer {
                     adapter.submitList(it)
                 })

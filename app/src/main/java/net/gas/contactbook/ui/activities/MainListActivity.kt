@@ -7,6 +7,8 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
@@ -29,23 +31,25 @@ class MainListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(main_toolbar)
         viewModel = ViewModelProvider(this).get(BranchListViewModel::class.java)
-        initCallBacks()
 
-        viewModel.floatingButtonState.observe(this, Observer {
-            floatingActionButton.isVisible = it
-        })
-        viewModel.spinnerState.observe(this, Observer {
-            unitProgressbar.isVisible = it
-        })
-        floatingActionButton.setOnClickListener {
-            createSearchFragment()
-        }
         if (viewModel.checkOpenableDatabase()) {
             if (!viewModel.isUnitFragmentActive)
                 createUnitListFragment()
         } else {
             createAlertDialog()
         }
+
+        viewModel.floatingButtonState.observe(this, Observer {
+            floatingActionButton.visibility = if (it) View.VISIBLE else View.INVISIBLE
+        })
+        viewModel.spinnerState.observe(this, Observer {
+            unitProgressbar.visibility = if (it) View.VISIBLE else View.INVISIBLE
+        })
+        floatingActionButton.setOnClickListener {
+            createSearchFragment()
+        }
+
+        initCallBacks()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -66,9 +70,7 @@ class MainListActivity : AppCompatActivity() {
         }
 
         viewModel.addContactIntentCallBack = {
-            if (it.mobilePhone?.length == 13)
-            else Snackbar.make(unit_list_layout,
-                "Невозможно определить номер!", Snackbar.LENGTH_LONG).show()
+            startActivity(it)
         }
 
         viewModel.departmentFragmentCallback = {
@@ -81,11 +83,19 @@ class MainListActivity : AppCompatActivity() {
 
         viewModel.checkPermissionsCallBack = {
             if (checkInternetConnection()) {
-                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_DENIED) {
-                    requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        Var.STORAGE_PERMISSION_CODE)
+                if (android.os.Build.VERSION.SDK_INT != android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_DENIED
+                    ) {
+                        requestPermissions(
+                            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                            Var.STORAGE_PERMISSION_CODE
+                        )
+                    } else {
+                        viewModel.startDownloading()
+                    }
                 } else {
+                    Toast.makeText(applicationContext, "Lollipop", Toast.LENGTH_SHORT).show()
                     viewModel.startDownloading()
                 }
             } else { viewModel.onNetworkErrorCallback?.invoke("NO_INTERNET_CONNECTION") }
@@ -217,7 +227,7 @@ class MainListActivity : AppCompatActivity() {
             .replace(R.id.fragmentHolder, fragment)
             .addToBackStack(null)
             .commit()
-        floatingActionButton.isVisible = false
+        floatingActionButton.visibility = View.INVISIBLE
     }
 
     private fun createSearchFragment() {

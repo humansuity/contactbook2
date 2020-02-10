@@ -36,7 +36,7 @@ class BranchListViewModel(application: Application)
     var departmentFragmentCallback: (() -> Unit) ? = null
     var personFragmentCallBack: (() -> Unit)? = null
     var callIntentCallback: ((Intent, Int) -> Unit)? = null
-    var addContactIntentCallBack: ((Persons) -> Unit)? = null
+    var addContactIntentCallBack: ((Intent) -> Unit)? = null
     var checkPermissionsCallBack: (() -> Unit)? = null
     var onNetworkErrorCallback: ((String) -> Unit)? = null
     var optionMenuStateCallback: ((Boolean) -> Unit)? = null
@@ -47,19 +47,23 @@ class BranchListViewModel(application: Application)
     fun onBranchItemClick(id: Int, listType: String) {
         when (listType) {
             Units::class.java.name -> {
-                departmentList = liveData {
-                    spinnerState.postValue(true)
-                    emitSource(dataModel.getDepartmentEntitiesById(id))
-                    spinnerState.postValue(false)
+                spinnerState.value = true
+                viewModelScope.launch(Dispatchers.Default) {
+                    departmentList = liveData(Dispatchers.IO) {
+                        emitSource(dataModel.getDepartmentEntitiesById(id))
+                        spinnerState.postValue(false)
+                    }
                 }
                 unitId = id
                 unitFragmentCallback?.invoke()
             }
             Departments::class.java.name -> {
-                personList = liveData {
-                    spinnerState.postValue(true)
-                    emitSource(dataModel.getPersonsEntitiesByIds(unitId, id))
-                    spinnerState.postValue(false)
+                spinnerState.value = true
+                viewModelScope.launch(Dispatchers.Default) {
+                    personList = liveData(Dispatchers.IO) {
+                        emitSource(dataModel.getPersonsEntitiesByIds(unitId, id))
+                        spinnerState.postValue(false)
+                    }
                 }
                 departmentFragmentCallback?.invoke()
             }
@@ -135,7 +139,7 @@ class BranchListViewModel(application: Application)
     private fun isValidDatabase() : Boolean {
         val pathToRoomDatabase = context.getDatabasePath(Var.DATABASE_NAME)
         return if (pathToRoomDatabase.exists())
-            pathToRoomDatabase.length() / (1024.0 * 1024.0) > 20.0
+            pathToRoomDatabase.length() / (1024.0 * 1024.0) > 20.0 //check if database size greater than 20 Mb
         else false
     }
 
@@ -144,16 +148,15 @@ class BranchListViewModel(application: Application)
         callIntentCallback?.invoke(callIntent, phoneNumber.length)
     }
 
-    fun onAddContactClick(person: Persons) {
-        addContactIntentCallBack?.invoke(person)
+    fun addNewContact(intent: Intent) {
+        addContactIntentCallBack?.invoke(intent)
     }
 
     fun setupUnitList() {
-        unitList = liveData {
+        spinnerState.value = true
+        unitList = liveData(Dispatchers.IO) {
             emitSource(dataModel.getUnitEntities())
-            viewModelScope.launch(Dispatchers.Main) {
-                spinnerState.value = false
-            }
+            spinnerState.postValue(false)
         }
     }
 

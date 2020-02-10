@@ -1,10 +1,18 @@
 package net.gas.contactbook.ui.fragments
 
+import android.app.AlertDialog
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -14,6 +22,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.contactbook.R
 import com.example.contactbook.databinding.PersonAdditionalFragmentBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import net.gas.contactbook.business.database.entities.Persons
 import net.gas.contactbook.business.database.entities.Photos
@@ -39,7 +48,8 @@ class PersonAdditionalFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
 
-        viewModel.personEntity.observe(viewLifecycleOwner, Observer { personEntity ->
+        viewModel.personEntity.observe(viewLifecycleOwner, Observer
+        { personEntity ->
             binding.name = personEntity.lastName + " " + personEntity.firstName + " " + personEntity.patronymic
             binding.birthday = personEntity.birthday
             binding.person = personEntity
@@ -48,7 +58,20 @@ class PersonAdditionalFragment : Fragment() {
             if (personEntity.photoID != null) viewModel.setupPhotoEntity(personEntity.photoID)
 
             binding.mobileNumber =
-                if (personEntity.mobilePhone.isNullOrBlank()) "Не указан" else formatNumber(personEntity.mobilePhone)
+                when {
+                    personEntity.mobilePhone.isNullOrBlank() -> "Не указан"
+                    personEntity.mobilePhone.contains(",") -> {
+                        formatNumber(personEntity.mobilePhone
+                            .substring(0, personEntity.mobilePhone.indexOf(",")))
+                            .plus("\n")
+                            .plus(formatNumber(personEntity.mobilePhone
+                                        .substring(
+                                            personEntity.mobilePhone.indexOf(",") + 1,
+                                            personEntity.mobilePhone.length
+                                        )))
+                    }
+                    else -> formatNumber(personEntity.mobilePhone)
+                }
             binding.workNumber =
                 if (personEntity.workPhone.isNullOrBlank()) "Не указан" else "8-0212-" + personEntity.workPhone
             binding.homeNumber =
@@ -57,12 +80,47 @@ class PersonAdditionalFragment : Fragment() {
                 if (personEntity.email.isNullOrBlank() || !personEntity.email.contains(".")) "Не указан" else personEntity.email
 
             startObserveEntities(personEntity)
+
+            binding.addContactButton.setOnClickListener {
+                when {
+                    personEntity.mobilePhone.isNullOrBlank()
+                        -> Snackbar.make(binding.root,
+                        "Невозможно определить номер!", Snackbar.LENGTH_LONG).show()
+                    personEntity.mobilePhone.contains(",") -> {
+                        val firstNumber = personEntity.mobilePhone
+                            .substring(0, personEntity.mobilePhone.indexOf(","))
+                        val secondNumber = personEntity.mobilePhone
+                            .substring(
+                                personEntity.mobilePhone.indexOf(",") + 1,
+                                personEntity.mobilePhone.length
+                            )
+                        val optionArray = arrayOf(firstNumber, secondNumber)
+
+                        val dialogBuilder = AlertDialog.Builder(context)
+                        dialogBuilder.setTitle("Выберите номер")
+                        dialogBuilder.setSingleChoiceItems(optionArray, -1) { dialog, which ->
+                            dialog.dismiss()
+                            openContactDialog(personEntity, optionArray[which], binding.unit!!)
+                        }
+                        dialogBuilder.create().show()
+                    }
+                    else -> openContactDialog(personEntity, personEntity.mobilePhone, binding.unit!!                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        )
+                }
+            }
         })
 
         viewModel.floatingButtonState.value = false
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         return binding.root
+    }
+
+    private fun openContactDialog(person: Persons, number: String, unit: String) {
+        viewModel.spinnerState.value = true
+        GlobalScope.launch(Dispatchers.Default) {
+            launch(Dispatchers.Main) { createDialog(person, number, unit) }
+            viewModel.spinnerState.postValue(false)
+        }
     }
 
     private fun formatNumber(phoneNumber: String): String {
@@ -118,6 +176,48 @@ class PersonAdditionalFragment : Fragment() {
                     .into(binding.image)
             }
         })
+    }
+
+
+    private fun createDialog(person: Persons, currentNumber: String, unit: String) {
+        val dialogBuilder = AlertDialog.Builder(context)
+        val view = layoutInflater.inflate(R.layout.add_contact_dialog, null)
+        dialogBuilder.setView(view)
+        val dialog = dialogBuilder.create()
+        val background = ColorDrawable(Color.TRANSPARENT)
+        val margins = InsetDrawable(background, 50)
+        dialog.window?.setBackgroundDrawable(margins)
+
+        view.findViewById<EditText>(R.id.text_phonenumber).setText(currentNumber)
+        val lastname = view.findViewById<EditText>(R.id.text_lastname).apply { setText(person.lastName) }
+        val name = view.findViewById<EditText>(R.id.text_name).apply { setText(person.firstName) }
+        val middlename = view.findViewById<EditText>(R.id.text_middlename).apply { setText(person.patronymic) }
+
+        view.findViewById<Button>(R.id.canel_button).setOnClickListener { dialog.dismiss() }
+        view.findViewById<Button>(R.id.ok_button).setOnClickListener {
+            if (lastname.text.isNullOrBlank()
+                || name.text.isNullOrBlank()
+                || middlename.text.isNullOrBlank()
+            ) {
+                Snackbar.make(view, "Все поля должны быть заполнены!", Snackbar.LENGTH_LONG).show()
+            } else {
+                val intent = Intent(ContactsContract.Intents.Insert.ACTION).apply {
+                    type = ContactsContract.RawContacts.CONTENT_TYPE
+                    putExtra(ContactsContract.Intents.Insert.COMPANY, unit)
+                    putExtra(ContactsContract.Intents.Insert.PHONE, currentNumber)
+                    putExtra(
+                        ContactsContract.Intents.Insert.PHONE_TYPE,
+                        ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE
+                    )
+                    putExtra(
+                        ContactsContract.Intents.Insert.NAME,
+                        "${lastname.text} ${name.text} ${middlename.text}"
+                    )
+                }
+                viewModel.addNewContact(intent)
+            }
+        }
+        dialog.show()
     }
 
 
