@@ -4,11 +4,13 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
@@ -57,6 +59,7 @@ class MainListActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun initCallBacks() {
         viewModel.callIntentCallback = { intent, numberLength ->
             if (numberLength == 13) startActivity(intent)
@@ -83,7 +86,7 @@ class MainListActivity : AppCompatActivity() {
 
         viewModel.checkPermissionsCallBack = {
             if (checkInternetConnection()) {
-                if (android.os.Build.VERSION.SDK_INT != android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+                if (Build.VERSION.SDK_INT != Build.VERSION_CODES.LOLLIPOP_MR1) {
                     if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         == PackageManager.PERMISSION_DENIED
                     ) {
