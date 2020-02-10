@@ -1,7 +1,10 @@
 package net.gas.contactbook.ui.activities
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -14,19 +17,43 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.ui.fragments.*
+import net.gas.contactbook.utils.Var
 
 class MainListActivity : AppCompatActivity() {
 
     private lateinit var viewModel: BranchListViewModel
+    private var isOptionMenuVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(main_toolbar)
-        main_toolbar.navigationIcon = getDrawable(R.drawable.ic_back_20)
-
         viewModel = ViewModelProvider(this).get(BranchListViewModel::class.java)
+        initCallBacks()
 
+        viewModel.floatingButtonState.observe(this, Observer {
+            floatingActionButton.isVisible = it
+        })
+        viewModel.spinnerState.observe(this, Observer {
+            unitProgressbar.isVisible = it
+        })
+        floatingActionButton.setOnClickListener {
+            createSearchFragment()
+        }
+        if (viewModel.checkOpenableDatabase()) {
+            if (!viewModel.isUnitFragmentActive)
+                createUnitListFragment()
+        } else {
+            createAlertDialog()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun initCallBacks() {
         viewModel.callIntentCallback = { intent, numberLength ->
             if (numberLength == 13) startActivity(intent)
             else Snackbar.make(unit_list_layout,
@@ -52,42 +79,70 @@ class MainListActivity : AppCompatActivity() {
             createPersonAdditionalFragment()
         }
 
-        if (!viewModel.isUnitFragmentActive)
-            createUnitListFragment()
-
-        floatingActionButton.setOnClickListener {
-            createSearchFragment()
+        viewModel.checkPermissionsCallBack = {
+            if (checkInternetConnection()) {
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_DENIED) {
+                    requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        Var.STORAGE_PERMISSION_CODE)
+                } else {
+                    viewModel.startDownloading()
+                }
+            } else { viewModel.onNetworkErrorCallback?.invoke("NO_INTERNET_CONNECTION") }
         }
 
-        viewModel.floatingButtonState.observe(this, Observer {
-            floatingActionButton.isVisible = it
-        })
-        viewModel.spinnerState.observe(this, Observer {
-            unitProgressbar.isVisible = it
-        })
+        viewModel.initUnitFragmentCallback = {
+            createUnitListFragment()
+        }
+
+        viewModel.optionMenuStateCallback = {
+            isOptionMenuVisible = it
+            invalidateOptionsMenu()
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return super.onCreateOptionsMenu(menu)
+
+    private fun checkInternetConnection() : Boolean {
+        val connectManager = applicationContext
+            .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectManager.activeNetworkInfo
+        return activeNetworkInfo?.isConnected ?: false
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray)
+    {
+        when (requestCode) {
+            Var.STORAGE_PERMISSION_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED) {
+                    viewModel.startDownloading()
+                }
+                else { Snackbar.make(unit_list_layout,
+                    "Права не предоставлены!", Snackbar.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-//        if (title_text.text == "Меню") {
-//            val databaseItem = menu?.findItem(R.id.action_db_update)
-//            databaseItem?.isVisible = true
-//            val settingsItem = menu?.findItem(R.id.action_settings)
-//            settingsItem?.isVisible = true
-//            val dbInfoItem = menu?.findItem(R.id.db_info)
-//            dbInfoItem?.isVisible = true
-//        } else {
-//            val databaseItem = menu?.findItem(R.id.action_db_update)
-//            databaseItem?.isVisible = false
-//            val settingsItem = menu?.findItem(R.id.action_settings)
-//            settingsItem?.isVisible = false
-//            val dbInfoItem = menu?.findItem(R.id.db_info)
-//            dbInfoItem?.isVisible = false
-//        }
+        if (isOptionMenuVisible) {
+            val databaseItem = menu?.findItem(R.id.action_db_update)
+            databaseItem?.isVisible = true
+            val settingsItem = menu?.findItem(R.id.action_settings)
+            settingsItem?.isVisible = true
+            val dbInfoItem = menu?.findItem(R.id.db_info)
+            dbInfoItem?.isVisible = true
+        } else {
+            val databaseItem = menu?.findItem(R.id.action_db_update)
+            databaseItem?.isVisible = false
+            val settingsItem = menu?.findItem(R.id.action_settings)
+            settingsItem?.isVisible = false
+            val dbInfoItem = menu?.findItem(R.id.db_info)
+            dbInfoItem?.isVisible = false
+        }
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -104,6 +159,17 @@ class MainListActivity : AppCompatActivity() {
     }
 
 
+    private fun createAlertDialog() {
+        if (isDestroyed) return
+        val fragment = AlertFragment()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .replace(R.id.fragmentHolder, fragment)
+            .commit()
+    }
+
+
     private fun createUnitListFragment() {
         viewModel.spinnerState.value = true
         if (isDestroyed) return
@@ -114,6 +180,7 @@ class MainListActivity : AppCompatActivity() {
             .replace(R.id.fragmentHolder, fragment, "INIT_FRAGMENT")
             .commit()
     }
+
 
     private fun createDepartmentFragment() {
         if (isDestroyed) return
@@ -126,6 +193,7 @@ class MainListActivity : AppCompatActivity() {
             .addToBackStack(null)
             .commit()
     }
+
 
     private fun createPersonFragment() {
         if (isDestroyed) return

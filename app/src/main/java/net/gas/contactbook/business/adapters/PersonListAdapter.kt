@@ -13,6 +13,10 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.contactbook.R
 import com.example.contactbook.databinding.PersonItemBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.gas.contactbook.business.database.entities.Persons
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.utils.GlideApp
@@ -42,14 +46,16 @@ class PersonListAdapter(private val viewModel: ViewModel, private val lifecycleO
                 if (item.photoID != null) {
                     mViewModel.setupPhotoEntity(item.photoID)
                     mViewModel.photoEntity.observe(lifecycleOwner, Observer {
-                        val decodedString = it.photo!!.decodeToString()
-                        val byteArray = Base64.decode(decodedString, Base64.DEFAULT)
-                        GlideApp.with(context)
-                            .asBitmap()
-                            .placeholder(R.drawable.ic_user_30)
-                            .load(byteArray)
-                            .apply(RequestOptions().transform(RoundedCorners(30)))
-                            .into(binding.image)
+                        GlobalScope.launch(Dispatchers.Main) {
+                            val decodedString = withContext(Dispatchers.Default) { it.photo!!.decodeToString() }
+                            val byteArray = withContext(Dispatchers.Default) { Base64.decode(decodedString, Base64.DEFAULT) }
+                            GlideApp.with(context)
+                                .asBitmap()
+                                .placeholder(R.drawable.ic_user_30)
+                                .load(byteArray)
+                                .apply(RequestOptions().transform(RoundedCorners(30)))
+                                .into(binding.image)
+                        }
                     })
                 } else {
                     GlideApp.with(context)

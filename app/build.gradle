@@ -79,6 +79,9 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
 
     //ProgressBar
-    implementation 'com.agrawalsuneet.androidlibs:loaderspack:1.2.3'
+    implementation 'com.aseem.versatileprogressbar:MultiProgressBar:1.1.0'
+    implementation 'com.agrawalsuneet.androidlibs:dotsloader:1.4'
+    implementation 'com.roger.catloadinglibrary:catloadinglibrary:1.0.4'
+    implementation 'com.ldoublem.loadingview:loadingviewlib:1.0'
 
 }

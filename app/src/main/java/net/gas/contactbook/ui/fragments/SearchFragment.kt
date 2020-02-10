@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.contactbook.R
 import com.example.contactbook.databinding.SearchFragmentBinding
 import kotlinx.android.synthetic.main.search_fragment.*
-import kotlinx.android.synthetic.main.units_list_fragment.recyclerView
 import net.gas.contactbook.business.adapters.PersonListAdapter
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 
@@ -46,6 +45,7 @@ class SearchFragment : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
+        viewModel.optionMenuStateCallback?.invoke(true)
 
         when (binding) {
             is SearchFragmentBinding -> {
@@ -66,7 +66,7 @@ class SearchFragment : Fragment() {
 
                     override fun onQueryTextChange(newText: String?): Boolean {
                         if (newText!!.isNotEmpty()) {
-                            viewModel.findPersonsByTag("$newText%")
+                            viewModel.getPersonListByTag("$newText")
                                 .observe(viewLifecycleOwner, Observer {
                                     adapter.submitList(it)
                             })

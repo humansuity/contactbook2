@@ -11,14 +11,14 @@ class DataModel(context: Context) {
 
     private val database = ContactbookDatabase.getInstance(context)
 
-    suspend fun getUnitEntities() : LiveData<List<Units>>
-            = withContext(Dispatchers.IO) { database?.unitsDao()!!.getEntities() }
+    fun getUnitEntities() : LiveData<List<Units>>
+            = database?.unitsDao()!!.getEntities()
 
-    suspend fun getDepartmentEntitiesById(id: Int) : LiveData<List<Departments>>
-            = withContext(Dispatchers.IO) { database?.departmentsDao()!!.getEntitiesById(id) }
+    fun getDepartmentEntitiesById(id: Int) : LiveData<List<Departments>>
+            = database?.departmentsDao()!!.getEntitiesById(id)
 
-    suspend fun getPersonsEntitiesByIds(unitId: Int, departmentId: Int) : LiveData<List<Persons>>
-            = withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByIds(unitId, departmentId) }
+    fun getPersonsEntitiesByIds(unitId: Int, departmentId: Int) : LiveData<List<Persons>>
+            = database?.personsDao()!!.getEntitiesByIds(unitId, departmentId)
 
     fun getPersonEntityById(id: Int) : LiveData<Persons>
             = database?.personsDao()!!.getEntityById(id)

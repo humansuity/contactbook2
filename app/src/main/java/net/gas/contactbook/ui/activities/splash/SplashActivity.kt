@@ -6,16 +6,17 @@ import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import com.example.contactbook.R
 import net.gas.contactbook.ui.activities.DownloadActivity
+import net.gas.contactbook.ui.activities.MainListActivity
 
 
 class SplashActivity : AppCompatActivity() {
     private var mDelayHandler: Handler? = null
-    private val SPLASH_DELAY: Long = 2000 //2 seconds
+    private val SPLASH_DELAY: Long = 1500 //2 seconds
 
     private val mRunnable: Runnable = Runnable {
         if (!isFinishing) {
 
-            val intent = Intent(applicationContext, DownloadActivity::class.java)      //start units activity
+            val intent = Intent(applicationContext, MainListActivity::class.java)      //start units activity
             startActivity(intent)
             finish()
         }

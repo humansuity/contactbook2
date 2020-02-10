@@ -40,6 +40,7 @@ data class Persons (
     @ColumnInfo(name = "post_id") val postID: Short?,
     @ColumnInfo(name = "photo_id") val photoID: Int?,
     @ColumnInfo(name = "mail") val email: String?,
+    @ColumnInfo(name = "short_phone") val shortPhone: String?,
     val patronymic: String?,
     val birthday: String?
 )

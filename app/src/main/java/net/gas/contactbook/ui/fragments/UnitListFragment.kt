@@ -48,6 +48,7 @@ class UnitListFragment : Fragment() {
             .get(BranchListViewModel::class.java)
         viewModel.setupUnitList()
 
+
         when (binding) {
             is UnitsListFragmentBinding -> {
                 val adapter = UnitListAdapter(viewModel)

@@ -2,6 +2,7 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/amiko_semibold</item>
+        <item>@font/audiowide</item>
         <item>@font/capriola</item>
     </array>
 </resources>
