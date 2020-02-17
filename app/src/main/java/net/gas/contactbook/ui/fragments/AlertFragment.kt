@@ -37,15 +37,20 @@ class AlertFragment : Fragment() {
                     root, "Не удалось скачать базу данных!",
                     Snackbar.LENGTH_LONG
                 ).show()
-                viewModel.downloadSpinnerState.postValue(false)
-
+                alertContainer.visibility = View.VISIBLE
+            }
+            else if (it == "UPDATING_ERROR") {
+                Snackbar.make(
+                    root, "Не удалось скачать базу данных!",
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
             else {
                 Snackbar.make(
                     root, "Проверьте подключение к интернету!",
                     Snackbar.LENGTH_LONG
                 ).show()
-                viewModel.downloadSpinnerState.postValue(false)
+                alertContainer.visibility = View.VISIBLE
             }
             viewModel.spinnerState.value = false
         }
@@ -62,7 +67,6 @@ class AlertFragment : Fragment() {
             }
             else {
                 lvblock.stopAnim()
-                alertContainer.visibility = View.VISIBLE
                 progressContainer.visibility = View.GONE
             }
         })

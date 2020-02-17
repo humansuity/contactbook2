@@ -23,4 +23,6 @@
     <string name="notification">Уведомление</string>
     <string name="databaseMissing">База данных не была найдена на вашем устройстве. Вы можете загрузить последнюю версию, нажав на кнопку ниже.</string>
     <string name="reportToDeveloper">Если вы видите данное сообщение после установки базы данных, обратитесь к разработчикам.</string>
+    <string name="search_alert">Нажмите на поле поиска для ввода</string>
+    <string name="coming_birthday">Дни рождения</string>
 </resources>

@@ -51,6 +51,8 @@ class DepartmentListFragment : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
+        viewModel.appToolbarStateCallback?.invoke("Отделы", true)
+        viewModel.optionMenuStateCallback?.invoke(false)
 
         when (binding) {
             is DepartmentsListFragmentBinding -> {

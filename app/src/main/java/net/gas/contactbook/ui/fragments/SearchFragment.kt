@@ -46,6 +46,8 @@ class SearchFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
         viewModel.optionMenuStateCallback?.invoke(true)
+        viewModel.appToolbarStateCallback?.invoke("Меню", true)
+        viewModel.isUnitFragmentActive = true
 
         when (binding) {
             is SearchFragmentBinding -> {
@@ -57,8 +59,11 @@ class SearchFragment : Fragment() {
                         DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
                     )
                 }
-                searchView.queryHint = "Поиск по фамилии"
-                searchView.onActionViewExpanded()
+                searchView.setOnClickListener{
+                    searchView.isIconified = false
+                    personList.visibility = View.VISIBLE
+                    text_alert.visibility = View.INVISIBLE
+                }
                 searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         return false
@@ -81,4 +86,5 @@ class SearchFragment : Fragment() {
         }
         viewModel.floatingButtonState.value = false
     }
+
 }

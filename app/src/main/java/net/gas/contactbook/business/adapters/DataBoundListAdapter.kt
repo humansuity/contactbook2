@@ -1,5 +1,6 @@
 package net.gas.contactbook.business.adapters
 
+import android.graphics.Color
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Lifecycle
@@ -31,9 +32,10 @@ abstract class DataBoundListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
 
     override fun onBindViewHolder(holder: DataBoundViewHolder, position: Int) {
         if (position < itemCount) {
-            bind(holder.binding, getItem(position))
+            bind(holder.binding, getItem(position), position)
             holder.binding.executePendingBindings()
         }
+
     }
 
 
@@ -50,7 +52,7 @@ abstract class DataBoundListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
 
     protected abstract fun createBinding(parent: ViewGroup, viewType: Int): ViewDataBinding
 
-    protected abstract fun bind(binding: ViewDataBinding, item: T)
+    protected abstract fun bind(binding: ViewDataBinding, item: T, position: Int)
 }
 
 

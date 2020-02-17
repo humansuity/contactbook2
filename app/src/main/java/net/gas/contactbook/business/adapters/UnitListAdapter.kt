@@ -1,5 +1,6 @@
 package net.gas.contactbook.business.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -29,9 +30,12 @@ class UnitListAdapter(private val viewModel: BranchListViewModel) :
             R.layout.branch_item, parent, false)
     }
 
-    override fun bind(binding: ViewDataBinding, item: Units) {
+    override fun bind(binding: ViewDataBinding, item: Units, position: Int) {
         when(binding) {
             is BranchItemBinding -> {
+                if (position % 2 == 0)
+                    binding.root.setBackgroundColor(Color.parseColor("#fffef7"))
+                else binding.root.setBackgroundColor(Color.parseColor("#F6F4F4"))
                 binding.viewModel = viewModel
                 binding.id = item.id.toInt()
                 binding.unit = item.name

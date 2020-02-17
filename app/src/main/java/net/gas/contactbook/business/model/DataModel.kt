@@ -7,9 +7,14 @@ import kotlinx.coroutines.withContext
 import net.gas.contactbook.business.database.cores.ContactbookDatabase
 import net.gas.contactbook.business.database.entities.*
 
-class DataModel(context: Context) {
+class DataModel(private val context: Context) {
 
-    private val database = ContactbookDatabase.getInstance(context)
+    private var database = ContactbookDatabase.getInstance(context)
+
+    fun updateDatabase() {
+        ContactbookDatabase.destroyInstance()
+        database = ContactbookDatabase.getInstance(context)
+    }
 
     fun getUnitEntities() : LiveData<List<Units>>
             = database?.unitsDao()!!.getEntities()

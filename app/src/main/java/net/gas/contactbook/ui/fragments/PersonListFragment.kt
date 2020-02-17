@@ -42,6 +42,8 @@ class PersonListFragment : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
+        viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
+        viewModel.optionMenuStateCallback?.invoke(false)
 
         when (binding) {
             is PersonListFragmentBinding -> {

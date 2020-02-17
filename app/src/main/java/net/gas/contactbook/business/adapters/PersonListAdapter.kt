@@ -1,5 +1,6 @@
 package net.gas.contactbook.business.adapters
 
+import android.graphics.Color
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -39,7 +40,7 @@ class PersonListAdapter(private val viewModel: ViewModel, private val lifecycleO
     }
 
     @ExperimentalStdlibApi
-    override fun bind(binding: ViewDataBinding, item: Persons) {
+    override fun bind(binding: ViewDataBinding, item: Persons, position: Int) {
         when(binding) {
             is PersonItemBinding -> {
                 val context = binding.root.context
@@ -47,8 +48,12 @@ class PersonListAdapter(private val viewModel: ViewModel, private val lifecycleO
                     mViewModel.setupPhotoEntity(item.photoID)
                     mViewModel.photoEntity.observe(lifecycleOwner, Observer {
                         GlobalScope.launch(Dispatchers.Main) {
-                            val decodedString = withContext(Dispatchers.Default) { it.photo!!.decodeToString() }
-                            val byteArray = withContext(Dispatchers.Default) { Base64.decode(decodedString, Base64.DEFAULT) }
+                            val decodedString = withContext(Dispatchers.Default) {
+                                it.photo!!.decodeToString()
+                            }
+                            val byteArray = withContext(Dispatchers.Default) {
+                                Base64.decode(decodedString, Base64.DEFAULT)
+                            }
                             GlideApp.with(context)
                                 .asBitmap()
                                 .placeholder(R.drawable.ic_user_30)

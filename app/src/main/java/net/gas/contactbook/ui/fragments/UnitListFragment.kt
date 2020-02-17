@@ -31,7 +31,6 @@ class UnitListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-
         binding = DataBindingUtil.inflate(
             inflater, R.layout.units_list_fragment,
             container, false
@@ -47,6 +46,8 @@ class UnitListFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
         viewModel.setupUnitList()
+        viewModel.appToolbarStateCallback?.invoke("Филиалы", false)
+        viewModel.optionMenuStateCallback?.invoke(false)
 
 
         when (binding) {

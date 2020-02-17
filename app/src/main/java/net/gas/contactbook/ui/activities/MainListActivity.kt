@@ -1,18 +1,24 @@
 package net.gas.contactbook.ui.activities
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -22,23 +28,36 @@ import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.ui.fragments.*
 import net.gas.contactbook.utils.Var
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.*
 
 class MainListActivity : AppCompatActivity() {
 
     private lateinit var viewModel: BranchListViewModel
     private var isOptionMenuVisible = false
+    private val APP_PREFERENCES = "appsettings"
+    private val APP_DATABASE_SIZE = "dbsize"
+    private val APP_DATABASE_UPDATE_TIME = "dbUpdateTime"
+    lateinit var preferences: SharedPreferences
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(main_toolbar)
+
+        preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
         viewModel = ViewModelProvider(this).get(BranchListViewModel::class.java)
+
+        initCallBacks()
+        viewModel.sharedDatabaseSize = getDatabaseSize()
 
         if (viewModel.checkOpenableDatabase()) {
             if (!viewModel.isUnitFragmentActive)
                 createUnitListFragment()
         } else {
-            createAlertDialog()
+            createAlertFragment()
         }
 
         viewModel.floatingButtonState.observe(this, Observer {
@@ -51,7 +70,6 @@ class MainListActivity : AppCompatActivity() {
             createSearchFragment()
         }
 
-        initCallBacks()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -59,12 +77,23 @@ class MainListActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+
+    private fun getDatabaseSize() : Long {
+        return if (preferences.contains(APP_DATABASE_SIZE)) {
+            preferences.getLong(APP_DATABASE_SIZE, 0)
+        } else 0
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initCallBacks() {
-        viewModel.callIntentCallback = { intent, numberLength ->
-            if (numberLength == 13) startActivity(intent)
-            else Snackbar.make(unit_list_layout,
-                "Невозможно определить номер!", Snackbar.LENGTH_LONG).show()
+        viewModel.appToolbarStateCallback = { value, navButtonState ->
+            if (navButtonState) main_toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_back_20)
+            else main_toolbar.navigationIcon = null
+            main_toolbar.title = value
+        }
+
+        viewModel.callIntentCallback = {
+          startActivity(it)
         }
 
         viewModel.unitFragmentCallback = {
@@ -84,6 +113,10 @@ class MainListActivity : AppCompatActivity() {
             createPersonAdditionalFragment()
         }
 
+        viewModel.onNetworkErrorCallback = {
+            Toast.makeText(applicationContext, "Lollipop", Toast.LENGTH_SHORT).show()
+        }
+
         viewModel.checkPermissionsCallBack = {
             if (checkInternetConnection()) {
                 if (Build.VERSION.SDK_INT != Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -95,22 +128,50 @@ class MainListActivity : AppCompatActivity() {
                             Var.STORAGE_PERMISSION_CODE
                         )
                     } else {
-                        viewModel.startDownloading()
+                        viewModel.startDownloadingDB()
                     }
                 } else {
                     Toast.makeText(applicationContext, "Lollipop", Toast.LENGTH_SHORT).show()
-                    viewModel.startDownloading()
+                    viewModel.startDownloadingDB()
                 }
             } else { viewModel.onNetworkErrorCallback?.invoke("NO_INTERNET_CONNECTION") }
+        }
+
+
+        viewModel.optionMenuStateCallback = {
+            isOptionMenuVisible = it
+            invalidateOptionsMenu()
         }
 
         viewModel.initUnitFragmentCallback = {
             createUnitListFragment()
         }
 
-        viewModel.optionMenuStateCallback = {
-            isOptionMenuVisible = it
-            invalidateOptionsMenu()
+        viewModel.onReceiveDatabaseSizeCallBack = {
+            val dateFormatter =
+                SimpleDateFormat("dd.MM.yyyy hh.mm", Locale.forLanguageTag("ru"))
+            val currentDateTime = dateFormatter.format(Date())
+            val editor = preferences.edit()
+            editor.putLong(APP_DATABASE_SIZE, it)
+            editor.putString(APP_DATABASE_UPDATE_TIME, currentDateTime)
+            editor.apply()
+        }
+
+        viewModel.onDatabaseUpdated = {
+            if (it) {
+                finish()
+                startActivity(intent)
+            } else {
+                if (supportFragmentManager.backStackEntryCount > 0) {
+
+                    val firstFragment: FragmentManager.BackStackEntry =
+                        supportFragmentManager.getBackStackEntryAt(0)
+
+                    supportFragmentManager
+                        .popBackStack(firstFragment.id, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    createUnitListFragment()
+                }
+            }
         }
     }
 
@@ -131,9 +192,9 @@ class MainListActivity : AppCompatActivity() {
             Var.STORAGE_PERMISSION_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] ==
                     PackageManager.PERMISSION_GRANTED) {
-                    viewModel.startDownloading()
+                    viewModel.startDownloadingDB()
                 }
-                else { Snackbar.make(unit_list_layout,
+                else { Snackbar.make(root,
                     "Права не предоставлены!", Snackbar.LENGTH_LONG).show()
                 }
             }
@@ -144,17 +205,9 @@ class MainListActivity : AppCompatActivity() {
         if (isOptionMenuVisible) {
             val databaseItem = menu?.findItem(R.id.action_db_update)
             databaseItem?.isVisible = true
-            val settingsItem = menu?.findItem(R.id.action_settings)
-            settingsItem?.isVisible = true
-            val dbInfoItem = menu?.findItem(R.id.db_info)
-            dbInfoItem?.isVisible = true
         } else {
             val databaseItem = menu?.findItem(R.id.action_db_update)
             databaseItem?.isVisible = false
-            val settingsItem = menu?.findItem(R.id.action_settings)
-            settingsItem?.isVisible = false
-            val dbInfoItem = menu?.findItem(R.id.db_info)
-            dbInfoItem?.isVisible = false
         }
         return super.onPrepareOptionsMenu(menu)
     }
@@ -165,14 +218,44 @@ class MainListActivity : AppCompatActivity() {
                 onBackPressed()
             }
             R.id.action_db_update -> {
-
+                openAlertDialog()
+            }
+            R.id.action_db_info -> {
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
 
-    private fun createAlertDialog() {
+    private fun openAlertDialog() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        val view = layoutInflater.inflate(R.layout.dialog_db_update, null)
+        dialogBuilder.setView(view)
+        val dialog = dialogBuilder.create()
+        val background = ColorDrawable(Color.TRANSPARENT)
+        val margins = InsetDrawable(background, 50)
+        dialog.window?.setBackgroundDrawable(margins)
+
+        view.findViewById<Button>(R.id.btn_cancel_update).setOnClickListener { dialog.dismiss() }
+        view.findViewById<Button>(R.id.btn_ok_update).setOnClickListener {
+            updateDatabase()
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun updateDatabase() {
+        if (checkInternetConnection()) {
+            createAlertFragment()
+            viewModel.startUpdatingDB()
+        } else
+            Snackbar.make(root,
+                "Проверьте подключение к интернету!", Snackbar.LENGTH_LONG).show()
+    }
+
+
+
+    private fun createAlertFragment() {
         if (isDestroyed) return
         val fragment = AlertFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()

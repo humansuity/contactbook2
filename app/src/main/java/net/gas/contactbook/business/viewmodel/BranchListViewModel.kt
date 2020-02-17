@@ -3,7 +3,7 @@ package net.gas.contactbook.business.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.widget.Toast
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import net.gas.contactbook.business.database.entities.*
@@ -35,13 +35,17 @@ class BranchListViewModel(application: Application)
     var initUnitFragmentCallback: (() -> Unit)? = null
     var departmentFragmentCallback: (() -> Unit) ? = null
     var personFragmentCallBack: (() -> Unit)? = null
-    var callIntentCallback: ((Intent, Int) -> Unit)? = null
+    var callIntentCallback: ((Intent) -> Unit)? = null
     var addContactIntentCallBack: ((Intent) -> Unit)? = null
     var checkPermissionsCallBack: (() -> Unit)? = null
     var onNetworkErrorCallback: ((String) -> Unit)? = null
     var optionMenuStateCallback: ((Boolean) -> Unit)? = null
+    var appToolbarStateCallback: ((String, Boolean) -> Unit)? = null
+    var onReceiveDatabaseSizeCallBack: ((Long) -> Unit)? = null
+    var onDatabaseUpdated: ((Boolean) -> Unit)? = null
     var isUnitFragmentActive = false
-    var isDatabaseDownloaded = true
+    var sharedDatabaseSize: Long = 0
+    private var currentDatabaseSize: Long = 0
     private var unitId = 0
 
     fun onBranchItemClick(id: Int, listType: String) {
@@ -68,7 +72,7 @@ class BranchListViewModel(application: Application)
                 departmentFragmentCallback?.invoke()
             }
         }
-        deleteDownloadedDatabase(context)
+        deleteDownloadedDatabase()
     }
 
 
@@ -76,20 +80,45 @@ class BranchListViewModel(application: Application)
         checkPermissionsCallBack?.invoke()
     }
 
-    fun startDownloading() {
+    fun startDownloadingDB() {
         downloadSpinnerState.value = true
         viewModelScope.launch(Dispatchers.Default) {
-            downloadDb()
+            downloadDb("")
             viewModelScope.launch(Dispatchers.Main) {
-                if (isDatabaseDownloaded)
+                downloadSpinnerState.value = false
+                if (checkOpenableDatabase()) {
                     initUnitFragmentCallback?.invoke()
-                else if (!isDatabaseDownloaded && checkOpenableDatabase())
-                    initUnitFragmentCallback?.invoke()
+                }
             }
         }
     }
 
-    private fun downloadDb() {
+/** error **/
+    fun startUpdatingDB() {
+        downloadSpinnerState.value = true
+        viewModelScope.launch(Dispatchers.Default) {
+            downloadDb("UPDATING")
+            viewModelScope.launch(Dispatchers.Main) {
+                downloadSpinnerState.value = false
+                if (isDownloadedFileValid(context.filesDir.path + "/" + Var.DATABASE_NAME)) {
+                    deleteOldRoomFile()
+                    updateDatabase()
+                    isUnitFragmentActive = false
+                    onDatabaseUpdated?.invoke(true)
+                } else {
+                    deleteDownloadedDatabase()
+                    onDatabaseUpdated?.invoke(false)
+                }
+            }
+        }
+    }
+
+    private fun deleteOldRoomFile() {
+        val pathToRoomDatabase = context.getDatabasePath(Var.DATABASE_NAME)
+        pathToRoomDatabase.delete()
+    }
+
+    private fun downloadDb(flag: String) {
         var connection: HttpURLConnection? = null
         try {
             val url = URL(Var.URL_TO_DATABASE)
@@ -97,16 +126,23 @@ class BranchListViewModel(application: Application)
             connection.requestMethod = "GET"
             connection.readTimeout = 10*1000     //set 10 seconds to get response
             connection.connect()
-            downloadViaHttpConnection(connection, url)
+            currentDatabaseSize = connection.contentLength.toLong()
+            if (currentDatabaseSize > 0 && currentDatabaseSize != 125L) {
+                onReceiveDatabaseSizeCallBack?.invoke(currentDatabaseSize)
+            }
+            downloadViaHttpConnection(connection, url, flag)
         } catch (e: ConnectException) {
-            viewModelScope.launch(Dispatchers.Main) { onNetworkErrorCallback?.invoke("DOWNLOAD_ERROR") }
-            isDatabaseDownloaded = false
+            viewModelScope.launch(Dispatchers.Main) {
+                if (flag == "UPDATING") {
+                    onNetworkErrorCallback?.invoke("UPDATING_ERROR")
+                } else onNetworkErrorCallback?.invoke("DOWNLOAD_ERROR")
+            }
         } finally {
             connection?.disconnect()
         }
     }
 
-    private fun downloadViaHttpConnection(connection: HttpURLConnection, url: URL) {
+    private fun downloadViaHttpConnection(connection: HttpURLConnection, url: URL, flag: String) {
         var fileOutputStream: FileOutputStream? = null
         try {
             val buffer = ByteArray(1024)
@@ -119,33 +155,76 @@ class BranchListViewModel(application: Application)
                 else break
             }
         } catch (e: Exception) {
-            viewModelScope.launch(Dispatchers.Main) { onNetworkErrorCallback?.invoke("DOWNLOAD_ERROR") }
-            isDatabaseDownloaded = false
+            viewModelScope.launch(Dispatchers.Main) {
+                if (flag == "UPDATING") {
+                    onNetworkErrorCallback?.invoke("UPDATING_ERROR")
+                } else onNetworkErrorCallback?.invoke("DOWNLOAD_ERROR")
+            }
         } finally {
             fileOutputStream?.close()
         }
     }
 
 
+    private fun isDownloadedFileValid(path: String) : Boolean {
+        return when {
+            sharedDatabaseSize == 0L -> {
+                return when {
+                    currentDatabaseSize > 0 -> File(path).length() == currentDatabaseSize
+                    else -> false
+                }
+            }
+            sharedDatabaseSize > 0 -> File(path).length() == sharedDatabaseSize
+            else -> false
+        }
+    }
+
+
+    fun makePhoneCall(intent: Intent) {
+        callIntentCallback?.invoke(intent)
+    }
+
+
     fun checkOpenableDatabase() : Boolean {
         val pathToDownloadedDatabase = context.filesDir.path + "/" + Var.DATABASE_NAME
         return when {
-            File(pathToDownloadedDatabase).exists() -> isValidDatabase()
+            File(pathToDownloadedDatabase).exists() -> isValidFile(pathToDownloadedDatabase)
             isValidDatabase() -> true
+            else -> false
+        }
+    }
+
+    private fun isValidFile(path: String) : Boolean {
+        return when {
+            isValidDatabase() -> true
+            sharedDatabaseSize == 0L -> {
+                return when {
+                    currentDatabaseSize > 0 -> File(path).length() == currentDatabaseSize
+                    else -> false
+                }
+            }
+            sharedDatabaseSize > 0 -> File(path).length() == sharedDatabaseSize
             else -> false
         }
     }
 
     private fun isValidDatabase() : Boolean {
         val pathToRoomDatabase = context.getDatabasePath(Var.DATABASE_NAME)
-        return if (pathToRoomDatabase.exists())
-            pathToRoomDatabase.length() / (1024.0 * 1024.0) > 20.0 //check if database size greater than 20 Mb
-        else false
-    }
-
-    fun onPhoneNumberClick(phoneNumber: String) {
-        val callIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
-        callIntentCallback?.invoke(callIntent, phoneNumber.length)
+        return when {
+            pathToRoomDatabase.exists() -> {
+                return when {
+                    sharedDatabaseSize == 0L -> {
+                        return when {
+                            currentDatabaseSize > 0 -> pathToRoomDatabase.length() == currentDatabaseSize
+                            else -> false
+                        }
+                    }
+                    sharedDatabaseSize > 0 -> pathToRoomDatabase.length() == sharedDatabaseSize
+                    else -> false
+                }
+            }
+            else -> false
+        }
     }
 
     fun addNewContact(intent: Intent) {
@@ -183,10 +262,14 @@ class BranchListViewModel(application: Application)
     fun getUnitEntity(id: Int) : LiveData<Units>
             = liveData { emitSource(dataModel.getUnitEntityById(id)) }
 
-    private fun deleteDownloadedDatabase(context: Context) {
+    private fun deleteDownloadedDatabase() {
         val pathToDownloadedDatabase = context.filesDir.path + "/" + Var.DATABASE_NAME
         if (File(pathToDownloadedDatabase).exists()) {
             File(pathToDownloadedDatabase).delete()
         }
+    }
+
+    private fun updateDatabase() {
+        dataModel.updateDatabase()
     }
 }
