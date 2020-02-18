@@ -22,7 +22,7 @@ import net.gas.contactbook.business.database.entities.Persons
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.utils.GlideApp
 
-class PersonListAdapter(private val viewModel: ViewModel, private val lifecycleOwner: LifecycleOwner) :
+class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: LifecycleOwner) :
     DataBoundListAdapter<Persons>(diffCallback = object: DiffUtil.ItemCallback<Persons>() {
         override fun areItemsTheSame(oldItem: Persons, newItem: Persons)
                 : Boolean = oldItem == newItem

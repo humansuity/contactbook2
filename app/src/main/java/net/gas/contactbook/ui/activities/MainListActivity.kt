@@ -29,13 +29,12 @@ import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.ui.fragments.*
 import net.gas.contactbook.utils.Var
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
 
-class MainListActivity : AppCompatActivity() {
 
+class MainListActivity : AppCompatActivity() {
     private lateinit var viewModel: BranchListViewModel
-    private var isOptionMenuVisible = false
+    private var optionItemMenuFlag = ""
     private val APP_PREFERENCES = "appsettings"
     private val APP_DATABASE_SIZE = "dbsize"
     private val APP_DATABASE_UPDATE_TIME = "dbUpdateTime"
@@ -52,6 +51,7 @@ class MainListActivity : AppCompatActivity() {
 
         initCallBacks()
         viewModel.sharedDatabaseSize = getDatabaseSize()
+        viewModel.databaseUpdateTime = getDatabaseUpdateTime()
 
         if (viewModel.checkOpenableDatabase()) {
             if (!viewModel.isUnitFragmentActive)
@@ -69,7 +69,6 @@ class MainListActivity : AppCompatActivity() {
         floatingActionButton.setOnClickListener {
             createSearchFragment()
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -82,6 +81,12 @@ class MainListActivity : AppCompatActivity() {
         return if (preferences.contains(APP_DATABASE_SIZE)) {
             preferences.getLong(APP_DATABASE_SIZE, 0)
         } else 0
+    }
+
+    private fun getDatabaseUpdateTime() : String {
+        return if (preferences.contains(APP_DATABASE_UPDATE_TIME)) {
+            preferences.getString(APP_DATABASE_UPDATE_TIME, "Не определена")!!
+        } else "Не определена"
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -131,7 +136,6 @@ class MainListActivity : AppCompatActivity() {
                         viewModel.startDownloadingDB()
                     }
                 } else {
-                    Toast.makeText(applicationContext, "Lollipop", Toast.LENGTH_SHORT).show()
                     viewModel.startDownloadingDB()
                 }
             } else { viewModel.onNetworkErrorCallback?.invoke("NO_INTERNET_CONNECTION") }
@@ -139,7 +143,7 @@ class MainListActivity : AppCompatActivity() {
 
 
         viewModel.optionMenuStateCallback = {
-            isOptionMenuVisible = it
+            optionItemMenuFlag = it
             invalidateOptionsMenu()
         }
 
@@ -148,8 +152,10 @@ class MainListActivity : AppCompatActivity() {
         }
 
         viewModel.onReceiveDatabaseSizeCallBack = {
-            val dateFormatter =
-                SimpleDateFormat("dd.MM.yyyy hh.mm", Locale.forLanguageTag("ru"))
+            val dateFormatter = SimpleDateFormat(
+                "dd.MM.yyyy hh:mm a",
+                Locale.forLanguageTag("en")
+            )
             val currentDateTime = dateFormatter.format(Date())
             val editor = preferences.edit()
             editor.putLong(APP_DATABASE_SIZE, it)
@@ -167,8 +173,10 @@ class MainListActivity : AppCompatActivity() {
                     val firstFragment: FragmentManager.BackStackEntry =
                         supportFragmentManager.getBackStackEntryAt(0)
 
-                    supportFragmentManager
-                        .popBackStack(firstFragment.id, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    supportFragmentManager.popBackStack(
+                        firstFragment.id,
+                        FragmentManager.POP_BACK_STACK_INCLUSIVE
+                    )
                     createUnitListFragment()
                 }
             }
@@ -202,12 +210,23 @@ class MainListActivity : AppCompatActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        if (isOptionMenuVisible) {
-            val databaseItem = menu?.findItem(R.id.action_db_update)
-            databaseItem?.isVisible = true
-        } else {
-            val databaseItem = menu?.findItem(R.id.action_db_update)
-            databaseItem?.isVisible = false
+        when (optionItemMenuFlag) {
+            "FULLY_VISIBLE" -> {
+                val databaseItem = menu?.findItem(R.id.action_db_update)
+                databaseItem?.isVisible = true
+            }
+            "PARTLY_VISIBLE" -> {
+                val databaseItem = menu?.findItem(R.id.action_db_update)
+                databaseItem?.isVisible = false
+            }
+            else -> {
+                val databaseItem = menu?.findItem(R.id.action_db_update)
+                val settingsItem = menu?.findItem(R.id.action_settings)
+                val birthdayItem = menu?.findItem(R.id.action_birthday)
+                databaseItem?.isVisible = false
+                settingsItem?.isVisible = false
+                birthdayItem?.isVisible = false
+            }
         }
         return super.onPrepareOptionsMenu(menu)
     }
@@ -220,7 +239,8 @@ class MainListActivity : AppCompatActivity() {
             R.id.action_db_update -> {
                 openAlertDialog()
             }
-            R.id.action_db_info -> {
+            R.id.action_settings -> {
+                createAboutAppFragment()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -308,8 +328,9 @@ class MainListActivity : AppCompatActivity() {
         val fragment = PersonAdditionalFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
-            .setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
-                R.animator.enter_from_left, R.animator.exit_to_right)
+//            .setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
+//                R.animator.enter_from_left, R.animator.exit_to_right)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .replace(R.id.fragmentHolder, fragment)
             .addToBackStack(null)
             .commit()
@@ -322,6 +343,17 @@ class MainListActivity : AppCompatActivity() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+            .replace(R.id.fragmentHolder, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun createAboutAppFragment() {
+        if (isDestroyed) return
+        val fragment = AboutAppFragment()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .replace(R.id.fragmentHolder, fragment)
             .addToBackStack(null)
             .commit()

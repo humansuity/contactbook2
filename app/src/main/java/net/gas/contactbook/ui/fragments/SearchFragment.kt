@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -45,7 +44,7 @@ class SearchFragment : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
-        viewModel.optionMenuStateCallback?.invoke(true)
+        viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")
         viewModel.appToolbarStateCallback?.invoke("Меню", true)
         viewModel.isUnitFragmentActive = true
 
@@ -61,8 +60,6 @@ class SearchFragment : Fragment() {
                 }
                 searchView.setOnClickListener{
                     searchView.isIconified = false
-                    personList.visibility = View.VISIBLE
-                    text_alert.visibility = View.INVISIBLE
                 }
                 searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -71,12 +68,16 @@ class SearchFragment : Fragment() {
 
                     override fun onQueryTextChange(newText: String?): Boolean {
                         if (newText!!.isNotEmpty()) {
-                            viewModel.getPersonListByTag("$newText")
+                            viewModel.getPersonListByTag(newText.trim())
                                 .observe(viewLifecycleOwner, Observer {
                                     adapter.submitList(it)
                             })
+                            personList.visibility = View.VISIBLE
+                            text_alert.visibility = View.INVISIBLE
                         } else {
                             adapter.submitList(emptyList())
+                            personList.visibility = View.INVISIBLE
+                            text_alert.visibility = View.VISIBLE
                         }
                         (binding as SearchFragmentBinding).personList.smoothScrollToPosition(0)
                         return false

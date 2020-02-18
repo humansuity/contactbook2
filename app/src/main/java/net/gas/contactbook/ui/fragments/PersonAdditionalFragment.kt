@@ -51,8 +51,7 @@ class PersonAdditionalFragment : Fragment() {
         )
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
-        viewModel.appToolbarStateCallback?.invoke("Contactbook", true)
-        viewModel.optionMenuStateCallback?.invoke(false)
+        viewModel.optionMenuStateCallback?.invoke("PARTLY_VISIBLE")
 
         viewModel.personEntity.observe(viewLifecycleOwner, Observer {
             setupData(it)

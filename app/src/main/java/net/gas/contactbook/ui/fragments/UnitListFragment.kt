@@ -47,7 +47,7 @@ class UnitListFragment : Fragment() {
             .get(BranchListViewModel::class.java)
         viewModel.setupUnitList()
         viewModel.appToolbarStateCallback?.invoke("Филиалы", false)
-        viewModel.optionMenuStateCallback?.invoke(false)
+        viewModel.optionMenuStateCallback?.invoke("PARTLY_VISIBLE")
 
 
         when (binding) {

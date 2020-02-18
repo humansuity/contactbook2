@@ -15,6 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.contactbook.R
 import com.example.contactbook.databinding.PersonListFragmentBinding
 import kotlinx.android.synthetic.main.units_list_fragment.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.gas.contactbook.business.adapters.PersonListAdapter
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 
@@ -43,7 +47,7 @@ class PersonListFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
-        viewModel.optionMenuStateCallback?.invoke(false)
+        viewModel.optionMenuStateCallback?.invoke("PARTLY_VISIBLE")
 
         when (binding) {
             is PersonListFragmentBinding -> {

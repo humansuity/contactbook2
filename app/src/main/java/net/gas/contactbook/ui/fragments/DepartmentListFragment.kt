@@ -52,7 +52,8 @@ class DepartmentListFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
         viewModel.appToolbarStateCallback?.invoke("Отделы", true)
-        viewModel.optionMenuStateCallback?.invoke(false)
+        viewModel.optionMenuStateCallback?.invoke("PARTLY_VISIBLE")
+        viewModel.floatingButtonState.value = true
 
         when (binding) {
             is DepartmentsListFragmentBinding -> {
@@ -69,7 +70,6 @@ class DepartmentListFragment : Fragment() {
                 })
             }
         }
-        viewModel.floatingButtonState.value = true
     }
 
 

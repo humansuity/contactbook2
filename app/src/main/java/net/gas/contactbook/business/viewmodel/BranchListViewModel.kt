@@ -39,12 +39,13 @@ class BranchListViewModel(application: Application)
     var addContactIntentCallBack: ((Intent) -> Unit)? = null
     var checkPermissionsCallBack: (() -> Unit)? = null
     var onNetworkErrorCallback: ((String) -> Unit)? = null
-    var optionMenuStateCallback: ((Boolean) -> Unit)? = null
+    var optionMenuStateCallback: ((String) -> Unit)? = null
     var appToolbarStateCallback: ((String, Boolean) -> Unit)? = null
     var onReceiveDatabaseSizeCallBack: ((Long) -> Unit)? = null
     var onDatabaseUpdated: ((Boolean) -> Unit)? = null
     var isUnitFragmentActive = false
     var sharedDatabaseSize: Long = 0
+    var databaseUpdateTime: String = ""
     private var currentDatabaseSize: Long = 0
     private var unitId = 0
 
