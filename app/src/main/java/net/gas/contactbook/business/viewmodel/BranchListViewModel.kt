@@ -3,7 +3,6 @@ package net.gas.contactbook.business.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import net.gas.contactbook.business.database.entities.*
@@ -24,6 +23,7 @@ class BranchListViewModel(application: Application)
     var unitList: LiveData<List<Units>> = MutableLiveData<List<Units>>()
     var departmentList: LiveData<List<Departments>> = MutableLiveData<List<Departments>>()
     var personList: LiveData<List<Persons>> = MutableLiveData<List<Persons>>()
+    var birthdayPersonList: LiveData<List<Persons>> = MutableLiveData<List<Persons>>()
     var personEntity: LiveData<Persons> = MutableLiveData<Persons>()
     var photoEntity: LiveData<Photos> = MutableLiveData<Photos>()
     var postEntity: LiveData<Posts> = MutableLiveData<Posts>()
@@ -245,7 +245,7 @@ class BranchListViewModel(application: Application)
     }
 
     fun onPersonItemClick(id: Int) {
-        personEntity = dataModel.getPersonEntityById(id)
+        personEntity = liveData { emitSource(dataModel.getPersonEntityById(id)) }
         personFragmentCallBack?.invoke()
     }
 
@@ -256,6 +256,13 @@ class BranchListViewModel(application: Application)
     fun setupPostEntity(id: Int?) {
         postEntity = liveData { emitSource(dataModel.getPostsEntityById(id!!)) }
     }
+
+    fun setupPersonListByBirth() {
+        birthdayPersonList = liveData { emitSource(dataModel.getPersonEntitiesByUpcomingBirthday()) }
+    }
+
+    fun getCurrentBirthdayList() : LiveData<List<Persons>>
+            = liveData { emitSource(dataModel.getPersonEntitiesByBirthday()) }
 
     fun getDepartmentEntity(id: Int) : LiveData<Departments>
             = liveData { emitSource(dataModel.getDepartmentEntityById(id)) }
@@ -273,4 +280,5 @@ class BranchListViewModel(application: Application)
     private fun updateDatabase() {
         dataModel.updateDatabase()
     }
+
 }

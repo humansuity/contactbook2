@@ -13,6 +13,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.contactbook.R
 import com.example.contactbook.databinding.PersonItemBinding
+import com.example.contactbook.databinding.PersonItemBirthdayBinding
+import com.example.contactbook.databinding.PersonItemBirthdayBindingImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -21,7 +23,7 @@ import net.gas.contactbook.business.database.entities.Persons
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.utils.GlideApp
 
-class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: LifecycleOwner) :
+class BirthdayPersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: LifecycleOwner) :
     DataBoundListAdapter<Persons>(diffCallback = object: DiffUtil.ItemCallback<Persons>() {
         override fun areItemsTheSame(oldItem: Persons, newItem: Persons)
                 : Boolean = oldItem == newItem
@@ -35,30 +37,32 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
     override fun createBinding(parent: ViewGroup, viewType: Int): ViewDataBinding {
         return DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
-            R.layout.person_item, parent, false)
+            R.layout.person_item_birthday, parent, false)
     }
 
     @ExperimentalStdlibApi
     override fun bind(binding: ViewDataBinding, item: Persons, position: Int) {
         when(binding) {
-            is PersonItemBinding -> {
+            is PersonItemBirthdayBinding -> {
                 val context = binding.root.context
                 if (item.photoID != null) {
                     mViewModel.setupPhotoEntity(item.photoID)
                     mViewModel.photoEntity.observe(lifecycleOwner, Observer {
-                        GlobalScope.launch(Dispatchers.Main) {
+                        GlobalScope.launch(Dispatchers.Default) {
                             val decodedString = withContext(Dispatchers.Default) {
                                 it.photo!!.decodeToString()
                             }
                             val byteArray = withContext(Dispatchers.Default) {
                                 Base64.decode(decodedString, Base64.DEFAULT)
                             }
-                            GlideApp.with(context)
-                                .asBitmap()
-                                .placeholder(R.drawable.ic_user_30)
-                                .load(byteArray)
-                                .apply(RequestOptions().transform(RoundedCorners(30)))
-                                .into(binding.image)
+                            launch(Dispatchers.Main) {
+                                GlideApp.with(context)
+                                    .asBitmap()
+                                    .placeholder(R.drawable.ic_user_30)
+                                    .load(byteArray)
+                                    .apply(RequestOptions().transform(RoundedCorners(30)))
+                                    .into(binding.image)
+                            }
                         }
                     })
                 } else {
@@ -71,6 +75,7 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
                 binding.viewModel = mViewModel
                 binding.id = item.id
                 binding.name = item.lastName + " " + item.firstName + " " + item.patronymic
+                binding.textBirthday.text = item.birthday
                 mViewModel.setupPostEntity(item.postID?.toInt())
                 mViewModel.postEntity.observe(lifecycleOwner, Observer {
                     binding.post = it.name

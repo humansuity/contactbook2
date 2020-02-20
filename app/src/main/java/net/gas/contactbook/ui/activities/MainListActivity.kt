@@ -1,8 +1,11 @@
 package net.gas.contactbook.ui.activities
 
 import android.Manifest
+import android.app.AlarmManager
 import android.app.AlertDialog
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -11,13 +14,14 @@ import android.graphics.drawable.InsetDrawable
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -25,8 +29,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.contactbook.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import net.gas.contactbook.utils.BirthdayNotification
 import net.gas.contactbook.business.viewmodel.BranchListViewModel
 import net.gas.contactbook.ui.fragments.*
+import net.gas.contactbook.utils.AlarmNotificationReceiver
 import net.gas.contactbook.utils.Var
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,9 +41,6 @@ import java.util.*
 class MainListActivity : AppCompatActivity() {
     private lateinit var viewModel: BranchListViewModel
     private var optionItemMenuFlag = ""
-    private val APP_PREFERENCES = "appsettings"
-    private val APP_DATABASE_SIZE = "dbsize"
-    private val APP_DATABASE_UPDATE_TIME = "dbUpdateTime"
     lateinit var preferences: SharedPreferences
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -46,7 +49,7 @@ class MainListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(main_toolbar)
 
-        preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+        preferences = getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
         viewModel = ViewModelProvider(this).get(BranchListViewModel::class.java)
 
         initCallBacks()
@@ -71,6 +74,17 @@ class MainListActivity : AppCompatActivity() {
         }
     }
 
+    private fun createUpcomingNotification() {
+        val birthdayNotification =
+            BirthdayNotification(applicationContext)
+        birthdayNotification.createNotificationChannel(
+            NotificationManagerCompat.IMPORTANCE_DEFAULT,
+            getString(R.string.app_name),
+            "App notification channel"
+        )
+        birthdayNotification.createSampleDataNotification()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
@@ -78,14 +92,14 @@ class MainListActivity : AppCompatActivity() {
 
 
     private fun getDatabaseSize() : Long {
-        return if (preferences.contains(APP_DATABASE_SIZE)) {
-            preferences.getLong(APP_DATABASE_SIZE, 0)
+        return if (preferences.contains(Var.APP_DATABASE_SIZE)) {
+            preferences.getLong(Var.APP_DATABASE_SIZE, 0)
         } else 0
     }
 
     private fun getDatabaseUpdateTime() : String {
-        return if (preferences.contains(APP_DATABASE_UPDATE_TIME)) {
-            preferences.getString(APP_DATABASE_UPDATE_TIME, "Не определена")!!
+        return if (preferences.contains(Var.APP_DATABASE_UPDATE_TIME)) {
+            preferences.getString(Var.APP_DATABASE_UPDATE_TIME, "Не определена")!!
         } else "Не определена"
     }
 
@@ -116,10 +130,6 @@ class MainListActivity : AppCompatActivity() {
 
         viewModel.personFragmentCallBack = {
             createPersonAdditionalFragment()
-        }
-
-        viewModel.onNetworkErrorCallback = {
-            Toast.makeText(applicationContext, "Lollipop", Toast.LENGTH_SHORT).show()
         }
 
         viewModel.checkPermissionsCallBack = {
@@ -158,8 +168,8 @@ class MainListActivity : AppCompatActivity() {
             )
             val currentDateTime = dateFormatter.format(Date())
             val editor = preferences.edit()
-            editor.putLong(APP_DATABASE_SIZE, it)
-            editor.putString(APP_DATABASE_UPDATE_TIME, currentDateTime)
+            editor.putLong(Var.APP_DATABASE_SIZE, it)
+            editor.putString(Var.APP_DATABASE_UPDATE_TIME, currentDateTime)
             editor.apply()
         }
 
@@ -241,6 +251,10 @@ class MainListActivity : AppCompatActivity() {
             }
             R.id.action_settings -> {
                 createAboutAppFragment()
+            }
+            R.id.action_birthday -> {
+                createBirthPersonListFragment()
+                startNotificationAlarm(isNotification = true, isRepeat = true)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -328,8 +342,6 @@ class MainListActivity : AppCompatActivity() {
         val fragment = PersonAdditionalFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
-//            .setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
-//                R.animator.enter_from_left, R.animator.exit_to_right)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .replace(R.id.fragmentHolder, fragment)
             .addToBackStack(null)
@@ -357,5 +369,36 @@ class MainListActivity : AppCompatActivity() {
             .replace(R.id.fragmentHolder, fragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    private fun createBirthPersonListFragment() {
+        if (isDestroyed) return
+        val fragment = BirthdayPersonListFragment()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .replace(R.id.fragmentHolder, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+
+    private fun startNotificationAlarm(isNotification: Boolean, isRepeat: Boolean) {
+        val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val pendingIntent: PendingIntent
+
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 12)
+        calendar.set(Calendar.MINUTE, 8)
+
+        val intent = Intent(this, AlarmNotificationReceiver::class.java)
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+
+        if (!isRepeat)
+            alarmManager.set(AlarmManager.RTC_WAKEUP,
+                SystemClock.elapsedRealtime(), pendingIntent)
+        else
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
     }
 }

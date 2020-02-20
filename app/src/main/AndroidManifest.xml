@@ -38,6 +38,22 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
+        <receiver android:name="net.gas.contactbook.utils.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="net.gas.contactbook.utils.AlarmNotificationReceiver"/>
+
+        <service
+            android:name="net.gas.contactbook.utils.NotificationService"
+            android:enabled="true"
+            android:exported="true" />
+
     </application>
 
 </manifest>

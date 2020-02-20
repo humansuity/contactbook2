@@ -68,7 +68,9 @@ class DatabaseDownloadTask(private val context: Context, private val rootView: V
 
 
     private fun showNotification(notificationText: String, downloadFlag: Boolean) {
-        notificationBuilder!!.setContentTitle(notificationText).setProgress(0, 0, downloadFlag)
+        notificationBuilder!!
+            .setContentTitle(notificationText)
+            .setProgress(0, 0, downloadFlag)
         notificationManager.notify(notificationID, notificationBuilder?.build())
     }
 

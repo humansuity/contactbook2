@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "181568623633",
+    "firebase_url": "https://sample-14244.firebaseio.com",
+    "project_id": "sample-14244",
+    "storage_bucket": "sample-14244.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181568623633:android:4eaec06c73114c32964db0",
+        "android_client_info": {
+          "package_name": "com.example.contactbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181568623633-j09ev1bto31b9hqo4p5bn9jrtphll26q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbIcta_O-25Rh6mlZiGoHASyXFudb5ldE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181568623633-j09ev1bto31b9hqo4p5bn9jrtphll26q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
