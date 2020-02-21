@@ -1,6 +1,5 @@
 package net.gas.contactbook.ui.fragments
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
@@ -9,13 +8,11 @@ import android.graphics.drawable.InsetDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.text.InputType
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import androidx.databinding.DataBindingUtil
@@ -51,7 +48,8 @@ class PersonAdditionalFragment : Fragment() {
         )
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
-        viewModel.optionMenuStateCallback?.invoke("PARTLY_VISIBLE")
+        viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
+        viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
 
         viewModel.personEntity.observe(viewLifecycleOwner, Observer {
             setupData(it)
