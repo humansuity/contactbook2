@@ -60,6 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:checked="true"
+            android:enabled="false"
             android:switchPadding="24dp"
             android:text="Получать уведомления (дни рождения)"
             app:layout_constraintStart_toStartOf="@+id/textView12"
@@ -109,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:fontFamily="sans-serif"
-                    android:text="v 1.0 (Stable build)"
+                    android:text="1"
                     android:textAlignment="viewStart"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView17"
@@ -229,8 +230,9 @@
                     android:textColor="#191919"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider10" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
                 <View
                     android:id="@+id/divider13"
@@ -243,6 +245,17 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView16" />
+
+                <TextView
+                    android:id="@+id/textView20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Для разработчиков"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider10" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

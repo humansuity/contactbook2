@@ -254,7 +254,7 @@ class MainListActivity : AppCompatActivity() {
             }
             R.id.action_birthday -> {
                 createBirthPersonListFragment()
-                startNotificationAlarm(isNotification = true, isRepeat = true)
+                //startNotificationAlarm(isNotification = true, isRepeat = true)
             }
         }
         return super.onOptionsItemSelected(item)
