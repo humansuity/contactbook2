@@ -20,7 +20,7 @@
 
         android:usesCleartextTraffic="true">
         <activity
-            android:name="net.gas.contactbook.ui.activities.splash.SplashActivity"
+            android:name="net.gas.gascontact.ui.activities.splash.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme">
@@ -30,9 +30,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="net.gas.contactbook.ui.activities.DownloadActivity"/>
-        <activity android:name="net.gas.contactbook.ui.activities.MainListActivity" />
-        <activity android:name="net.gas.contactbook.ui.fragments.AboutAppFragment" />
+        <activity android:name="net.gas.gascontact.ui.activities.MainListActivity" />
+        <activity android:name="net.gas.gascontact.ui.fragments.AboutAppFragment" />
 
         <meta-data
             android:name="preloaded_fonts"

@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Contactbook"
+        app:title="Филиалы"
         app:titleMargins="4dp" />
 
 
@@ -45,8 +45,8 @@
                 android:padding="0dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_menu_40"
-                android:tint="#45849C"
-                app:backgroundTint="#216196"
+                android:tint="#1B5267"
+                app:backgroundTint="#20496B"
                 app:borderWidth="2dp"
                 app:elevation="10dp"
                 app:useCompatPadding="false" />

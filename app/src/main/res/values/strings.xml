@@ -1,9 +1,8 @@
 <resources>
-    <string name="app_name">contactbook</string>
+    <string name="app_name">ГазКонтакт</string>
     <string name="logo_title">Logp</string>
-    <string name="settings_res">Настройки</string>
-    <string name="update_database_res">Update database</string>
-    <string name="database_info_res">База данных</string>
+    <string name="settings_res">О программе</string>
+    <string name="update_database_res">Обновление БД</string>
     <string name="contactData">Контактные данные</string>
     <string name="mobileType">Мобильный</string>
     <string name="workType">Рабочий</string>
@@ -17,11 +16,15 @@
     <string name="addAction">Добавить</string>
     <string name="addingContact">Добавление контакта</string>
     <string name="lastname">Фамилия</string>
-    <string name="databaseLoadingAction">Database is loading…</string>
-    <string name="wait">Please wait</string>
+    <string name="databaseLoadingAction">База данных загружается…</string>
+    <string name="wait">Пожалуйста, подождите</string>
     <string name="download">Загрузить</string>
     <string name="notification">Уведомление</string>
-    <string name="databaseMissing">База данных не была найдена на вашем устройстве. Вы можете загрузить последнюю версию, нажав на кнопку ниже.</string>
+    <string name="databaseMissing">
+        База данных контактов не была найдена на вашем устройстве.
+        Вы можете загрузить последнюю версию, нажав на кнопку ниже.
+        Для загрузки базы данных требуется подключение к сети организации.
+    </string>
     <string name="reportToDeveloper">Если вы видите данное сообщение после установки базы данных, обратитесь к разработчикам.</string>
     <string name="search_alert">Нажмите на поле поиска для ввода</string>
     <string name="coming_birthday">Дни рождения</string>

@@ -7,12 +7,10 @@
         android:title="@string/coming_birthday"/>
 
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/settings_res"/>
-
-    <item
         android:id="@+id/action_db_update"
         android:icon="@drawable/database_download_ic_option"
-        android:title="@string/update_database_res"
-        app:showAsAction="always"/>
+        android:title="@string/update_database_res" />
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/settings_res" />
 </menu>

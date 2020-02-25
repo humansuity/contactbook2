@@ -15,7 +15,7 @@
             type="Integer" />
         <variable
             name="viewModel"
-            type="net.gas.contactbook.business.viewmodel.BranchListViewModel" />
+            type="net.gas.gascontact.business.viewmodel.BranchListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
