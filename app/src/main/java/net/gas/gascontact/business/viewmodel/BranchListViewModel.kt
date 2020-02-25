@@ -129,7 +129,7 @@ class BranchListViewModel(application: Application)
             val url = URL(Var.URL_TO_DATABASE)
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
-            connection.readTimeout = 10*1000     //set 10 seconds to get response
+            connection.readTimeout = 10 * 1000     //set 10 seconds to get response
             connection.connect()
             currentDatabaseSize = connection.contentLength.toLong()
             if (currentDatabaseSize > 0 && currentDatabaseSize != 125L) {
