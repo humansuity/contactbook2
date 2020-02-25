@@ -10,9 +10,11 @@
          TextureView, etc. -->
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_margin="50dp"
         android:contentDescription="@string/logo_title"
+        android:filterTouchesWhenObscured="false"
         android:src="@mipmap/splash_icon" />
 
 </FrameLayout>
