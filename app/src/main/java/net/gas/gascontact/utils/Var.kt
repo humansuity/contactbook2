@@ -2,6 +2,8 @@ package net.gas.gascontact.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import java.math.BigInteger
+import java.security.MessageDigest
 
 object Var {
 
@@ -17,11 +19,18 @@ object Var {
     const val APP_PREFERENCES = "appsettings"
     const val APP_DATABASE_SIZE = "dbsize"
     const val APP_DATABASE_UPDATE_TIME = "dbUpdateTime"
+    const val APP_DATABASE_UPDATE_DATE = "dbUpdateDate"
 
 
     inline fun <VM : ViewModel> viewModelFactory(crossinline f: () -> VM) =
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(aClass: Class<T>):T = f() as T
         }
+
+
+    fun stringMD5(key: String) : String {
+        val md = MessageDigest.getInstance("MD5")
+        return BigInteger(1, md.digest(key.toByteArray())).toString(16).padStart(32, '0')
+    }
 
 }

@@ -12,5 +12,6 @@
         android:title="@string/update_database_res" />
     <item
         android:id="@+id/action_settings"
-        android:title="@string/settings_res" />
+        android:title="@string/settings_res"/>
+
 </menu>

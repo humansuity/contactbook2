@@ -29,6 +29,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.contactbook.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.root
+import kotlinx.android.synthetic.main.alert_fragment.*
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.ui.fragments.*
 import net.gas.gascontact.utils.AlarmNotificationReceiver
@@ -69,6 +71,7 @@ class MainListActivity : AppCompatActivity() {
         viewModel.spinnerState.observe(this, Observer {
             unitProgressbar.visibility = if (it) View.VISIBLE else View.INVISIBLE
         })
+
         floatingActionButton.setOnClickListener {
             createSearchFragment()
         }
@@ -162,19 +165,33 @@ class MainListActivity : AppCompatActivity() {
         }
 
         viewModel.onReceiveDatabaseSizeCallBack = {
-            val dateFormatter = SimpleDateFormat(
-                "dd.MM.yyyy hh:mm a",
-                Locale.forLanguageTag("en")
-            )
-            val currentDateTime = dateFormatter.format(Date())
             val editor = preferences.edit()
             editor.putLong(Var.APP_DATABASE_SIZE, it)
-            editor.putString(Var.APP_DATABASE_UPDATE_TIME, currentDateTime)
             editor.apply()
         }
 
         viewModel.onDatabaseUpdated = {
             if (it) {
+                var dateFormatter = SimpleDateFormat(
+                    "dd.MM.yyyy hh:mm a",
+                    Locale.forLanguageTag("en")
+                )
+                val currentDateTime = dateFormatter.format(Date())
+                val editor = preferences.edit()
+
+
+                dateFormatter = SimpleDateFormat(
+                    "dd.MM.yyyy",
+                    Locale.forLanguageTag("en")
+                )
+
+                val currentDate = dateFormatter.format(Date())
+                val hashKey = Var.stringMD5(currentDate)
+
+                editor.putString(Var.APP_DATABASE_UPDATE_DATE, hashKey)
+                editor.putString(Var.APP_DATABASE_UPDATE_TIME, currentDateTime)
+                editor.apply()
+
                 finish()
                 startActivity(intent)
             } else {
@@ -226,12 +243,9 @@ class MainListActivity : AppCompatActivity() {
                 databaseItem?.isVisible = true
             }
             else -> {
-                val databaseItem = menu?.findItem(R.id.action_db_update)
-                val settingsItem = menu?.findItem(R.id.action_settings)
-                val birthdayItem = menu?.findItem(R.id.action_birthday)
-                databaseItem?.isVisible = false
-                settingsItem?.isVisible = false
-                birthdayItem?.isVisible = false
+                menu?.findItem(R.id.action_db_update)?.isVisible = false
+                menu?.findItem(R.id.action_settings)?.isVisible = false
+                menu?.findItem(R.id.action_birthday)?.isVisible = false
             }
         }
         return super.onPrepareOptionsMenu(menu)

@@ -58,7 +58,7 @@ class PersonAdditionalFragment : Fragment() {
         viewModel.personEntity.observe(viewLifecycleOwner, Observer {
             setupData(it)
             startObserveEntities(it)
-            initListeners(it)
+            setupListeners(it)
             updateUI()
         })
 
@@ -107,6 +107,7 @@ class PersonAdditionalFragment : Fragment() {
         binding.mobileNumber = setupPhoneNumber(personEntity.mobilePhone?.trim(), "MOBILE")
         binding.workNumber = setupPhoneNumber(personEntity.workPhone?.trim(), "WORK")
         binding.homeNumber = setupPhoneNumber(personEntity.homePhone?.trim(), "HOME")
+        binding.innerWorkNumber = setupPhoneNumber(personEntity.shortPhone?.trim(), "INNER_WORK")
         binding.email = if (
             personEntity.email.isNullOrBlank()
             || !personEntity.email.contains("@")
@@ -138,14 +139,12 @@ class PersonAdditionalFragment : Fragment() {
         }
     }
 
-    private fun initListeners(personEntity: Persons) {
+    private fun setupListeners(personEntity: Persons) {
         binding.addContactButton.setOnClickListener {
             when {
-                personEntity.mobilePhone.isNullOrBlank()
-                -> Snackbar.make(
-                    binding.root,
-                    "Невозможно определить номер!", Snackbar.LENGTH_LONG
-                ).show()
+                personEntity.mobilePhone.isNullOrBlank() ->
+                    Snackbar.make(binding.root, "Невозможно определить номер!",
+                        Snackbar.LENGTH_LONG).show()
                 personEntity.mobilePhone.contains(",") -> {
                     val optionArray = makeOptionMobileArray(personEntity.mobilePhone)
                     val dialogBuilder = AlertDialog.Builder(context)
@@ -167,10 +166,9 @@ class PersonAdditionalFragment : Fragment() {
 
         binding.mobileNumberFrame.setOnClickListener {
             when {
-                personEntity.mobilePhone.isNullOrBlank() -> Snackbar.make(
-                    binding.root,
-                    "Невозможно определить номер!", Snackbar.LENGTH_LONG
-                ).show()
+                personEntity.mobilePhone.isNullOrBlank() ->
+                    Snackbar.make(binding.root, "Невозможно определить номер!",
+                        Snackbar.LENGTH_LONG).show()
                 personEntity.mobilePhone.contains(",") -> {
                     openOptionNumberDialog(makeOptionMobileArray(personEntity.mobilePhone))
                 }
@@ -186,10 +184,9 @@ class PersonAdditionalFragment : Fragment() {
 
         binding.workNumberFrame.setOnClickListener {
             when {
-                personEntity.workPhone.isNullOrBlank() -> Snackbar.make(
-                    binding.root,
-                    "Невозможно определить номер!", Snackbar.LENGTH_LONG
-                ).show()
+                personEntity.workPhone.isNullOrBlank() ->
+                    Snackbar.make(binding.root, "Невозможно определить номер!",
+                        Snackbar.LENGTH_LONG).show()
                 personEntity.workPhone.contains(",") -> {
                     openOptionNumberDialog(makeOptionMobileArray(personEntity.workPhone))
                 }
@@ -205,10 +202,9 @@ class PersonAdditionalFragment : Fragment() {
 
         binding.homeNumberFrame.setOnClickListener {
             when {
-                personEntity.homePhone.isNullOrBlank() -> Snackbar.make(
-                    binding.root,
-                    "Невозможно определить номер!", Snackbar.LENGTH_LONG
-                ).show()
+                personEntity.homePhone.isNullOrBlank() ->
+                    Snackbar.make(binding.root, "Невозможно определить номер!",
+                        Snackbar.LENGTH_LONG).show()
                 personEntity.homePhone.contains(",") -> {
                     openOptionNumberDialog(makeOptionMobileArray(personEntity.homePhone))
                 }
@@ -218,6 +214,36 @@ class PersonAdditionalFragment : Fragment() {
                         Uri.parse("tel:${personEntity.homePhone}")
                     )
                     viewModel.makePhoneCall(callIntent)
+                }
+            }
+        }
+
+        binding.innerWorkFrame.setOnClickListener {
+            when {
+                personEntity.shortPhone.isNullOrBlank() ->
+                    Snackbar.make(binding.root, "Невозможно определить номер!",
+                        Snackbar.LENGTH_LONG).show()
+                personEntity.shortPhone.contains(",") -> {
+                    openOptionNumberDialog(makeOptionMobileArray(personEntity.shortPhone))
+                }
+                else -> {
+                    val callIntent = Intent(
+                        Intent.ACTION_DIAL,
+                        Uri.parse("tel:${personEntity.shortPhone}")
+                    )
+                    viewModel.makePhoneCall(callIntent)
+                }
+            }
+        }
+
+        binding.emailFrame.setOnClickListener {
+            when {
+                personEntity.email.isNullOrBlank() || !personEntity.email.contains("@") ->
+                    Snackbar.make(binding.root, "Невозможно определить email!",
+                        Snackbar.LENGTH_LONG).show()
+                personEntity.email.contains("@") -> {
+                }
+                else -> {
                 }
             }
         }
@@ -269,9 +295,8 @@ class PersonAdditionalFragment : Fragment() {
                     val secondNumber = number.substring(3, 5)
                     val thirdNumber = number.substring(5, number.length)
                     "$code ($prefix) $firstNumber-$secondNumber-$thirdNumber"
-                } else {
-                    phoneNumber
-                }
+                } else phoneNumber
+
             }
             "HOME", "WORK" -> {
                 when (phoneNumber.length) {
@@ -289,6 +314,14 @@ class PersonAdditionalFragment : Fragment() {
                     }
                     else -> phoneNumber
                 }
+            }
+            "INNER_WORK" -> {
+                if (phoneNumber.length == 5) {
+                    val firstPart = phoneNumber[0]
+                    val secondPart = phoneNumber.substring(1, 3)
+                    val thirdPart = phoneNumber.substring(3, 5)
+                    "$firstPart-$secondPart-$thirdPart"
+                } else phoneNumber
             }
             else -> "Указан неверно"
         }

@@ -75,6 +75,9 @@ class AlertFragment : Fragment() {
                 progressContainer.visibility = View.GONE
             }
         })
+        viewModel.dbDownloadingProgressState.observe(viewLifecycleOwner, Observer {
+            stepProgressBar.currentProgress = it
+        })
     }
 
 }
