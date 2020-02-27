@@ -68,7 +68,11 @@ class SearchFragment : Fragment() {
 
                     override fun onQueryTextChange(newText: String?): Boolean {
                         if (newText!!.isNotEmpty()) {
-                            viewModel.getPersonListByTag(newText.trim())
+                            var resultTag: String = ""
+                            newText.trim().forEach {
+                                resultTag += "[" + it.toUpperCase() + it.toLowerCase() + "]"
+                            }
+                            viewModel.getPersonListByTag("$resultTag*")
                                 .observe(viewLifecycleOwner, Observer {
                                     adapter.submitList(it)
                             })
@@ -77,7 +81,10 @@ class SearchFragment : Fragment() {
                         } else {
                             adapter.submitList(emptyList())
                             personList.visibility = View.INVISIBLE
-                            text_alert.visibility = View.VISIBLE
+                            text_alert.apply {
+                                text = "Нет результата"
+                                visibility = View.VISIBLE
+                            }
                         }
                         personList.smoothScrollToPosition(0)
                         return false

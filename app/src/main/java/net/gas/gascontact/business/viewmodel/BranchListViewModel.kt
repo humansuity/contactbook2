@@ -3,11 +3,11 @@ package net.gas.gascontact.business.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.graphics.PointF
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.gas.gascontact.business.database.entities.*
 import net.gas.gascontact.business.model.DataModel
@@ -40,7 +40,8 @@ class BranchListViewModel(application: Application)
     var spinnerState: MutableLiveData<Boolean> = MutableLiveData()
     var floatingButtonState: MutableLiveData<Boolean> = MutableLiveData()
     var downloadSpinnerState: MutableLiveData<Boolean> = MutableLiveData()
-    var dbDownloadingProgressState: MutableLiveData<Int> = MutableLiveData()
+    var dbDownloadingProgressState: MutableLiveData<PointF> = MutableLiveData()
+    var onBindingPerformed: MutableLiveData<Boolean> = MutableLiveData()
 
     var unitFragmentCallback: (() -> Unit)? = null
     var initUnitFragmentCallback: (() -> Unit)? = null
@@ -67,7 +68,6 @@ class BranchListViewModel(application: Application)
                 viewModelScope.launch(Dispatchers.Default) {
                     departmentList = liveData(Dispatchers.IO) {
                         emitSource(dataModel.getDepartmentEntitiesById(id))
-                        spinnerState.postValue(false)
                     }
                 }
                 unitId = id
@@ -78,7 +78,6 @@ class BranchListViewModel(application: Application)
                 viewModelScope.launch(Dispatchers.Default) {
                     personList = liveData(Dispatchers.IO) {
                         emitSource(dataModel.getPersonsEntitiesByIds(unitId, id))
-                        spinnerState.postValue(false)
                     }
                 }
                 departmentFragmentCallback?.invoke()
@@ -99,9 +98,9 @@ class BranchListViewModel(application: Application)
             viewModelScope.launch(Dispatchers.Main) {
                 downloadSpinnerState.value = false
                 if (checkOpenableDatabase()) {
+                    initUnitFragmentCallback?.invoke()
                     putUpdateDatabaseDateToConfig()
                     updateDatabase()
-                    initUnitFragmentCallback?.invoke()
                 }
             }
         }
@@ -183,7 +182,7 @@ class BranchListViewModel(application: Application)
                     val currentFileSize = fullPath.length().toFloat()
                     val currentDatabaseSize = currentDatabaseSize.toFloat()
                     val percent = currentFileSize.div(currentDatabaseSize).times(100)
-                    dbDownloadingProgressState.postValue(percent.toInt())
+                    dbDownloadingProgressState.postValue(PointF(percent, percent))
                     Log.e("i", "$percent")
                 }
                 else break
@@ -269,7 +268,6 @@ class BranchListViewModel(application: Application)
         spinnerState.value = true
         unitList = liveData(Dispatchers.IO) {
             emitSource(dataModel.getUnitEntities())
-            spinnerState.postValue(false)
         }
     }
 

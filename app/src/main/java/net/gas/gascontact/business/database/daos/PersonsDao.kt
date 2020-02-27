@@ -11,7 +11,7 @@ interface PersonsDao {
     @Query("select persons.* from persons, posts where unit_id = :unitId and department_id = :departmentId and persons.post_id = posts.id order by rangir, lastname")
     fun getEntitiesByIds(unitId: Int, departmentId: Int) : LiveData<List<Persons>>
 
-    @Query("select persons.* from persons, posts where lastname like :tag || '%' and persons.post_id = posts.id order by rangir, lastname")
+    @Query("select persons.* from persons, posts where lastname glob :tag and persons.post_id = posts.id order by rangir, lastname")
     fun getEntitiesByTag(tag: String) : LiveData<List<Persons>>
 
     @Query("select * from persons where id = :id")

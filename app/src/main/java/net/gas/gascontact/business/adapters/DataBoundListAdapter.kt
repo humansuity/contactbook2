@@ -1,5 +1,6 @@
 package net.gas.gascontact.business.adapters
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Lifecycle
@@ -30,9 +31,12 @@ abstract class DataBoundListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
             bind(holder.binding, getItem(position), position)
             holder.binding.executePendingBindings()
         }
-
     }
 
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        Log.e("bind", "binding ended!")
+    }
+    
 
     override fun onViewAttachedToWindow(holder: DataBoundViewHolder) {
         super.onViewAttachedToWindow(holder)

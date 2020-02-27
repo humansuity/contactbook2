@@ -33,6 +33,7 @@ class UnitListAdapter(private val viewModel: BranchListViewModel) :
     override fun bind(binding: ViewDataBinding, item: Units, position: Int) {
         when(binding) {
             is BranchItemBinding -> {
+                viewModel.spinnerState.value = true
                 if (position % 2 == 0)
                     binding.root.setBackgroundColor(Color.parseColor("#fffef7"))
                 else binding.root.setBackgroundColor(Color.parseColor("#F6F4F4"))
@@ -44,6 +45,7 @@ class UnitListAdapter(private val viewModel: BranchListViewModel) :
                     .asDrawable()
                     .load(binding.root.context.resources.getDrawable(R.drawable.ic_book_25))
                     .into(binding.imageView)
+                viewModel.spinnerState.value = false
             }
         }
     }

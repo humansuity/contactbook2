@@ -62,6 +62,7 @@ class PersonAdditionalFragment : Fragment() {
             startObserveEntities(it)
             setupListeners(it)
             updateUI()
+            viewModel.spinnerState.value = false
         })
 
         viewModel.floatingButtonState.value = false
@@ -76,7 +77,6 @@ class PersonAdditionalFragment : Fragment() {
             viewModel.setupPostEntity(personEntity.postID!!.toInt())
             viewModel.setupUnitEntity(personEntity.unitID!!.toInt())
             viewModel.setupDepartmentEntity(personEntity.departmentID!!.toInt())
-            viewModel.spinnerState.postValue(false)
         }
         binding.name =
             personEntity.lastName + " " + personEntity.firstName + " " + personEntity.patronymic

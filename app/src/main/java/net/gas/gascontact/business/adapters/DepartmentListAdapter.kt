@@ -42,6 +42,8 @@ class DepartmentListAdapter(private val viewModel: BranchListViewModel) :
                     .asDrawable()
                     .load(binding.root.context.resources.getDrawable(R.drawable.ic_group_25))
                     .into(binding.imageView)
+                viewModel.spinnerState.value = false
+                viewModel.onBindingPerformed.value = true
             }
         }
     }

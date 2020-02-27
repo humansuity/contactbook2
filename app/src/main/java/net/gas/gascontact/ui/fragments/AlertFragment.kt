@@ -77,9 +77,10 @@ class AlertFragment : Fragment() {
             }
         })
         viewModel.dbDownloadingProgressState.observe(viewLifecycleOwner, Observer {
-            stepProgressBar.currentProgress = it
-            textPercentage.text = "$it%"
+            stepProgressBar.currentProgress = it.x.toInt()
+            textPercentage.text = "${it.x.toInt()}%"
         })
     }
 
 }
+

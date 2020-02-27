@@ -75,6 +75,7 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
                 mViewModel.postEntity.observe(lifecycleOwner, Observer {
                     binding.post = it.name
                 })
+                mViewModel.spinnerState.value = false
             }
         }
     }
