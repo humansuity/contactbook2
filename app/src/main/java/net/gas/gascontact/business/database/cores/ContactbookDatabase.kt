@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.commonsware.cwac.saferoom.SafeHelperFactory
 import net.gas.gascontact.business.database.daos.*
 import net.gas.gascontact.business.database.entities.*
 import net.gas.gascontact.utils.Var
@@ -34,17 +35,19 @@ abstract class ContactbookDatabase : RoomDatabase() {
         private var INSTANCE: ContactbookDatabase? = null
         private val DB_NAME = Var.DATABASE_NAME
 
-        fun getInstance(context: Context) : ContactbookDatabase? {
+        fun getInstance(context: Context, key: String) : ContactbookDatabase? {
 
             val pathToDatabase = context.filesDir.path + "/" + DB_NAME
 
             if (INSTANCE == null) {
                 synchronized(ContactbookDatabase::class) {
+                    val factory = SafeHelperFactory(key.toCharArray(), SafeHelperFactory.POST_KEY_SQL_V3)
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,
                         ContactbookDatabase::class.java,
                         DB_NAME
                     )
+                        .openHelperFactory(factory)
                         .createFromFile(File(pathToDatabase))
                         .build()
                 }

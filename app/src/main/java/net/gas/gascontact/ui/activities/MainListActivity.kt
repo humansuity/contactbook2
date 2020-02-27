@@ -19,6 +19,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
@@ -177,18 +178,15 @@ class MainListActivity : AppCompatActivity() {
                     Locale.forLanguageTag("en")
                 )
                 val currentDateTime = dateFormatter.format(Date())
-                val editor = preferences.edit()
-
 
                 dateFormatter = SimpleDateFormat(
                     "dd.MM.yyyy",
                     Locale.forLanguageTag("en")
                 )
-
                 val currentDate = dateFormatter.format(Date())
-                val hashKey = Var.stringMD5(currentDate)
 
-                editor.putString(Var.APP_DATABASE_UPDATE_DATE, hashKey)
+                val editor = preferences.edit()
+                editor.putString(Var.APP_DATABASE_UPDATE_DATE, currentDate)
                 editor.putString(Var.APP_DATABASE_UPDATE_TIME, currentDateTime)
                 editor.apply()
 

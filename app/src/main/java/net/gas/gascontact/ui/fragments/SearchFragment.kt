@@ -79,7 +79,7 @@ class SearchFragment : Fragment() {
                             personList.visibility = View.INVISIBLE
                             text_alert.visibility = View.VISIBLE
                         }
-                        (binding as SearchFragmentBinding).personList.smoothScrollToPosition(0)
+                        personList.smoothScrollToPosition(0)
                         return false
                     }
                 })

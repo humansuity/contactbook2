@@ -1,19 +1,32 @@
 package net.gas.gascontact.business.model
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.gas.gascontact.business.database.cores.ContactbookDatabase
 import net.gas.gascontact.business.database.entities.*
+import net.gas.gascontact.utils.Var
 
 class DataModel(private val context: Context) {
 
-    private var database = ContactbookDatabase.getInstance(context)
+    private var database = ContactbookDatabase
+        .getInstance(context, Var.stringMD5(getCurrentDbUpdateDate()!!))
 
     fun updateDatabase() {
         ContactbookDatabase.destroyInstance()
-        database = ContactbookDatabase.getInstance(context)
+        database = ContactbookDatabase
+            .getInstance(context, key = Var.stringMD5(getCurrentDbUpdateDate()!!))
+    }
+
+    private fun getCurrentDbUpdateDate() : String? {
+        val sharedPreferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+        return if (sharedPreferences.contains(Var.APP_DATABASE_UPDATE_DATE)) {
+            sharedPreferences.getString(Var.APP_DATABASE_UPDATE_DATE, "")
+        } else ""
+
     }
 
     fun getUnitEntities() : LiveData<List<Units>>

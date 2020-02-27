@@ -17,6 +17,8 @@ import java.io.FileOutputStream
 import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class BranchListViewModel(application: Application)
@@ -24,13 +26,17 @@ class BranchListViewModel(application: Application)
 
     val context: Context = application.applicationContext
     private val dataModel = DataModel(context)
+
     var unitList: LiveData<List<Units>> = MutableLiveData<List<Units>>()
     var departmentList: LiveData<List<Departments>> = MutableLiveData<List<Departments>>()
     var personList: LiveData<List<Persons>> = MutableLiveData<List<Persons>>()
     var birthdayPersonList: LiveData<List<Persons>> = MutableLiveData<List<Persons>>()
+
     var personEntity: LiveData<Persons> = MutableLiveData<Persons>()
     var photoEntity: LiveData<Photos> = MutableLiveData<Photos>()
     var postEntity: LiveData<Posts> = MutableLiveData<Posts>()
+    var unitEntity: LiveData<Units> = MutableLiveData<Units>()
+    var departmentEntity: LiveData<Departments> = MutableLiveData<Departments>()
     var spinnerState: MutableLiveData<Boolean> = MutableLiveData()
     var floatingButtonState: MutableLiveData<Boolean> = MutableLiveData()
     var downloadSpinnerState: MutableLiveData<Boolean> = MutableLiveData()
@@ -93,13 +99,26 @@ class BranchListViewModel(application: Application)
             viewModelScope.launch(Dispatchers.Main) {
                 downloadSpinnerState.value = false
                 if (checkOpenableDatabase()) {
+                    putUpdateDatabaseDateToConfig()
+                    updateDatabase()
                     initUnitFragmentCallback?.invoke()
                 }
             }
         }
     }
 
-/** error **/
+    private fun putUpdateDatabaseDateToConfig() {
+        val dateFormatter = SimpleDateFormat(
+            "dd.MM.yyyy",
+            Locale.forLanguageTag("en")
+        )
+        val currentDate = dateFormatter.format(Date())
+        val editor = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE).edit()
+        editor.putString(Var.APP_DATABASE_UPDATE_DATE, currentDate)
+        editor.apply()
+    }
+
+
     fun startUpdatingDB() {
         downloadSpinnerState.value = true
         viewModelScope.launch(Dispatchers.Default) {
@@ -259,6 +278,7 @@ class BranchListViewModel(application: Application)
     }
 
     fun onPersonItemClick(id: Int) {
+        spinnerState.value = true
         personEntity = liveData { emitSource(dataModel.getPersonEntityById(id)) }
         personFragmentCallBack?.invoke()
     }
@@ -269,6 +289,14 @@ class BranchListViewModel(application: Application)
 
     fun setupPostEntity(id: Int?) {
         postEntity = liveData { emitSource(dataModel.getPostsEntityById(id!!)) }
+    }
+
+    fun setupDepartmentEntity(id: Int?) {
+        departmentEntity = liveData { emitSource(dataModel.getDepartmentEntityById(id!!)) }
+    }
+
+    fun setupUnitEntity(id: Int?) {
+        unitEntity = liveData { emitSource(dataModel.getUnitEntityById(id!!)) }
     }
 
     fun setupPersonListByBirth() {

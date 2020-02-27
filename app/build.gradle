@@ -32,8 +32,9 @@ android {
 
 allprojects {
 	repositories {
-		maven { url "https://jitpack.io" }
-	}
+		maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
+        maven { url "https://jitpack.io" }
+    }
 }
 
 
@@ -81,5 +82,8 @@ dependencies {
     //ProgressBar
     implementation 'com.ldoublem.loadingview:loadingviewlib:1.0'
     implementation 'com.params.progressview:step-progress:1.0.2'
+
+    //Saferoom for cipher database
+    implementation "com.commonsware.cwac:saferoom.x:1.3.0"
 
 }

@@ -20,11 +20,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.contactbook.R
 import com.example.contactbook.databinding.PersonAdditionalFragmentBinding
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.search_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -69,6 +71,34 @@ class PersonAdditionalFragment : Fragment() {
     }
 
 
+    private fun setupData(personEntity: Persons) {
+        viewModel.viewModelScope.launch(Dispatchers.IO) {
+            viewModel.setupPostEntity(personEntity.postID!!.toInt())
+            viewModel.setupUnitEntity(personEntity.unitID!!.toInt())
+            viewModel.setupDepartmentEntity(personEntity.departmentID!!.toInt())
+            viewModel.spinnerState.postValue(false)
+        }
+        binding.name =
+            personEntity.lastName + " " + personEntity.firstName + " " + personEntity.patronymic
+        binding.birthday = personEntity.birthday
+        binding.person = personEntity
+        binding.devPhoneNumber = personEntity.mobilePhone
+        if (personEntity.photoID != null) viewModel.setupPhotoEntity(personEntity.photoID)
+        binding.mobileNumber = setupPhoneNumber(personEntity.mobilePhone?.trim(), "MOBILE")
+        binding.workNumber = setupPhoneNumber(personEntity.workPhone?.trim(), "WORK")
+        binding.homeNumber = setupPhoneNumber(personEntity.homePhone?.trim(), "HOME")
+        binding.innerWorkNumber = setupPhoneNumber(personEntity.shortPhone?.trim(), "INNER_WORK")
+        binding.email = if (
+            personEntity.email.isNullOrBlank()
+            || !personEntity.email.contains("@")
+        ) {
+            "Не указан"
+        } else {
+            personEntity.email
+        }
+    }
+
+
     private fun updateUI() {
         if (binding.mobileNumber == "Не указан") {
 //            binding.callImage1.visibility = View.GONE
@@ -93,28 +123,6 @@ class PersonAdditionalFragment : Fragment() {
 //            binding.textEmail.visibility = View.GONE
 //            binding.emailDescription.visibility = View.GONE
             binding.sendEmailImage.visibility = View.GONE
-        }
-    }
-
-    private fun setupData(personEntity: Persons) {
-        binding.name =
-            personEntity.lastName + " " + personEntity.firstName + " " + personEntity.patronymic
-        binding.birthday = personEntity.birthday
-        binding.person = personEntity
-        binding.devPhoneNumber = personEntity.mobilePhone
-        viewModel.setupPostEntity(personEntity.postID!!.toInt())
-        if (personEntity.photoID != null) viewModel.setupPhotoEntity(personEntity.photoID)
-        binding.mobileNumber = setupPhoneNumber(personEntity.mobilePhone?.trim(), "MOBILE")
-        binding.workNumber = setupPhoneNumber(personEntity.workPhone?.trim(), "WORK")
-        binding.homeNumber = setupPhoneNumber(personEntity.homePhone?.trim(), "HOME")
-        binding.innerWorkNumber = setupPhoneNumber(personEntity.shortPhone?.trim(), "INNER_WORK")
-        binding.email = if (
-            personEntity.email.isNullOrBlank()
-            || !personEntity.email.contains("@")
-        ) {
-            "Не указан"
-        } else {
-            personEntity.email
         }
     }
 
@@ -333,11 +341,11 @@ class PersonAdditionalFragment : Fragment() {
             .observe(viewLifecycleOwner, Observer {
                 binding.post = it.name
             })
-        viewModel.getUnitEntity(personEntity.unitID!!.toInt())
+        viewModel.unitEntity
             .observe(viewLifecycleOwner, Observer {
                 binding.unit = it.name
             })
-        viewModel.getDepartmentEntity(personEntity.departmentID!!.toInt())
+        viewModel.departmentEntity
             .observe(viewLifecycleOwner, Observer {
                 binding.department = it.name
             })
