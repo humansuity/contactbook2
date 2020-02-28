@@ -60,6 +60,7 @@ class UnitListFragment : Fragment() {
             listAdapter = UnitListAdapterOptimized(viewModel)
             listAdapter.setupList(it)
             binding.recyclerView.adapter = listAdapter
+            viewModel.spinnerState.value = false
         })
     }
 

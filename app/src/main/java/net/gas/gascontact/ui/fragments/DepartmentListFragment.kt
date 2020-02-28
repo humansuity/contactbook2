@@ -68,6 +68,7 @@ class DepartmentListFragment : Fragment() {
                         listAdapter = DepartmentListAdapterOptimized(viewModel)
                         listAdapter.setupList(it)
                         binding.recyclerView.adapter = listAdapter
+                        viewModel.spinnerState.value = false
                     })
                 }
             })
@@ -77,6 +78,7 @@ class DepartmentListFragment : Fragment() {
                 listAdapter = DepartmentListAdapterOptimized(viewModel)
                 listAdapter.setupList(it)
                 binding.recyclerView.adapter = listAdapter
+                viewModel.spinnerState.value = false
             })
             return null
         }

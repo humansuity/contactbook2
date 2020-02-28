@@ -77,6 +77,7 @@ class PersonListFragment : Fragment() {
                         if (dict.keys.size == 2) {
                             listAdapter.setupList(dict)
                             binding.recyclerView.adapter = listAdapter
+                            viewModel.spinnerState.value = false
                         }
                     })
                     viewModel.getPostsEntities().observe(viewLifecycleOwner, Observer {
@@ -84,6 +85,7 @@ class PersonListFragment : Fragment() {
                         if (dict.keys.size == 2) {
                             listAdapter.setupList(dict)
                             binding.recyclerView.adapter = listAdapter
+                            viewModel.spinnerState.value = false
                         }
                     })
                 }
@@ -98,6 +100,7 @@ class PersonListFragment : Fragment() {
                 if (dict.keys.size == 2) {
                     listAdapter.setupList(dict)
                     binding.recyclerView.adapter = listAdapter
+                    viewModel.spinnerState.value = false
                 }
             })
             viewModel.getPostsEntities().observe(viewLifecycleOwner, Observer {
@@ -105,6 +108,7 @@ class PersonListFragment : Fragment() {
                 if (dict.keys.size == 2) {
                     listAdapter.setupList(dict)
                     binding.recyclerView.adapter = listAdapter
+                    viewModel.spinnerState.value = false
                 }
             })
             return null
