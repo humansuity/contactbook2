@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.contactbook.R
-import com.example.contactbook.databinding.BranchItemBinding
-import com.example.contactbook.databinding.PersonItemBinding
+import com.example.contactbook.databinding.PersonRecyclerItemBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -37,13 +36,13 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
 
     override fun createBinding(parent: ViewGroup, viewType: Int): ViewDataBinding {
         val inflater = LayoutInflater.from(parent.context)
-        return PersonItemBinding.inflate(inflater, parent, false)
+        return PersonRecyclerItemBinding.inflate(inflater, parent, false)
     }
 
     @ExperimentalStdlibApi
     override fun bind(binding: ViewDataBinding, item: Persons, position: Int) {
         when(binding) {
-            is PersonItemBinding -> {
+            is PersonRecyclerItemBinding -> {
                 val context = binding.root.context
                 if (item.photoID != null) {
                     mViewModel.setupPhotoEntity(item.photoID)
@@ -71,11 +70,11 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
                 }
 
                 binding.viewModel = mViewModel
-                binding.id = item.id
-                binding.name = item.lastName + " " + item.firstName + " " + item.patronymic
+                //binding.id = item.id
+               // binding.name = item.lastName + " " + item.firstName + " " + item.patronymic
                 mViewModel.setupPostEntity(item.postID?.toInt())
                 mViewModel.postEntity.observe(lifecycleOwner, Observer {
-                    binding.post = it.name
+               //     binding.post = it.name
                 })
                 mViewModel.spinnerState.value = false
             }

@@ -4,8 +4,8 @@
 
     <data>
         <variable
-            name="unitItem"
-            type="net.gas.gascontact.business.database.entities.Units" />
+            name="departmentItem"
+            type="net.gas.gascontact.business.database.entities.Departments" />
         <variable
             name="viewModel"
             type="net.gas.gascontact.business.viewmodel.BranchListViewModel" />
@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
-        android:onClick="@{ () -> viewModel.onUnitItemClick(unitItem.id) }"
+        android:onClick="@{ () -> viewModel.onDepartmentItemClick(departmentItem.id) }"
         android:orientation="vertical">
 
         <TextView
@@ -29,7 +29,7 @@
             android:layout_marginBottom="15dp"
             android:fontFamily="sans-serif-thin"
             android:gravity="center_vertical"
-            android:text="@{ unitItem.name }"
+            android:text="@{ departmentItem.name }"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#191919"
             android:textSize="17sp"

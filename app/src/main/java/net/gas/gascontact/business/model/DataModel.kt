@@ -44,7 +44,7 @@ class DataModel(private val context: Context) {
     fun getPhotoEntityById(id: Int) : LiveData<Photos>
             = database?.photosDao()!!.getEntityById(id)
 
-    fun getPostsEntityById(id: Int) : LiveData<Posts>
+    fun getPostEntityById(id: Int) : LiveData<Posts>
             = database?.postsDao()!!.getEntityById(id)
 
     fun getDepartmentEntityById(id: Int) : LiveData<Departments>
@@ -53,6 +53,9 @@ class DataModel(private val context: Context) {
 
     fun getUnitEntityById(id: Int) : LiveData<Units>
             = database?.unitsDao()!!.getEntityById(id)
+
+    fun getPostsEntities() : LiveData<List<Posts>> = database?.postsDao()!!.getEntities()
+    fun getPersonsEntities() : LiveData<List<Persons>> = database?.personsDao()!!.getEntities()
 
     suspend fun getPersonListByTag(tag: String) : LiveData<List<Persons>>
             = withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByTag(tag) }
@@ -65,6 +68,8 @@ class DataModel(private val context: Context) {
 
     suspend fun getUnitEntityByIdAsync(id: Int) : LiveData<Units>
             = withContext(Dispatchers.IO) { database?.unitsDao()!!.getEntityById(id) }
+
+
 
     suspend fun getDepartmentEntityByIdAsync(id: Int) : LiveData<Departments>
             = withContext(Dispatchers.IO) { database?.departmentsDao()!!.getEntityById(id) }

@@ -4,14 +4,11 @@
 
     <data>
         <variable
-            name="post"
-            type="String" />
+            name="personItem"
+            type="net.gas.gascontact.business.database.entities.Persons" />
         <variable
-            name="name"
+            name="postItem"
             type="String" />
-        <variable
-            name="id"
-            type="Integer" />
         <variable
             name="viewModel"
             type="net.gas.gascontact.business.viewmodel.BranchListViewModel" />
@@ -22,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
-        android:onClick="@{ () -> viewModel.onPersonItemClick(id) }"
+        android:onClick="@{ () -> viewModel.onPersonItemClick(personItem.id) }"
         android:orientation="vertical"
         android:paddingLeft="16dp"
         android:paddingTop="8dp"
@@ -45,7 +42,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="16dp"
             android:fontFamily="@font/capriola"
-            android:text="@{ name }"
+            android:text='@{personItem.lastName + " " + personItem.firstName + " " + personItem.patronymic}'
             android:textColor="#000000"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/text_post"
@@ -60,15 +57,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="16dp"
-            android:text="@{ post }"
             app:layout_constraintBottom_toBottomOf="@+id/image"
             app:layout_constraintEnd_toEndOf="parent"
+            android:text="@{ postItem }"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/image"
             app:layout_constraintTop_toBottomOf="@+id/text_name" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </layout>

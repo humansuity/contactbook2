@@ -8,7 +8,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.gas.gascontact.business.database.entities.*
 import net.gas.gascontact.business.model.DataModel
@@ -42,7 +41,7 @@ class BranchListViewModel(application: Application)
     var floatingButtonState: MutableLiveData<Boolean> = MutableLiveData()
     var downloadSpinnerState: MutableLiveData<Boolean> = MutableLiveData()
     var dbDownloadingProgressState: MutableLiveData<PointF> = MutableLiveData()
-    var onBindingPerformed: MutableLiveData<Boolean> = MutableLiveData()
+    var personListLivaDataMerger: MediatorLiveData<List<Any>> = MediatorLiveData()
 
     var unitFragmentCallback: (() -> Unit)? = null
     var initUnitFragmentCallback: (() -> Unit)? = null
@@ -56,6 +55,7 @@ class BranchListViewModel(application: Application)
     var appToolbarStateCallback: ((String, Boolean) -> Unit)? = null
     var onReceiveDatabaseSizeCallBack: ((Long) -> Unit)? = null
     var onDatabaseUpdated: ((Boolean) -> Unit)? = null
+    var onRecyclerViewAttached: (() -> Unit)? = null
     var isUnitFragmentActive = false
     var sharedDatabaseSize: Long = 0
     var databaseUpdateTime: String = ""
@@ -89,6 +89,29 @@ class BranchListViewModel(application: Application)
             }
         }
         deleteDownloadedDatabase()
+    }
+
+    fun onUnitItemClick(id: Int) {
+        spinnerState.value = true
+        viewModelScope.launch(Dispatchers.Default) {
+            departmentList = liveData(Dispatchers.IO) {
+                emitSource(dataModel.getDepartmentEntitiesById(id))
+            }
+        }
+        unitId = id
+        unitFragmentCallback?.invoke()
+    }
+
+    fun getPostByPersonId(id: Int) : LiveData<Posts> = liveData { emitSource(dataModel.getPostEntityById(id)) }
+
+    fun onDepartmentItemClick(id: Int) {
+        spinnerState.value = true
+        viewModelScope.launch(Dispatchers.Default) {
+            personList = liveData(Dispatchers.IO) {
+                emitSource(dataModel.getPersonsEntitiesByIds(unitId, id))
+            }
+        }
+        departmentFragmentCallback?.invoke()
     }
 
 
@@ -292,7 +315,7 @@ class BranchListViewModel(application: Application)
     }
 
     fun setupPostEntity(id: Int?) {
-        postEntity = liveData { emitSource(dataModel.getPostsEntityById(id!!)) }
+        postEntity = liveData { emitSource(dataModel.getPostEntityById(id!!)) }
     }
 
     fun setupDepartmentEntity(id: Int?) {
@@ -306,6 +329,15 @@ class BranchListViewModel(application: Application)
     fun setupPersonListByBirth() {
         birthdayPersonList = liveData { emitSource(dataModel.getPersonEntitiesByUpcomingBirthday()) }
     }
+
+
+    fun getPostsEntities() : LiveData<List<Posts>>
+            = liveData { emitSource(dataModel.getPostsEntities()) }
+
+    fun getPersonEntities() : LiveData<List<Persons>>
+            = liveData { emitSource(dataModel.getPersonsEntities()) }
+
+
 
     private fun deleteDownloadedDatabase() {
         val pathToDownloadedDatabase = context.filesDir.path + "/" + Var.DATABASE_NAME

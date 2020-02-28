@@ -50,10 +50,10 @@ class SearchFragment : Fragment() {
 
         when (binding) {
             is SearchFragmentBinding -> {
-                val adapter = PersonListAdapter(viewModel, viewLifecycleOwner)
+                //val adapter = PersonListAdapter(viewModel, viewLifecycleOwner)
                 binding.apply {
                     personList.layoutManager = LinearLayoutManager(context)
-                    personList.adapter = adapter
+                    //personList.adapter = adapter
                     personList.addItemDecoration(
                         DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
                     )
@@ -74,12 +74,12 @@ class SearchFragment : Fragment() {
                             }
                             viewModel.getPersonListByTag("$resultTag*")
                                 .observe(viewLifecycleOwner, Observer {
-                                    adapter.submitList(it)
+                                   // adapter.submitList(it)
                             })
                             personList.visibility = View.VISIBLE
                             text_alert.visibility = View.INVISIBLE
                         } else {
-                            adapter.submitList(emptyList())
+                            //adapter.submitList(emptyList())
                             personList.visibility = View.INVISIBLE
                             text_alert.apply {
                                 text = "Нет результата"

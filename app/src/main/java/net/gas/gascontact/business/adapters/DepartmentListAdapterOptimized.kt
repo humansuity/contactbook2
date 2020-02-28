@@ -3,22 +3,21 @@ package net.gas.gascontact.business.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.contactbook.R
-import com.example.contactbook.databinding.UnitRecyclerItemBinding
-import net.gas.gascontact.business.database.entities.Units
+import com.example.contactbook.databinding.DepartmentRecyclerItemBinding
+import net.gas.gascontact.business.database.entities.Departments
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.utils.GlideApp
 
-class UnitListAdapterOptimized(private val mViewModel: BranchListViewModel)
-    : RecyclerView.Adapter<UnitListAdapterOptimized.ViewHolder>() {
+class DepartmentListAdapterOptimized(private val mViewModel: BranchListViewModel)
+    : RecyclerView.Adapter<DepartmentListAdapterOptimized.ViewHolder>() {
 
-    private lateinit var items: List<Units>
+    private lateinit var items: List<Departments>
 
-    inner class ViewHolder(val binding: UnitRecyclerItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Units) {
+    inner class ViewHolder(val binding: DepartmentRecyclerItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Departments) {
             binding.apply {
-                unitItem = item
+                departmentItem = item
                 viewModel = mViewModel
                 loadIcon(binding)
                 executePendingBindings()
@@ -28,18 +27,18 @@ class UnitListAdapterOptimized(private val mViewModel: BranchListViewModel)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = UnitRecyclerItemBinding.inflate(inflater, parent, false)
+        val binding = DepartmentRecyclerItemBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
 
-    private fun loadIcon(binding: UnitRecyclerItemBinding) {
+    private fun loadIcon(binding: DepartmentRecyclerItemBinding) {
         GlideApp.with(binding.root.context)
             .asDrawable()
-            .load(binding.root.context.resources.getDrawable(R.drawable.ic_book_25))
+            .load(binding.root.context.resources.getDrawable(R.drawable.ic_group_25))
             .into(binding.imageView)
     }
 
-    fun setupList(items: List<Units>) {
+    fun setupList(items: List<Departments>) {
         this.items = items
         notifyDataSetChanged()
     }

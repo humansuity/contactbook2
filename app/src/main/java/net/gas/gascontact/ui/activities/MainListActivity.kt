@@ -15,6 +15,7 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -306,7 +307,7 @@ class MainListActivity : AppCompatActivity() {
         val fragment = UnitListFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
             .replace(R.id.fragmentHolder, fragment, "INIT_FRAGMENT")
             .commit()
     }
@@ -319,16 +320,10 @@ class MainListActivity : AppCompatActivity() {
         fragmentTransaction
             .setCustomAnimations(
                 R.animator.enter_from_right, R.animator.exit_to_left,
-                R.animator.enter_from_left, R.animator.exit_to_right
-            )
+                R.animator.enter_from_left, R.animator.exit_to_right)
             .replace(R.id.fragmentHolder, fragment)
             .addToBackStack(null)
             .commit()
-        viewModel.onBindingPerformed.observe(this, Observer {
-            if (it) {
-
-            }
-        })
     }
 
 
