@@ -173,20 +173,12 @@ class MainListActivity : AppCompatActivity() {
 
         viewModel.onDatabaseUpdated = {
             if (it) {
-                var dateFormatter = SimpleDateFormat(
+                val dateFormatter = SimpleDateFormat(
                     "dd.MM.yyyy hh:mm a",
                     Locale.forLanguageTag("en")
                 )
                 val currentDateTime = dateFormatter.format(Date())
-
-                dateFormatter = SimpleDateFormat(
-                    "dd.MM.yyyy",
-                    Locale.forLanguageTag("en")
-                )
-                val currentDate = dateFormatter.format(Date())
-
                 val editor = preferences.edit()
-                editor.putString(Var.APP_DATABASE_UPDATE_DATE, currentDate)
                 editor.putString(Var.APP_DATABASE_UPDATE_TIME, currentDateTime)
                 editor.apply()
 

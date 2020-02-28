@@ -1,6 +1,7 @@
 package net.gas.gascontact.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,8 @@ import com.example.contactbook.R
 import com.example.contactbook.databinding.UnitsListFragmentBinding
 import kotlinx.android.synthetic.main.units_list_fragment.*
 import net.gas.gascontact.business.adapters.UnitListAdapter
+import net.gas.gascontact.business.adapters.UnitListAdapterOptimized
+import net.gas.gascontact.business.database.entities.Units
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 
 class UnitListFragment : Fragment() {
@@ -50,18 +53,29 @@ class UnitListFragment : Fragment() {
 
         when (binding) {
             is UnitsListFragmentBinding -> {
+                val unitList = listOf(
+                    Units(0, "Pir", "11111", 32312),
+                    Units(1, "Pir", "11111", 32312),
+                    Units(2, "Pir", "11111", 32312),
+                    Units(3, "Pir", "11111", 32312),
+                    Units(4, "Pir", "11111", 32312),
+                    Units(5, "Pir", "11111", 32312),
+                    Units(6, "Pir", "11111", 32312))
+
+
                 val adapter = UnitListAdapter(viewModel)
-                binding.apply {
-                    recyclerView.layoutManager = LinearLayoutManager(context)
-                    recyclerView.adapter = adapter
-                    recyclerView.addItemDecoration(
-                        DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-                    )
-                }
+                //val adapter = UnitListAdapterOptimized(unitList, viewModel)
+                (binding as UnitsListFragmentBinding).recyclerView.layoutManager = LinearLayoutManager(context)
+                (binding as UnitsListFragmentBinding).recyclerView.adapter = adapter
+                (binding as UnitsListFragmentBinding).recyclerView.addItemDecoration(
+                    DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+                adapter.notifyDataSetChanged()
+
                 viewModel.unitList.observe(viewLifecycleOwner, Observer {
                     adapter.submitList(it)
                 })
             }
+
         }
         viewModel.floatingButtonState.value = true
     }

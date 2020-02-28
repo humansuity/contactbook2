@@ -1,6 +1,7 @@
 package net.gas.gascontact.business.adapters
 
 import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.contactbook.R
+import com.example.contactbook.databinding.BranchItemBinding
 import com.example.contactbook.databinding.PersonItemBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -20,6 +22,7 @@ import kotlinx.coroutines.withContext
 import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.utils.GlideApp
+import java.util.concurrent.CountDownLatch
 
 class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: LifecycleOwner) :
     DataBoundListAdapter<Persons>(diffCallback = object: DiffUtil.ItemCallback<Persons>() {
@@ -33,9 +36,8 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
     private val mViewModel = viewModel as BranchListViewModel
 
     override fun createBinding(parent: ViewGroup, viewType: Int): ViewDataBinding {
-        return DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context),
-            R.layout.person_item, parent, false)
+        val inflater = LayoutInflater.from(parent.context)
+        return PersonItemBinding.inflate(inflater, parent, false)
     }
 
     @ExperimentalStdlibApi

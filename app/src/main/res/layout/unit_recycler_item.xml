@@ -4,20 +4,11 @@
 
     <data>
         <variable
-            name="instance"
+            name="unitItem"
             type="net.gas.gascontact.business.database.entities.Units" />
-        <variable
-            name="unit"
-            type="String" />
-        <variable
-            name="id"
-            type="Integer" />
         <variable
             name="viewModel"
             type="net.gas.gascontact.business.viewmodel.BranchListViewModel" />
-        <variable
-            name="listType"
-            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
-        android:onClick="@{ () -> viewModel.onBranchItemClick(id, listType) }"
+        android:onClick="@{ () -> viewModel.onItemClick(unitItem.name) }"
         android:orientation="vertical">
 
         <TextView
@@ -38,7 +29,7 @@
             android:layout_marginBottom="15dp"
             android:fontFamily="sans-serif-thin"
             android:gravity="center_vertical"
-            android:text="@{unit}"
+            android:text="@{ unitItem.name }"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#191919"
             android:textSize="17sp"
@@ -56,9 +47,9 @@
             android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="@+id/txt"
             app:layout_constraintEnd_toStartOf="@+id/txt"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txt" />
+            app:layout_constraintTop_toTopOf="@+id/txt"
+            app:srcCompat="@drawable/ic_book_25" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

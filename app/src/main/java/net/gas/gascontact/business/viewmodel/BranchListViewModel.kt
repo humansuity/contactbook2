@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.PointF
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -60,6 +61,10 @@ class BranchListViewModel(application: Application)
     var databaseUpdateTime: String = ""
     private var currentDatabaseSize: Long = 0
     private var unitId = 0
+
+    fun onItemClick(name: String) {
+        Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
+    }
 
     fun onBranchItemClick(id: Int, listType: String) {
         when (listType) {
@@ -126,6 +131,7 @@ class BranchListViewModel(application: Application)
                 downloadSpinnerState.value = false
                 if (isDownloadedFileValid(context.filesDir.path + "/" + Var.DATABASE_NAME)) {
                     deleteOldRoomFile()
+                    putUpdateDatabaseDateToConfig()
                     updateDatabase()
                     isUnitFragmentActive = false
                     onDatabaseUpdated?.invoke(true)
@@ -300,15 +306,6 @@ class BranchListViewModel(application: Application)
     fun setupPersonListByBirth() {
         birthdayPersonList = liveData { emitSource(dataModel.getPersonEntitiesByUpcomingBirthday()) }
     }
-
-    fun getCurrentBirthdayList() : LiveData<List<Persons>>
-            = liveData { emitSource(dataModel.getPersonEntitiesByBirthday()) }
-
-    fun getDepartmentEntity(id: Int) : LiveData<Departments>
-            = liveData { emitSource(dataModel.getDepartmentEntityById(id)) }
-
-    fun getUnitEntity(id: Int) : LiveData<Units>
-            = liveData { emitSource(dataModel.getUnitEntityById(id)) }
 
     private fun deleteDownloadedDatabase() {
         val pathToDownloadedDatabase = context.filesDir.path + "/" + Var.DATABASE_NAME

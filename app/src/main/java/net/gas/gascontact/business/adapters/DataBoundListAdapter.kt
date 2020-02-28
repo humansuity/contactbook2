@@ -33,10 +33,7 @@ abstract class DataBoundListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
         }
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        Log.e("bind", "binding ended!")
-    }
-    
+
 
     override fun onViewAttachedToWindow(holder: DataBoundViewHolder) {
         super.onViewAttachedToWindow(holder)

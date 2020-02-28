@@ -22,10 +22,8 @@ class DepartmentListAdapter(private val viewModel: BranchListViewModel) :
     }) {
 
     override fun createBinding(parent: ViewGroup, viewType: Int): ViewDataBinding {
-        return DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context),
-            R.layout.branch_item, parent, false
-        )
+        val inflater = LayoutInflater.from(parent.context)
+        return BranchItemBinding.inflate(inflater, parent, false)
     }
 
     override fun bind(binding: ViewDataBinding, item: Departments, position: Int) {
@@ -43,7 +41,6 @@ class DepartmentListAdapter(private val viewModel: BranchListViewModel) :
                     .load(binding.root.context.resources.getDrawable(R.drawable.ic_group_25))
                     .into(binding.imageView)
                 viewModel.spinnerState.value = false
-                viewModel.onBindingPerformed.value = true
             }
         }
     }

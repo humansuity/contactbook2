@@ -3,7 +3,6 @@ package net.gas.gascontact.business.adapters
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import com.example.contactbook.R
@@ -26,8 +25,8 @@ class UnitListAdapter(private val viewModel: BranchListViewModel) :
 }) {
 
     override fun createBinding(parent: ViewGroup, viewType: Int): ViewDataBinding {
-        return DataBindingUtil.inflate(LayoutInflater.from(parent.context),
-            R.layout.branch_item, parent, false)
+        val inflater = LayoutInflater.from(parent.context)
+        return BranchItemBinding.inflate(inflater, parent, false)
     }
 
     override fun bind(binding: ViewDataBinding, item: Units, position: Int) {
