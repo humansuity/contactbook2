@@ -15,12 +15,10 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
@@ -32,7 +30,6 @@ import com.example.contactbook.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.root
-import kotlinx.android.synthetic.main.alert_fragment.*
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.ui.fragments.*
 import net.gas.gascontact.utils.AlarmNotificationReceiver

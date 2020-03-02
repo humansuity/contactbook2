@@ -70,13 +70,11 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
                 }
 
                 binding.viewModel = mViewModel
-                //binding.id = item.id
-               // binding.name = item.lastName + " " + item.firstName + " " + item.patronymic
+                binding.personItem = item
                 mViewModel.setupPostEntity(item.postID?.toInt())
                 mViewModel.postEntity.observe(lifecycleOwner, Observer {
-               //     binding.post = it.name
+                    binding.postItem = it.name
                 })
-                mViewModel.spinnerState.value = false
             }
         }
     }

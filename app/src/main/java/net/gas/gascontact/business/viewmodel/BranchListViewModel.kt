@@ -55,7 +55,7 @@ class BranchListViewModel(application: Application)
     var appToolbarStateCallback: ((String, Boolean) -> Unit)? = null
     var onReceiveDatabaseSizeCallBack: ((Long) -> Unit)? = null
     var onDatabaseUpdated: ((Boolean) -> Unit)? = null
-    var onRecyclerViewAttached: (() -> Unit)? = null
+    var onDepartmentListLoadedState: MutableLiveData<Boolean> = MutableLiveData()
     var isUnitFragmentActive = false
     var sharedDatabaseSize: Long = 0
     var databaseUpdateTime: String = ""
@@ -313,6 +313,8 @@ class BranchListViewModel(application: Application)
     fun setupPhotoEntity(id: Int?) {
         photoEntity = liveData { emitSource(dataModel.getPhotoEntityById(id!!)) }
     }
+
+    fun getPhotoEntity(id: Int?) : LiveData<Photos> = liveData { emitSource(dataModel.getPhotoEntityById(id!!)) }
 
     fun setupPostEntity(id: Int?) {
         postEntity = liveData { emitSource(dataModel.getPostEntityById(id!!)) }

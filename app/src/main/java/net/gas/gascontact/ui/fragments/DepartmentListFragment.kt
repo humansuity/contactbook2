@@ -1,7 +1,6 @@
 package net.gas.gascontact.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,13 +12,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.contactbook.R
 import com.example.contactbook.databinding.DepartmentsListFragmentBinding
-import kotlinx.android.synthetic.main.units_list_fragment.*
 import net.gas.gascontact.business.adapters.DepartmentListAdapterOptimized
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
-import java.lang.Exception
 
 class DepartmentListFragment : Fragment() {
 

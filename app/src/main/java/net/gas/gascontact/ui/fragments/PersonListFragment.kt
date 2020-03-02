@@ -69,47 +69,21 @@ class PersonListFragment : Fragment() {
                 }
 
                 override fun onAnimationEnd(animation: Animation?) {
-                    listAdapter = PersonListAdapterOptimized(viewModel)
-                    val dict: MutableMap<String, List<Any>> = mutableMapOf()
-
+                    listAdapter = PersonListAdapterOptimized(viewModel, viewLifecycleOwner)
                     viewModel.personList.observe(viewLifecycleOwner, Observer {
-                        dict["persons"] = it
-                        if (dict.keys.size == 2) {
-                            listAdapter.setupList(dict)
-                            binding.recyclerView.adapter = listAdapter
-                            viewModel.spinnerState.value = false
-                        }
-                    })
-                    viewModel.getPostsEntities().observe(viewLifecycleOwner, Observer {
-                        dict["posts"] = it
-                        if (dict.keys.size == 2) {
-                            listAdapter.setupList(dict)
-                            binding.recyclerView.adapter = listAdapter
-                            viewModel.spinnerState.value = false
-                        }
+                        listAdapter.setupList(it)
+                        binding.recyclerView.adapter = listAdapter
+                        viewModel.spinnerState.value = false
                     })
                 }
             })
             return animation
         } catch (e: Exception) {
-            listAdapter = PersonListAdapterOptimized(viewModel)
-            val dict: MutableMap<String, List<Any>> = mutableMapOf()
-
+            listAdapter = PersonListAdapterOptimized(viewModel, viewLifecycleOwner)
             viewModel.personList.observe(viewLifecycleOwner, Observer {
-                dict["persons"] = it
-                if (dict.keys.size == 2) {
-                    listAdapter.setupList(dict)
-                    binding.recyclerView.adapter = listAdapter
-                    viewModel.spinnerState.value = false
-                }
-            })
-            viewModel.getPostsEntities().observe(viewLifecycleOwner, Observer {
-                dict["posts"] = it
-                if (dict.keys.size == 2) {
-                    listAdapter.setupList(dict)
-                    binding.recyclerView.adapter = listAdapter
-                    viewModel.spinnerState.value = false
-                }
+                listAdapter.setupList(it)
+                binding.recyclerView.adapter = listAdapter
+                viewModel.spinnerState.value = false
             })
             return null
         }

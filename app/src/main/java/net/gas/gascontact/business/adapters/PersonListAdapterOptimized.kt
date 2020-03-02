@@ -1,33 +1,63 @@
 package net.gas.gascontact.business.adapters
 
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
+import com.example.contactbook.R
 import com.example.contactbook.databinding.PersonRecyclerItemBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.database.entities.Posts
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.utils.GlideApp
 
-class PersonListAdapterOptimized(private val mViewModel: BranchListViewModel)
+class PersonListAdapterOptimized(private val mViewModel: BranchListViewModel, private val viewLifecycleOwner: LifecycleOwner)
     : RecyclerView.Adapter<PersonListAdapterOptimized.ViewHolder>() {
 
-    private lateinit var lists: MutableMap<String, List<Any>>
+    private var list: List<Persons> = emptyList()
 
     inner class ViewHolder(val binding: PersonRecyclerItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        @ExperimentalStdlibApi
         fun bind(item: Persons) {
-            var post: String = ""
-            for (it in (lists["posts"] as List<Posts>)) {
-                if (it.id == item.postID) {
-                    post = if (it.name.isNullOrBlank()) "Не указана" else it.name
-                    break
-                }
-            }
             binding.apply {
                 personItem = item
-                postItem = post
                 viewModel = mViewModel
                 executePendingBindings()
             }
+            if (item.photoID != null) {
+                mViewModel.getPhotoEntity(item.photoID).observe(viewLifecycleOwner, Observer {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        val decodedString = withContext(Dispatchers.Default) {
+                            it.photo?.decodeToString()
+                        }
+                        val byteArray = withContext(Dispatchers.Default) {
+                            Base64.decode(decodedString, Base64.DEFAULT)
+                        }
+                        GlideApp.with(binding.root.context)
+                            .asBitmap()
+                            .placeholder(R.drawable.ic_user_30)
+                            .load(byteArray)
+                            .apply(RequestOptions().transform(RoundedCorners(30)))
+                            .into(binding.image)
+                    }
+                })
+            } else
+                GlideApp.with(binding.root.context)
+                    .asDrawable()
+                    .load(binding.root.context.resources.getDrawable(R.drawable.ic_user_30))
+                    .into(binding.image)
+
+            mViewModel.getPostByPersonId(item.postID!!.toInt()).observe(viewLifecycleOwner, Observer {
+                binding.postItem = it.name
+            })
         }
     }
 
@@ -37,14 +67,15 @@ class PersonListAdapterOptimized(private val mViewModel: BranchListViewModel)
         return ViewHolder(binding)
     }
 
-    fun setupList(items: MutableMap<String, List<Any>>) {
-        lists = items
+    fun setupList(items: List<Persons>) {
+        list = items
         notifyDataSetChanged()
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind((lists["persons"] as List<Persons>)[position])
-    }
+    @ExperimentalStdlibApi
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(list[position])
 
-    override fun getItemCount(): Int = (lists["persons"] as List<Persons>).size
+    override fun getItemCount(): Int = list.size
+
+
 }
