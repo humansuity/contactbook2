@@ -1,6 +1,5 @@
 package net.gas.gascontact.business.adapters
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Lifecycle

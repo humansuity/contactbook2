@@ -73,7 +73,6 @@ class AlertFragment : Fragment() {
             else {
                 lvblock.stopAnim()
                 progressContainer.visibility = View.GONE
-                viewModel.spinnerState.value = true
             }
         })
         viewModel.dbDownloadingProgressState.observe(viewLifecycleOwner, Observer {

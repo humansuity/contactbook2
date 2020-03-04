@@ -1,24 +1,17 @@
 package net.gas.gascontact.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.contactbook.R
 import com.example.contactbook.databinding.UnitsListFragmentBinding
-import kotlinx.android.synthetic.main.person_additional_fragment.*
 import net.gas.gascontact.business.adapters.UnitListAdapterOptimized
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 

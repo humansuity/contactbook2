@@ -1,6 +1,7 @@
 package net.gas.gascontact.business.adapters
 
 import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -9,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.contactbook.R
-import com.example.contactbook.databinding.PersonRecyclerItemBinding
+import com.example.contactbook.databinding.PersonItemBirthdayBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -18,12 +19,12 @@ import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.utils.GlideApp
 
-class PersonListAdapterOptimized(private val mViewModel: BranchListViewModel, private val viewLifecycleOwner: LifecycleOwner)
-    : RecyclerView.Adapter<PersonListAdapterOptimized.ViewHolder>() {
+class BirthdayPersonListAdapterOptimized(private val mViewModel: BranchListViewModel, private val viewLifecycleOwner: LifecycleOwner)
+    : RecyclerView.Adapter<BirthdayPersonListAdapterOptimized.ViewHolder>() {
 
     private var list: List<Persons> = emptyList()
 
-    inner class ViewHolder(val binding: PersonRecyclerItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: PersonItemBirthdayBinding) : RecyclerView.ViewHolder(binding.root) {
         @ExperimentalStdlibApi
         fun bind(item: Persons) {
             binding.apply {
@@ -41,12 +42,16 @@ class PersonListAdapterOptimized(private val mViewModel: BranchListViewModel, pr
                             Base64.decode(decodedString, Base64.DEFAULT)
                         }
                         launch(Dispatchers.Main) {
-                            GlideApp.with(binding.root.context)
-                                .asBitmap()
-                                .placeholder(R.drawable.ic_user_30)
-                                .load(byteArray)
-                                .apply(RequestOptions().transform(RoundedCorners(30)))
-                                .into(binding.image)
+                            try {
+                                GlideApp.with(binding.root.context)
+                                    .asBitmap()
+                                    .placeholder(R.drawable.ic_user_30)
+                                    .load(byteArray)
+                                    .apply(RequestOptions().transform(RoundedCorners(30)))
+                                    .into(binding.image)
+                            } catch (e: Exception) {
+                                Log.e("Glide", "Some error when load image while activity is destroyed")
+                            }
                         }
                     }
                 })
@@ -64,7 +69,7 @@ class PersonListAdapterOptimized(private val mViewModel: BranchListViewModel, pr
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = PersonRecyclerItemBinding.inflate(inflater, parent, false)
+        val binding = PersonItemBirthdayBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
 

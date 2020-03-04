@@ -3,7 +3,6 @@ package net.gas.gascontact.business.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.contactbook.R
 import com.example.contactbook.databinding.UnitRecyclerItemBinding
 import net.gas.gascontact.business.database.entities.Units

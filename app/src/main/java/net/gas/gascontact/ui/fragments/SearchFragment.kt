@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +15,7 @@ import com.example.contactbook.R
 import com.example.contactbook.databinding.SearchFragmentBinding
 import kotlinx.android.synthetic.main.search_fragment.*
 import net.gas.gascontact.business.adapters.PersonListAdapter
-import net.gas.gascontact.business.adapters.PersonListAdapterOptimized
+import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 
 class SearchFragment : Fragment() {
@@ -63,7 +62,10 @@ class SearchFragment : Fragment() {
 
     }
 
-    private fun setupSearchViewListeners(binding: SearchFragmentBinding, listAdapter: PersonListAdapter) {
+    private fun setupSearchViewListeners(
+        binding: SearchFragmentBinding,
+        listAdapter: PersonListAdapter
+    ) {
         binding.apply {
             searchView.setOnClickListener {
                 searchView.isIconified = false
@@ -83,16 +85,64 @@ class SearchFragment : Fragment() {
 
     private fun performSearching(searchText: String?, listAdapter: PersonListAdapter) {
         if (searchText!!.isNotEmpty()) {
-            var resultTag = ""
-            searchText.trim().forEach {
-                resultTag += "[" + it.toUpperCase() + it.toLowerCase() + "]"
+            if (searchText.length >= 3) {
+                /** search by phone number **/
+                try {
+                    var searchNumber = ""
+                    if (!searchText.contains("+"))
+                        searchNumber = "+$searchText"
+                    else
+                        searchNumber = searchText
+                    if (searchNumber.toInt() > 0) {
+                        viewModel.getPersonListByMobilePhoneTag(searchNumber)
+                            .observe(viewLifecycleOwner, Observer {
+                                listAdapter.submitList(it)
+                                checkListByEmptiness(it)
+                                personList.smoothScrollToPosition(0)
+                            })
+                    } else {
+                        listAdapter.submitList(emptyList())
+                        personList.visibility = View.INVISIBLE
+                        text_alert.apply {
+                            text = "Нет результата"
+                            visibility = View.VISIBLE
+                        }
+                    }
+                }
+                /** search by FIO **/
+                catch (e: NumberFormatException) {
+                    var resultTag = ""
+
+                    searchText
+                        .trim()
+                        .forEach { resultTag += "[" + it.toUpperCase() + it.toLowerCase() + "]" }
+
+                    val list = emptyList<Persons>().toMutableList()
+                    viewModel.getPersonListByLastNameTag("$resultTag*")
+                        .observe(viewLifecycleOwner, Observer { personListByLastName ->
+                            list.addAll(personListByLastName)
+                            listAdapter.submitList(list.distinct())
+                            checkListByEmptiness(list)
+                            personList.smoothScrollToPosition(0)
+                            viewModel.getPersonListByNameTag("$resultTag*")
+                                .observe(viewLifecycleOwner, Observer { personListByName ->
+                                    list.addAll(personListByName)
+                                    listAdapter.submitList(list.distinct())
+                                    checkListByEmptiness(list)
+                                    personList.smoothScrollToPosition(0)
+                                    viewModel.getPersonListByPatronymicTag("$resultTag*")
+                                        .observe(
+                                            viewLifecycleOwner,
+                                            Observer { personListByPatronymic ->
+                                                list.addAll(personListByPatronymic)
+                                                listAdapter.submitList(list.distinct())
+                                                checkListByEmptiness(list)
+                                                personList.smoothScrollToPosition(0)
+                                            })
+                                })
+                        })
+                }
             }
-            viewModel.getPersonListByTag("$resultTag*")
-                .observe(viewLifecycleOwner, Observer {
-                    listAdapter.submitList(it)
-                })
-            personList.visibility = View.VISIBLE
-            text_alert.visibility = View.INVISIBLE
         } else {
             listAdapter.submitList(emptyList())
             personList.visibility = View.INVISIBLE
@@ -101,7 +151,18 @@ class SearchFragment : Fragment() {
                 visibility = View.VISIBLE
             }
         }
-        personList.smoothScrollToPosition(0)
     }
 
+    private fun checkListByEmptiness(list: List<Persons>) {
+        if (list.isNullOrEmpty()) {
+            personList.visibility = View.INVISIBLE
+            text_alert.apply {
+                text = "Нет результата"
+                visibility = View.VISIBLE
+            }
+        } else {
+            personList.visibility = View.VISIBLE
+            text_alert.visibility = View.INVISIBLE
+        }
+    }
 }

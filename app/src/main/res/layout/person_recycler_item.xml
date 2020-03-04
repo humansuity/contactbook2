@@ -21,7 +21,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:onClick="@{ () -> viewModel.onPersonItemClick(personItem.id) }"
         android:orientation="vertical"
-        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
 

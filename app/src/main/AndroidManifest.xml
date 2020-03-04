@@ -32,6 +32,7 @@
         </activity>
         <activity android:name="net.gas.gascontact.ui.activities.MainListActivity" />
         <activity android:name="net.gas.gascontact.ui.fragments.AboutAppFragment" />
+        <activity android:name="net.gas.gascontact.ui.activities.BirthdayPersonListActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

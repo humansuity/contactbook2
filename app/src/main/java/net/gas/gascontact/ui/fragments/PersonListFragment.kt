@@ -1,13 +1,11 @@
 package net.gas.gascontact.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,14 +14,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.contactbook.R
 import com.example.contactbook.databinding.PersonListFragmentBinding
-import net.gas.gascontact.business.adapters.DepartmentListAdapterOptimized
-import net.gas.gascontact.business.adapters.PersonListAdapter
 import net.gas.gascontact.business.adapters.PersonListAdapterOptimized
-import net.gas.gascontact.business.database.entities.Persons
-import net.gas.gascontact.business.database.entities.Posts
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
-import java.lang.Exception
-import java.util.*
 
 class PersonListFragment : Fragment() {
 
@@ -66,6 +58,7 @@ class PersonListFragment : Fragment() {
                 override fun onAnimationRepeat(animation: Animation?) {
                 }
                 override fun onAnimationStart(animation: Animation?) {
+                    viewModel.spinnerState.value = true
                 }
 
                 override fun onAnimationEnd(animation: Animation?) {

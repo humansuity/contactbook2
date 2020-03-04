@@ -1,6 +1,7 @@
 package net.gas.gascontact.ui.fragments
 
 import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -26,11 +27,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.contactbook.R
 import com.example.contactbook.databinding.PersonAdditionalFragmentBinding
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.search_fragment.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.database.entities.Photos
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
@@ -56,10 +53,10 @@ class PersonAdditionalFragment : Fragment() {
             .get(BranchListViewModel::class.java)
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
+        viewModel.isPersonFragmentActive  = false
 
         viewModel.personEntity.observe(viewLifecycleOwner, Observer {
             setupData(it)
-            startObserveEntities(it)
             setupListeners(it)
             updateUI()
             viewModel.spinnerState.value = false
@@ -71,12 +68,14 @@ class PersonAdditionalFragment : Fragment() {
         return binding.root
     }
 
-
+    @ExperimentalStdlibApi
     private fun setupData(personEntity: Persons) {
         viewModel.viewModelScope.launch(Dispatchers.IO) {
+            delay(100)
             viewModel.setupPostEntity(personEntity.postID!!.toInt())
             viewModel.setupUnitEntity(personEntity.unitID!!.toInt())
             viewModel.setupDepartmentEntity(personEntity.departmentID!!.toInt())
+            launch(Dispatchers.Main) { startObserveEntities(personEntity) }
         }
         binding.name =
             personEntity.lastName + " " + personEntity.firstName + " " + personEntity.patronymic
@@ -124,6 +123,13 @@ class PersonAdditionalFragment : Fragment() {
 //            binding.emailDescription.visibility = View.GONE
             binding.sendEmailImage.visibility = View.GONE
         }
+
+        if (binding.innerWorkNumber == "Не указан") {
+//            binding.emailImage.visibility = View.GONE
+//            binding.textEmail.visibility = View.GONE
+//            binding.emailDescription.visibility = View.GONE
+            binding.innerWorkNumberImage.visibility = View.GONE
+        }
     }
 
 
@@ -147,6 +153,7 @@ class PersonAdditionalFragment : Fragment() {
         }
     }
 
+    @ExperimentalStdlibApi
     private fun setupListeners(personEntity: Persons) {
         binding.addContactButton.setOnClickListener {
             when {
@@ -250,6 +257,10 @@ class PersonAdditionalFragment : Fragment() {
                     Snackbar.make(binding.root, "Невозможно определить email!",
                         Snackbar.LENGTH_LONG).show()
                 personEntity.email.contains("@") -> {
+                    val intent = Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse("mailto:" + personEntity.email)
+                    }
+                    viewModel.sendEmail(intent)
                 }
                 else -> {
                 }
@@ -284,6 +295,7 @@ class PersonAdditionalFragment : Fragment() {
         dialogBuilder.create().show()
     }
 
+    @ExperimentalStdlibApi
     private fun openContactDialog(person: Persons, number: String, unit: String) {
         viewModel.spinnerState.value = true
         GlobalScope.launch(Dispatchers.Default) {
@@ -384,6 +396,7 @@ class PersonAdditionalFragment : Fragment() {
     }
 
 
+    @ExperimentalStdlibApi
     private fun createDialog(person: Persons, currentNumber: String, unit: String) {
         val dialogBuilder = AlertDialog.Builder(context)
         val view = layoutInflater.inflate(R.layout.add_contact_dialog, null)
@@ -425,8 +438,30 @@ class PersonAdditionalFragment : Fragment() {
                         ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE,
                         photoByteArray
                     )
+                    if (!person.email.isNullOrBlank())
+                        if (person.email.contains("@")) {
+                            putExtra(ContactsContract.Intents.Insert.EMAIL, person.email)
+                            putExtra(
+                                ContactsContract.Intents.Insert.EMAIL_TYPE,
+                                ContactsContract.CommonDataKinds.Email.TYPE_WORK
+                            )
+                        }
                 }
-                viewModel.addNewContact(intent)
+
+                if (person.photoID != null) {
+                    viewModel.setupPhotoEntity(person.photoID)
+                    viewModel.photoEntity.observe(viewLifecycleOwner, Observer {
+                        val decodedString = it.photo!!.decodeToString()
+                        val byteArray = Base64.decode(decodedString, Base64.DEFAULT)
+                        val row = ContentValues()
+                        val list = arrayListOf<ContentValues>()
+                        row.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
+                        row.put(ContactsContract.CommonDataKinds.Photo.PHOTO, byteArray)
+                        list.add(row)
+                        intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, list)
+                        viewModel.addNewContact(intent)
+                    })
+                } else { viewModel.addNewContact(intent) }
             }
         }
         dialog.show()

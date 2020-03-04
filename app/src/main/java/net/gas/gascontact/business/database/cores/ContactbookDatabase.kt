@@ -36,9 +36,7 @@ abstract class ContactbookDatabase : RoomDatabase() {
         private val DB_NAME = Var.DATABASE_NAME
 
         fun getInstance(context: Context, key: String) : ContactbookDatabase? {
-
             val pathToDatabase = context.filesDir.path + "/" + DB_NAME
-
             if (INSTANCE == null) {
                 synchronized(ContactbookDatabase::class) {
                     val factory = SafeHelperFactory(key.toCharArray(), SafeHelperFactory.POST_KEY_SQL_V3)

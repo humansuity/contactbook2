@@ -3,6 +3,7 @@ package net.gas.gascontact.business.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.database.sqlite.SQLiteException
 import android.graphics.PointF
 import android.util.Log
 import android.widget.Toast
@@ -41,13 +42,13 @@ class BranchListViewModel(application: Application)
     var floatingButtonState: MutableLiveData<Boolean> = MutableLiveData()
     var downloadSpinnerState: MutableLiveData<Boolean> = MutableLiveData()
     var dbDownloadingProgressState: MutableLiveData<PointF> = MutableLiveData()
-    var personListLivaDataMerger: MediatorLiveData<List<Any>> = MediatorLiveData()
 
     var unitFragmentCallback: (() -> Unit)? = null
     var initUnitFragmentCallback: (() -> Unit)? = null
     var departmentFragmentCallback: (() -> Unit) ? = null
     var personFragmentCallBack: (() -> Unit)? = null
     var callIntentCallback: ((Intent) -> Unit)? = null
+    var sendEmailIntentCallback: ((Intent) -> Unit)? = null
     var addContactIntentCallBack: ((Intent) -> Unit)? = null
     var checkPermissionsCallBack: (() -> Unit)? = null
     var onNetworkErrorCallback: ((String) -> Unit)? = null
@@ -55,41 +56,12 @@ class BranchListViewModel(application: Application)
     var appToolbarStateCallback: ((String, Boolean) -> Unit)? = null
     var onReceiveDatabaseSizeCallBack: ((Long) -> Unit)? = null
     var onDatabaseUpdated: ((Boolean) -> Unit)? = null
-    var onDepartmentListLoadedState: MutableLiveData<Boolean> = MutableLiveData()
     var isUnitFragmentActive = false
+    var isPersonFragmentActive = false
     var sharedDatabaseSize: Long = 0
     var databaseUpdateTime: String = ""
     private var currentDatabaseSize: Long = 0
     private var unitId = 0
-
-    fun onItemClick(name: String) {
-        Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
-    }
-
-    fun onBranchItemClick(id: Int, listType: String) {
-        when (listType) {
-            Units::class.java.name -> {
-                spinnerState.value = true
-                viewModelScope.launch(Dispatchers.Default) {
-                    departmentList = liveData(Dispatchers.IO) {
-                        emitSource(dataModel.getDepartmentEntitiesById(id))
-                    }
-                }
-                unitId = id
-                unitFragmentCallback?.invoke()
-            }
-            Departments::class.java.name -> {
-                spinnerState.value = true
-                viewModelScope.launch(Dispatchers.Default) {
-                    personList = liveData(Dispatchers.IO) {
-                        emitSource(dataModel.getPersonsEntitiesByIds(unitId, id))
-                    }
-                }
-                departmentFragmentCallback?.invoke()
-            }
-        }
-        deleteDownloadedDatabase()
-    }
 
     fun onUnitItemClick(id: Int) {
         spinnerState.value = true
@@ -100,6 +72,8 @@ class BranchListViewModel(application: Application)
         }
         unitId = id
         unitFragmentCallback?.invoke()
+        deleteDownloadedDatabase()
+
     }
 
     fun getPostByPersonId(id: Int) : LiveData<Posts> = liveData { emitSource(dataModel.getPostEntityById(id)) }
@@ -246,6 +220,10 @@ class BranchListViewModel(application: Application)
         callIntentCallback?.invoke(intent)
     }
 
+    fun sendEmail(intent: Intent) {
+        sendEmailIntentCallback?.invoke(intent)
+    }
+
 
     fun checkOpenableDatabase() : Boolean {
         val pathToDownloadedDatabase = context.filesDir.path + "/" + Var.DATABASE_NAME
@@ -296,13 +274,27 @@ class BranchListViewModel(application: Application)
     fun setupUnitList() {
         spinnerState.value = true
         unitList = liveData(Dispatchers.IO) {
-            emitSource(dataModel.getUnitEntities())
+            try {
+                emitSource(dataModel.getUnitEntities())
+            } catch (e: SQLiteException) {
+                Toast.makeText(context, "Smth went wrong", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    fun getPersonListByTag(sequence: String): LiveData<List<Persons>> {
-        return liveData { emitSource(dataModel.getPersonListByTag(sequence)) }
+    fun getPersonListByLastNameTag(sequence: String): LiveData<List<Persons>> {
+        return liveData { emitSource(dataModel.getPersonListByLastNameTag(sequence)) }
     }
+    fun getPersonListByNameTag(sequence: String): LiveData<List<Persons>> {
+        return liveData { emitSource(dataModel.getPersonListByNameTag(sequence)) }
+    }
+    fun getPersonListByPatronymicTag(sequence: String): LiveData<List<Persons>> {
+        return liveData { emitSource(dataModel.getPersonListByPatronymicTag(sequence)) }
+    }
+    fun getPersonListByMobilePhoneTag(sequence: String): LiveData<List<Persons>> {
+        return liveData { emitSource(dataModel.getPersonListByMobilePhoneTag(sequence)) }
+    }
+
 
     fun onPersonItemClick(id: Int) {
         spinnerState.value = true
@@ -328,9 +320,11 @@ class BranchListViewModel(application: Application)
         unitEntity = liveData { emitSource(dataModel.getUnitEntityById(id!!)) }
     }
 
-    fun setupPersonListByBirth() {
-        birthdayPersonList = liveData { emitSource(dataModel.getPersonEntitiesByUpcomingBirthday()) }
+
+    fun setUpcomingPersonsWithBirthday(period: String) {
+        birthdayPersonList = liveData { emitSource(dataModel.getUpcomingPersonWithBirthday(period)) }
     }
+
 
 
     fun getPostsEntities() : LiveData<List<Posts>>

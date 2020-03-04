@@ -29,7 +29,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.contactbook.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.root
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.ui.fragments.*
 import net.gas.gascontact.utils.AlarmNotificationReceiver
@@ -115,6 +114,10 @@ class MainListActivity : AppCompatActivity() {
 
         viewModel.callIntentCallback = {
           startActivity(it)
+        }
+
+        viewModel.sendEmailIntentCallback = {
+            startActivity(Intent.createChooser(it, "Отправка на email"))
         }
 
         viewModel.unitFragmentCallback = {
@@ -251,7 +254,7 @@ class MainListActivity : AppCompatActivity() {
                 createAboutAppFragment()
             }
             R.id.action_birthday -> {
-                createBirthPersonListFragment()
+                startActivity(Intent(this, BirthdayPersonListActivity::class.java))
                 //startNotificationAlarm(isNotification = true, isRepeat = true)
             }
         }

@@ -71,12 +71,12 @@ class BirthdayPersonListAdapter(viewModel: ViewModel, private val lifecycleOwner
                 }
 
                 binding.viewModel = mViewModel
-                binding.id = item.id
-                binding.name = item.lastName + " " + item.firstName + " " + item.patronymic
+               // binding.id = item.id
+               // binding.name = item.lastName + " " + item.firstName + " " + item.patronymic
                 binding.textBirthday.text = item.birthday
                 mViewModel.setupPostEntity(item.postID?.toInt())
                 mViewModel.postEntity.observe(lifecycleOwner, Observer {
-                    binding.post = it.name
+                  //  binding.post = it.name
                 })
             }
         }
