@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteException
 import android.graphics.PointF
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
@@ -76,7 +75,8 @@ class BranchListViewModel(application: Application)
 
     }
 
-    fun getPostByPersonId(id: Int) : LiveData<Posts> = liveData { emitSource(dataModel.getPostEntityById(id)) }
+    fun getPostByPersonId(id: Int) : LiveData<Posts>
+            = liveData { emitSource(dataModel.getPostEntityById(id)) }
 
     fun onDepartmentItemClick(id: Int) {
         spinnerState.value = true
@@ -186,7 +186,6 @@ class BranchListViewModel(application: Application)
                     val currentDatabaseSize = currentDatabaseSize.toFloat()
                     val percent = currentFileSize.div(currentDatabaseSize).times(100)
                     dbDownloadingProgressState.postValue(PointF(percent, percent))
-                    Log.e("i", "$percent")
                 }
                 else break
             }
@@ -324,14 +323,6 @@ class BranchListViewModel(application: Application)
     fun setUpcomingPersonsWithBirthday(period: String) {
         birthdayPersonList = liveData { emitSource(dataModel.getUpcomingPersonWithBirthday(period)) }
     }
-
-
-
-    fun getPostsEntities() : LiveData<List<Posts>>
-            = liveData { emitSource(dataModel.getPostsEntities()) }
-
-    fun getPersonEntities() : LiveData<List<Persons>>
-            = liveData { emitSource(dataModel.getPersonsEntities()) }
 
 
 

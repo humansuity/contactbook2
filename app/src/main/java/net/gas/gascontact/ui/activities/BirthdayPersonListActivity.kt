@@ -2,33 +2,29 @@ package net.gas.gascontact.ui.activities
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.example.contactbook.R
 import kotlinx.android.synthetic.main.activity_birthday_person_list.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import net.gas.gascontact.business.adapters.BirthdayPagerAdapter
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.ui.fragments.PersonAdditionalFragment
+import net.gas.gascontact.ui.fragments.ViewPagerFragment
 
 class BirthdayPersonListActivity : AppCompatActivity() {
 
     private lateinit var viewModel: BranchListViewModel
+    private var isViewPagerActive = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_birthday_person_list)
 
         viewModel = ViewModelProvider(this).get(BranchListViewModel::class.java)
-        val pagerAdapter = BirthdayPagerAdapter(supportFragmentManager)
-        viewPager.adapter = pagerAdapter
         setSupportActionBar(toolbar)
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_back_20)
+        if (!viewModel.isPersonFragmentActive)
+            createViewPagerFragment()
         viewModel.personFragmentCallBack = { createPersonAdditionalFragment() }
     }
 
@@ -41,27 +37,6 @@ class BirthdayPersonListActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        if (viewModel.isPersonFragmentActive) viewPager.visibility = View.GONE
-        else {
-            GlobalScope.launch(Dispatchers.Default) {
-                delay(200)
-                launch(Dispatchers.Main) { viewPager.visibility = View.VISIBLE }
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (viewModel.isPersonFragmentActive) viewPager.visibility = View.GONE
-        else {
-            GlobalScope.launch(Dispatchers.Default) {
-                delay(200)
-                launch(Dispatchers.Main) { viewPager.visibility = View.VISIBLE }
-            }
-        }
-    }
 
     private fun createPersonAdditionalFragment() {
         if (isDestroyed) return
@@ -72,8 +47,19 @@ class BirthdayPersonListActivity : AppCompatActivity() {
             .replace(R.id.fragmentHolder, fragment)
             .addToBackStack(null)
             .commit()
+    }
+
+
+    private fun createViewPagerFragment() {
+        if (isDestroyed) return
+        val fragment = ViewPagerFragment()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .add(R.id.fragmentHolder, fragment)
+            .commit()
+        isViewPagerActive = true
         viewModel.isPersonFragmentActive = true
-        viewPager.visibility = View.GONE
     }
 
 }
