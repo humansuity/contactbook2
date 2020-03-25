@@ -17,25 +17,30 @@ class BirthdayViewModel(application: Application) : AndroidViewModel(application
 
     var personEntity: LiveData<Persons> = MutableLiveData<Persons>()
 
-    private var isBirthViewPagerActive = false
+    var isPersonFragmentActive = false
     var callIntentCallback: ((Intent) -> Unit)? = null
     var sendEmailIntentCallback: ((Intent) -> Unit)? = null
     var personFragmentCallBack: (() -> Unit)? = null
 
 
+    /**
+     * function for call  and send email in listviewmodel doesnt work
+     * in birthdayPersonListActivity because viewmodel recreated again
+     * (MainListActivity is destroyed when created a new activity
+     * **/
 
     fun makePhoneCall(intent: Intent) {
-        callIntentCallback?.invoke(intent)
+        context.startActivity(intent)
     }
 
     fun sendEmail(intent: Intent) {
-        sendEmailIntentCallback?.invoke(intent)
+        context.startActivity(Intent.createChooser(intent, "Отправка на email"))
     }
 
 
     fun onPersonItemClick(id: Int) {
+        //spinnerState.value = true
         personEntity = liveData { emitSource(dataModel.getPersonEntityById(id)) }
         personFragmentCallBack?.invoke()
     }
-
 }

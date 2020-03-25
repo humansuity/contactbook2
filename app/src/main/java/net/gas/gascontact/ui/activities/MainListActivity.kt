@@ -254,8 +254,9 @@ class MainListActivity : AppCompatActivity() {
                 createAboutAppFragment()
             }
             R.id.action_birthday -> {
-                startActivity(Intent(this, BirthdayPersonListActivity::class.java))
+                //startActivity(Intent(this, BirthdayPersonListActivity::class.java))
                 //startNotificationAlarm(isNotification = true, isRepeat = true)
+                createViewPagerFragment()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -376,6 +377,17 @@ class MainListActivity : AppCompatActivity() {
     private fun createBirthPersonListFragment() {
         if (isDestroyed) return
         val fragment = BirthdayPersonListFragment()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .replace(R.id.fragmentHolder, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun createViewPagerFragment() {
+        if (isDestroyed) return
+        val fragment = BirthdayPeriodFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
