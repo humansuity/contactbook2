@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import net.gas.gascontact.ui.fragments.BirthdayPersonListFragment
 
 class BirthdayPagerAdapter(fragmentManager: FragmentManager)
-    : FragmentPagerAdapter(fragmentManager) {
+    : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
 
     override fun getItem(position: Int): Fragment {

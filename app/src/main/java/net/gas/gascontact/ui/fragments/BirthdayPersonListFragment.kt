@@ -45,6 +45,7 @@ class BirthdayPersonListFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
 
+
         arguments?.takeIf { it.containsKey("PERIOD") }?.apply {
             viewModel.setUpcomingPersonsWithBirthday(getString("PERIOD")!!)
         }

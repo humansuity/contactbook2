@@ -1,9 +1,7 @@
 package net.gas.gascontact.ui.activities
 
 import android.Manifest
-import android.app.AlarmManager
 import android.app.AlertDialog
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,14 +12,12 @@ import android.graphics.drawable.InsetDrawable
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
-import android.os.SystemClock
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -31,8 +27,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.ui.fragments.*
-import net.gas.gascontact.utils.AlarmNotificationReceiver
-import net.gas.gascontact.utils.BirthdayNotification
 import net.gas.gascontact.utils.Var
 import java.text.SimpleDateFormat
 import java.util.*
@@ -73,17 +67,6 @@ class MainListActivity : AppCompatActivity() {
         floatingActionButton.setOnClickListener {
             createSearchFragment()
         }
-    }
-
-    private fun createUpcomingNotification() {
-        val birthdayNotification =
-            BirthdayNotification(applicationContext)
-        birthdayNotification.createNotificationChannel(
-            NotificationManagerCompat.IMPORTANCE_DEFAULT,
-            getString(R.string.app_name),
-            "App notification channel"
-        )
-        birthdayNotification.createSampleDataNotification()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -254,8 +237,6 @@ class MainListActivity : AppCompatActivity() {
                 createAboutAppFragment()
             }
             R.id.action_birthday -> {
-                //startActivity(Intent(this, BirthdayPersonListActivity::class.java))
-                //startNotificationAlarm(isNotification = true, isRepeat = true)
                 createViewPagerFragment()
             }
         }
@@ -374,16 +355,6 @@ class MainListActivity : AppCompatActivity() {
             .commit()
     }
 
-    private fun createBirthPersonListFragment() {
-        if (isDestroyed) return
-        val fragment = BirthdayPersonListFragment()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .replace(R.id.fragmentHolder, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
 
     private fun createViewPagerFragment() {
         if (isDestroyed) return
@@ -394,25 +365,5 @@ class MainListActivity : AppCompatActivity() {
             .replace(R.id.fragmentHolder, fragment)
             .addToBackStack(null)
             .commit()
-    }
-
-
-    private fun startNotificationAlarm(isNotification: Boolean, isRepeat: Boolean) {
-        val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val pendingIntent: PendingIntent
-
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 12)
-        calendar.set(Calendar.MINUTE, 8)
-
-        val intent = Intent(this, AlarmNotificationReceiver::class.java)
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
-
-        if (!isRepeat)
-            alarmManager.set(AlarmManager.RTC_WAKEUP,
-                SystemClock.elapsedRealtime(), pendingIntent)
-        else
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
     }
 }
