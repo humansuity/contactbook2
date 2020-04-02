@@ -1,6 +1,7 @@
 package net.gas.gascontact.business.database.entities
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "departments")

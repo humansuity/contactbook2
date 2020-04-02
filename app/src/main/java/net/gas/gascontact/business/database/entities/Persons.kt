@@ -1,9 +1,6 @@
 package net.gas.gascontact.business.database.entities
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 
 @Entity(
@@ -35,10 +32,10 @@ data class Persons (
     @ColumnInfo(name = "home_phone") val homePhone: String?,
     @ColumnInfo(name = "mobile_phone") val mobilePhone: String?,
     @ColumnInfo(name = "work_phone") val workPhone: String?,
-    @ColumnInfo(name = "unit_id") val unitID: Short?,
-    @ColumnInfo(name = "department_id") val departmentID: Short?,
-    @ColumnInfo(name = "post_id") val postID: Short?,
-    @ColumnInfo(name = "photo_id") val photoID: Int?,
+    @ColumnInfo(name = "unit_id", index = true) val unitID: Short?,
+    @ColumnInfo(name = "department_id", index = true) val departmentID: Short?,
+    @ColumnInfo(name = "post_id", index = true) val postID: Short?,
+    @ColumnInfo(name = "photo_id", index = true) val photoID: Int?,
     @ColumnInfo(name = "mail") val email: String?,
     @ColumnInfo(name = "short_phone") val shortPhone: String?,
     val patronymic: String?,
