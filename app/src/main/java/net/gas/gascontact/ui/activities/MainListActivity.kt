@@ -147,6 +147,8 @@ class MainListActivity : AppCompatActivity() {
 
         viewModel.initUnitFragmentCallback = {
             createUnitListFragment()
+
+            /////////////////
         }
 
         viewModel.onReceiveDatabaseSizeCallBack = {
