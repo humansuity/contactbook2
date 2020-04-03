@@ -333,6 +333,8 @@ class BranchListViewModel(application: Application)
         }
     }
 
+
+
     private fun updateDatabase() {
         dataModel.updateDatabase()
     }

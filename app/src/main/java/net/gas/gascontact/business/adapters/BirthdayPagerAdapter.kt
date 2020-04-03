@@ -4,33 +4,26 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 import net.gas.gascontact.ui.fragments.BirthdayPersonListFragment
 
 class BirthdayPagerAdapter(fragmentManager: FragmentManager)
-    : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    : FragmentStatePagerAdapter(fragmentManager) {
 
 
     override fun getItem(position: Int): Fragment {
         return when(position) {
             0 -> {
-                val fragment = BirthdayPersonListFragment()
-                fragment.arguments = Bundle().apply { putString("PERIOD", "TODAY") }
-                fragment
+                BirthdayPersonListFragment.newInstance("PERIOD", "TODAY")
             }
             1 -> {
-                val fragment = BirthdayPersonListFragment()
-                fragment.arguments = Bundle().apply { putString("PERIOD", "TOMORROW") }
-                fragment
+                BirthdayPersonListFragment.newInstance("PERIOD", "TOMORROW")
             }
             2 -> {
-                val fragment = BirthdayPersonListFragment()
-                fragment.arguments = Bundle().apply { putString("PERIOD", "DAY_AFTER_TOMORROW") }
-                fragment
+                BirthdayPersonListFragment.newInstance("PERIOD", "DAY_AFTER_TOMORROW")
             }
             3 -> {
-                val fragment = BirthdayPersonListFragment()
-                fragment.arguments = Bundle().apply { putString("PERIOD", "IN_A_WEEK") }
-                fragment
+                BirthdayPersonListFragment.newInstance("PERIOD", "IN_A_WEEK")
             }
             else -> Fragment()
         }
