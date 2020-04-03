@@ -337,4 +337,7 @@ class BranchListViewModel(application: Application)
         dataModel.updateDatabase()
     }
 
+
+    /** **/
+
 }
