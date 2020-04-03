@@ -25,6 +25,13 @@ class BirthdayPersonListFragment : Fragment() {
     private lateinit var viewModel: BranchListViewModel
     private lateinit var listAdapter: BirthdayPersonListAdapterOptimized
 
+    companion object {
+        fun newInstance(key: String, value: String) : BirthdayPersonListFragment  {
+            val fragment = BirthdayPersonListFragment()
+            fragment.arguments = Bundle().apply { putString(key,value) }
+            return fragment
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +51,6 @@ class BirthdayPersonListFragment : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
-
 
         arguments?.takeIf { it.containsKey("PERIOD") }?.apply {
             viewModel.setUpcomingPersonsWithBirthday(getString("PERIOD")!!)
