@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteException
 import android.graphics.PointF
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +59,7 @@ class BranchListViewModel(application: Application)
     var isUnitFragmentActive = false
     var isPersonFragmentActive = false
     var sharedDatabaseSize: Long = 0
-    var databaseUpdateTime: String = ""
+    lateinit var databaseUpdateTime: String
     private var currentDatabaseSize: Long = 0
     private var unitId = 0
 
@@ -94,11 +95,9 @@ class BranchListViewModel(application: Application)
     }
 
     fun startDownloadingDB() {
-        downloadSpinnerState.value = true
         viewModelScope.launch(Dispatchers.Default) {
             downloadDb("")
             viewModelScope.launch(Dispatchers.Main) {
-                downloadSpinnerState.value = false
                 if (checkOpenableDatabase()) {
                     initUnitFragmentCallback?.invoke()
                     putUpdateDatabaseDateToConfig()
@@ -121,11 +120,9 @@ class BranchListViewModel(application: Application)
 
 
     fun startUpdatingDB() {
-        downloadSpinnerState.value = true
         viewModelScope.launch(Dispatchers.Default) {
             downloadDb("UPDATING")
             viewModelScope.launch(Dispatchers.Main) {
-                downloadSpinnerState.value = false
                 if (isDownloadedFileValid(context.filesDir.path + "/" + Var.DATABASE_NAME)) {
                     deleteOldRoomFile()
                     putUpdateDatabaseDateToConfig()
@@ -155,11 +152,20 @@ class BranchListViewModel(application: Application)
             connection.requestMethod = "GET"
             connection.readTimeout = 10 * 1000     //set 10 seconds to get response
             connection.connect()
-            currentDatabaseSize = connection.contentLength.toLong()
-            if (currentDatabaseSize > 0 && currentDatabaseSize != 125L) {
-                onReceiveDatabaseSizeCallBack?.invoke(currentDatabaseSize)
+            Log.e("response", "${connection.responseCode}")
+            if (connection.responseCode == 410) {
+                viewModelScope.launch(Dispatchers.Main) {
+                    onNetworkErrorCallback?.invoke("ACCESS_DENIED_ERROR")
+                }
+            } else {
+                Log.e("response", "565665655464564")
+                downloadSpinnerState.postValue(true)
+                currentDatabaseSize = connection.contentLength.toLong()
+                if (currentDatabaseSize > 0 && currentDatabaseSize != 125L) {  //dont know why size may be equal 125L
+                    onReceiveDatabaseSizeCallBack?.invoke(currentDatabaseSize)
+                }
+                downloadViaHttpConnection(connection, url, flag)
             }
-            downloadViaHttpConnection(connection, url, flag)
         } catch (e: ConnectException) {
             viewModelScope.launch(Dispatchers.Main) {
                 if (flag == "UPDATING") {
@@ -169,7 +175,7 @@ class BranchListViewModel(application: Application)
         } finally {
             connection?.disconnect()
         }
-    }
+    }                                   
 
     private fun downloadViaHttpConnection(connection: HttpURLConnection, url: URL, flag: String) {
         var fileOutputStream: FileOutputStream? = null
@@ -301,19 +307,24 @@ class BranchListViewModel(application: Application)
         personFragmentCallBack?.invoke()
     }
 
+
     fun setupPhotoEntity(id: Int?) {
         photoEntity = liveData { emitSource(dataModel.getPhotoEntityById(id!!)) }
     }
 
+
     fun getPhotoEntity(id: Int?) : LiveData<Photos> = liveData { emitSource(dataModel.getPhotoEntityById(id!!)) }
+
 
     fun setupPostEntity(id: Int?) {
         postEntity = liveData { emitSource(dataModel.getPostEntityById(id!!)) }
     }
 
+
     fun setupDepartmentEntity(id: Int?) {
         departmentEntity = liveData { emitSource(dataModel.getDepartmentEntityById(id!!)) }
     }
+
 
     fun setupUnitEntity(id: Int?) {
         unitEntity = liveData { emitSource(dataModel.getUnitEntityById(id!!)) }
@@ -323,7 +334,6 @@ class BranchListViewModel(application: Application)
     fun setUpcomingPersonsWithBirthday(period: String) {
         birthdayPersonList = liveData { emitSource(dataModel.getUpcomingPersonWithBirthday(period)) }
     }
-
 
 
     private fun deleteDownloadedDatabase() {
