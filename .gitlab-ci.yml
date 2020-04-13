@@ -4,4 +4,4 @@ stages:
 assembleDebug:
   stage: build
   script:
-    - ./gradlew assembleDebug --debug
+    - ./gradlew assembleDebug
