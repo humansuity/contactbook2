@@ -6,9 +6,9 @@ assembleDebug:
   stage: build
   script:
     - ./gradlew assembleDebug
-    artifacts:
-      paths:
-        - app/build/outputs/
+  artifacts:
+    paths:
+      - app/build/outputs/
     
 deployDebug:
   stage: deploy
