@@ -5,10 +5,15 @@ stages:
 assembleDebug:
   stage: build
   script:
-    - ./gradlew assembleDebug --info
+    - ./gradlew assembleDebug
+    artifacts:
+      paths:
+      - app/build/outputs/
     
 deployDebug:
   stage: deploy
   script: 
-   - scp -i /home/gitlab-runner/.ssh/id_rsa -o ProxyJump=f-droid@192.168.220.5 ~/builds/cAjYJVeX/0/dudkevichvd/contactbook2/app/build/outputs/apk/debug/app-debug.apk f-droid@172.20.220.11:/var/www/f-droid/repo
-   - ssh -J f-droid@192.168.220.5 f-droid@172.20.220.11 "cd /var/www/f-droid/ && fdroid update -c && fdroid update"
+    - scp -i /home/gitlab-runner/.ssh/id_rsa -o ProxyJump=f-droid@192.168.220.5 ~/builds/cAjYJVeX/0/dudkevichvd/contactbook2/app/build/outputs/apk/debug/app-debug.apk f-droid@172.20.220.11:/var/www/f-droid/repo
+    - ssh -J f-droid@192.168.220.5 f-droid@172.20.220.11 "cd /var/www/f-droid/ && fdroid update -c && fdroid update"
+  dependencies:
+    - build
