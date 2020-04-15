@@ -17,5 +17,4 @@ deployDebug:
     - ssh -J f-droid@192.168.220.5 f-droid@172.20.220.11 "cd /var/www/f-droid/ && fdroid update -c && fdroid update"
   dependencies:
     - assembleDebug
-  when:
-    - manual
+  when: manual
