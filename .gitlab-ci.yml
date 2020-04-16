@@ -1,5 +1,7 @@
 variables:
   APK_NAME: "contactbook-$CI_COMMIT_REF_NAME-$CI_PIPELINE_ID-build.apk"
+  JUMP_URL: "f-droid@192.168.220.5"
+  BASE_URL: "f-droid@172.20.220.11"
 
 stages:
   - build
@@ -22,8 +24,8 @@ assembleDebug:
 deployDebug:
   stage: deploy
   script: 
-    - scp -i ~/.ssh/id_rsa -o ProxyJump=f-droid@192.168.220.5 ~/apk/$APK_NAME f-droid@172.20.220.11:/var/www/f-droid/repo
-    - ssh -J f-droid@192.168.220.5 f-droid@172.20.220.11 "cd /var/www/f-droid/ && fdroid update -c && fdroid update"
+    - scp -i ~/.ssh/id_rsa -o ProxyJump=$JUMP_URL ~/apk/$APK_NAME $BASE_URL:/var/www/f-droid/repo
+    - ssh -J $JUMP_URL $BASE_URL "cd /var/www/f-droid/ && fdroid update -c && fdroid update"
   dependencies:
     - assembleDebug
   when: manual
