@@ -9,6 +9,7 @@ assembleDebug:
   script:
     - ./gradlew assembleDebug
   artifacts:
+    name: "$CI_COMMIT_REF_NAME"
     paths:
       - app/build/outputs/
     
