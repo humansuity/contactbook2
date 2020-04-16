@@ -1,5 +1,5 @@
 variables:
-  FILE_NAME: "contactbook-$CI_COMMIT_REF_NAME-$CI_JOB_ID-build.apk"
+  APK_NAME: "contactbook-$CI_COMMIT_REF_NAME-$CI_PIPELINE_ID-build.apk"
 
 stages:
   - build
@@ -12,17 +12,17 @@ assembleDebug:
     - echo $FILE_NAME
   script:
     - ./gradlew assembleDebug
+  after_script: 
+    - cp app/build/outputs/apk/debug/app-debug.apk ~/apk/$APK_NAME
   artifacts:
-    name: "$CI_COMMIT_REF_NAME-$CI_COMMIT_TAG"
+    name: "$CI_COMMIT_REF_NAME-$CI_JOB_ID"
     paths:
       - app/build/outputs/apk/debug/app-debug.apk
     
 deployDebug:
   stage: deploy
-  only: 
-    - release
   script: 
-    - scp -i ~/.ssh/id_rsa -o ProxyJump=f-droid@192.168.220.5 ~/builds/cAjYJVeX/0/dudkevichvd/contactbook2/app/build/outputs/apk/debug/app-debug.apk f-droid@172.20.220.11:/var/www/f-droid/repo
+    - scp -i ~/.ssh/id_rsa -o ProxyJump=f-droid@192.168.220.5 ~/apk/$APK_NAME f-droid@172.20.220.11:/var/www/f-droid/repo
     - ssh -J f-droid@192.168.220.5 f-droid@172.20.220.11 "cd /var/www/f-droid/ && fdroid update -c && fdroid update"
   dependencies:
     - assembleDebug
