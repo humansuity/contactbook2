@@ -1,3 +1,6 @@
+variables:
+  FILE_NAME: "contactbook-$CI_COMMIT_REF_NAME-$CI_COMMIT_TAG-build"
+
 stages:
   - build
   - deploy
@@ -6,6 +9,7 @@ assembleDebug:
   stage: build
   before_script: 
     - export ANDROID_HOME=~
+    - echo $FILE_NAME
   script:
     - ./gradlew assembleDebug
   artifacts:
