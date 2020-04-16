@@ -1,5 +1,5 @@
 variables:
-  FILE_NAME: "contactbook-$CI_COMMIT_REF_NAME-$CI_COMMIT_TAG-build"
+  FILE_NAME: "contactbook-$CI_COMMIT_REF_NAME-$CI_JOB_ID-build.apk"
 
 stages:
   - build
