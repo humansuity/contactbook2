@@ -68,6 +68,7 @@ class AlertFragment : Fragment() {
         }
         viewModel.floatingButtonState.value = false
         button.setOnClickListener {
+            viewModel.tryToLogin()
             viewModel.downloadDatabase()
         }
 

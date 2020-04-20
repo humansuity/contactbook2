@@ -10,8 +10,13 @@ import android.widget.Toast
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.gas.gascontact.business.database.entities.*
 import net.gas.gascontact.business.model.DataModel
+import net.gas.gascontact.model.TokenResponse
+import net.gas.gascontact.network.api.KeycloackRetrofitFactory
+import net.gas.gascontact.network.api.KeycloackRetrofitService
+import net.gas.gascontact.utils.ORGANIZATIONUNITLIST
 import net.gas.gascontact.utils.Var
 import java.io.File
 import java.io.FileOutputStream
@@ -344,9 +349,35 @@ class BranchListViewModel(application: Application)
     }
 
 
-
     private fun updateDatabase() {
         dataModel.updateDatabase()
+    }
+
+
+    fun tryToLogin(realm: String?, username: String?, password: String?) {
+        var tokens: TokenResponse
+        val keycloackservice: KeycloackRetrofitService = KeycloackRetrofitFactory.makeRetrofitService()
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = keycloackservice.requestGrant(realm!!, "microservicegasclient", ORGANIZATIONUNITLIST.find {it.code == realm}!!.secret, "password", username!!, password!!)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        tokens = it
+                        //realm = _realm
+                        Log.e("Controller ", "CheckValidPassword success");
+                        //identityScopes(viewModel)
+
+                    }
+                } else {
+                    Log.e("Controller", "CheckValidPassword Not success")
+                    if (response.code() == 401){
+                        viewModel.ErrorMessageTitle.value = "Ошибка авторизации"
+                        viewModel.ErrorMessageDescription.value = "Введенный логин или пароль недействительны"
+                    }
+                    viewModel.SuccessLogin.value = false
+                }
+            }
+        }
     }
 
 }
