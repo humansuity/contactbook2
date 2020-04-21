@@ -10,9 +10,15 @@ import android.widget.Toast
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.gas.gascontact.business.database.entities.*
 import net.gas.gascontact.business.model.DataModel
+import net.gas.gascontact.model.TokenResponse
+import net.gas.gascontact.network.api.KeycloackRetrofitFactory
+import net.gas.gascontact.network.api.KeycloackRetrofitService
+import net.gas.gascontact.utils.ORGANIZATIONUNITLIST
 import net.gas.gascontact.utils.Var
+import retrofit2.HttpException
 import java.io.File
 import java.io.FileOutputStream
 import java.net.ConnectException
@@ -42,6 +48,7 @@ class BranchListViewModel(application: Application)
     var floatingButtonState: MutableLiveData<Boolean> = MutableLiveData()
     var downloadSpinnerState: MutableLiveData<Boolean> = MutableLiveData()
     var dbDownloadingProgressState: MutableLiveData<PointF> = MutableLiveData()
+    var userLoginState: MutableLiveData<Boolean> = MutableLiveData()
 
     var unitFragmentCallback: (() -> Unit)? = null
     var initUnitFragmentCallback: (() -> Unit)? = null
@@ -56,6 +63,8 @@ class BranchListViewModel(application: Application)
     var appToolbarStateCallback: ((String, Boolean) -> Unit)? = null
     var onReceiveDatabaseSizeCallBack: ((Long) -> Unit)? = null
     var onDatabaseUpdated: ((Boolean) -> Unit)? = null
+    var onLoginCallback: (() -> Unit)? = null
+    var afterSuccessLoginCallback: (() -> Unit)? = null
     var isUnitFragmentActive = false
     var isPersonFragmentActive = false
     var sharedDatabaseSize: Long = 0
@@ -344,9 +353,52 @@ class BranchListViewModel(application: Application)
     }
 
 
-
     private fun updateDatabase() {
         dataModel.updateDatabase()
+    }
+
+
+    fun tryToLogin(realm: String?, username: String?, password: String?) {
+        Log.e("login", "$realm, $username, $password")
+        var tokens: TokenResponse
+        val keycloackservice: KeycloackRetrofitService = KeycloackRetrofitFactory.makeRetrofitService()
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = keycloackservice.requestGrant(realm!!, "microservicegasclient", ORGANIZATIONUNITLIST.find {it.code == realm}!!.secret, "password", username!!, password!!)
+            try {
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            tokens = it
+                            //realm = _realm
+                            Log.e("Controller ", "CheckValidPassword success");
+                            //identityScopes(viewModel)
+                        }
+                        userLoginState.value = true
+                    } else {
+                        /*Log.e("Controller", "CheckValidPassword Not success")
+                    if (response.code() == 401){
+                        viewModel.ErrorMessageTitle.value = "Ошибка авторизации"
+                        viewModel.ErrorMessageDescription.value = "Введенный логин или пароль недействительны"
+                    }
+                    viewModel.SuccessLogin.value = false*/
+                        Toast.makeText(context, "Ошибка авторизации", Toast.LENGTH_LONG).show()
+                        userLoginState.value = false
+                    }
+                }
+            } catch (e: HttpException) {
+//                viewModel.ErrorMessageTitle.value = "Сетевые проблемы"
+//                viewModel.ErrorMessageDescription.value = e.message
+//                viewModel.SuccessLogin.value = false
+                Log.e("Controller", "Exception in CheckValidPassword  ${e.message}")
+            } catch (e: Throwable) {
+//                viewModel.ErrorMessageTitle.value = "Проблемы авторизации"
+//                viewModel.ErrorMessageDescription.value = "Ooops: Something else went wrong"
+//                viewModel.SuccessLogin.value = false
+                Log.e("Controller", "Ooops: Something else went wrong")
+                Toast.makeText(context, "Ошибка авторизации", Toast.LENGTH_LONG).show()
+
+            }
+        }
     }
 
 }
