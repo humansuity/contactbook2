@@ -39,13 +39,13 @@ abstract class ContactbookDatabase : RoomDatabase() {
             val pathToDatabase = context.filesDir.path + "/" + DB_NAME
             if (INSTANCE == null) {
                 synchronized(ContactbookDatabase::class) {
-                    val factory = SafeHelperFactory(key.toCharArray(), SafeHelperFactory.POST_KEY_SQL_V3)
+                    //val factory = SafeHelperFactory(key.toCharArray(), SafeHelperFactory.POST_KEY_SQL_V3)
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,
                         ContactbookDatabase::class.java,
                         DB_NAME
                     )
-                        .openHelperFactory(factory)
+                        //.openHelperFactory(factory)
                         .createFromFile(File(pathToDatabase))
                         .build()
                 }

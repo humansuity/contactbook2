@@ -9,7 +9,7 @@ import net.gas.gascontact.business.database.entities.Departments
 @Dao
 interface DepartmentsDao {
 
-    @Query("select * from departments, (select department_id from relation where unit_id = :selectedID) as temp_id where departments.id = temp_id.department_id group by rangir")
+    @Query("select * from departments, (select department_id from relation where unit_id = :selectedID) as temp_id where departments.id = temp_id.department_id order by rangir")
     fun getEntitiesById(selectedID: Int) : LiveData<List<Departments>>
 
     @Query("select * from departments where id = :id")
