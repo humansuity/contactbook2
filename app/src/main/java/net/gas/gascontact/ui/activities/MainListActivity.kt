@@ -184,6 +184,14 @@ class MainListActivity : AppCompatActivity() {
                 } else createUnitListFragment()
             }
         }
+
+        viewModel.onLoginCallback = {
+            createLoginFragment()
+        }
+
+        viewModel.afterSuccessLoginCallback = {
+            createAlertFragment()
+        }
     }
 
 
@@ -364,6 +372,18 @@ class MainListActivity : AppCompatActivity() {
     private fun createViewPagerFragment() {
         if (isDestroyed) return
         val fragment = BirthdayPeriodFragment()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .replace(R.id.fragmentHolder, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+
+    private fun createLoginFragment() {
+        if (isDestroyed) return
+        val fragment = LoginFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

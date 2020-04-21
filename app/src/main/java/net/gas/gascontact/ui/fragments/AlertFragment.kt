@@ -68,7 +68,7 @@ class AlertFragment : Fragment() {
         }
         viewModel.floatingButtonState.value = false
         button.setOnClickListener {
-            viewModel.downloadDatabase()
+            viewModel.onLoginCallback?.invoke()
         }
 
         viewModel.downloadSpinnerState.observe(viewLifecycleOwner, Observer {
