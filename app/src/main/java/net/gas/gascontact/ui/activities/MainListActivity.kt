@@ -131,10 +131,10 @@ class MainListActivity : AppCompatActivity() {
                             Var.STORAGE_PERMISSION_CODE
                         )
                     } else {
-                        viewModel.startDownloadingDB()
+                        createLoginFragment("DOWNLOAD")
                     }
                 } else {
-                    viewModel.startDownloadingDB()
+                    createLoginFragment("DOWNLOAD")
                 }
             } else { viewModel.onNetworkErrorCallback?.invoke("NO_INTERNET_CONNECTION") }
         }
@@ -186,7 +186,7 @@ class MainListActivity : AppCompatActivity() {
         }
 
         viewModel.onLoginCallback = {
-            createLoginFragment()
+            createLoginFragment("DOWNLOAD")
         }
 
         viewModel.afterSuccessLoginCallback = {
@@ -211,7 +211,7 @@ class MainListActivity : AppCompatActivity() {
             Var.STORAGE_PERMISSION_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] ==
                     PackageManager.PERMISSION_GRANTED) {
-                    viewModel.startDownloadingDB()
+                    createLoginFragment("DOWNLOAD")
                 }
                 else { Snackbar.make(root,
                     "Права не предоставлены!", Snackbar.LENGTH_LONG).show()
@@ -268,7 +268,9 @@ class MainListActivity : AppCompatActivity() {
 
         view.findViewById<Button>(R.id.btn_cancel_update).setOnClickListener { dialog.dismiss() }
         view.findViewById<Button>(R.id.btn_ok_update).setOnClickListener {
-            updateDatabase()
+            if (checkInternetConnection()) {
+                createLoginFragment("UPDATE")
+            }
             dialog.dismiss()
         }
         dialog.show()
@@ -381,9 +383,9 @@ class MainListActivity : AppCompatActivity() {
     }
 
 
-    private fun createLoginFragment() {
+    private fun createLoginFragment(type: String) {
         if (isDestroyed) return
-        val fragment = LoginFragment()
+        val fragment = LoginFragment.newInstance("TYPE", type)
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

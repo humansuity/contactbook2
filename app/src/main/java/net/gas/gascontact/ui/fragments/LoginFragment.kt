@@ -20,6 +20,16 @@ class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentFirstLoginBinding
     private lateinit var viewModel: BranchListViewModel
+    private lateinit var downloadType: String
+
+
+    companion object {
+        fun newInstance(key: String, value: String) : LoginFragment  {
+            val fragment = LoginFragment()
+            fragment.arguments = Bundle().apply { putString(key,value) }
+            return fragment
+        }
+    }
 
 
     override fun onCreateView(
@@ -40,6 +50,14 @@ class LoginFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity()).get(BranchListViewModel::class.java)
+        viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
+        viewModel.appToolbarStateCallback?.invoke("Авторизация", false)
+        viewModel.floatingButtonState.value = false
+
+        arguments?.takeIf { it.containsKey("TYPE") }?.apply {
+            downloadType = getString("TYPE")!!
+        }
+
         val realmArray = arrayListOf<String>()
         ORGANIZATIONUNITLIST.forEach { realmArray.add(it.name) }
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, realmArray)
@@ -52,7 +70,10 @@ class LoginFragment : Fragment() {
 
         viewModel.userLoginState.observe(viewLifecycleOwner, Observer {
             if (it) {
-                viewModel.startDownloadingDB()
+                if (downloadType == "DOWNLOAD")
+                    viewModel.startDownloadingDB()
+                else
+                    viewModel.startUpdatingDB()
                 viewModel.afterSuccessLoginCallback?.invoke()
             }
         })
