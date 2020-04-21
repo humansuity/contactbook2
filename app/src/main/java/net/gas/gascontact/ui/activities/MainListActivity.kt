@@ -50,15 +50,12 @@ class MainListActivity : AppCompatActivity() {
         viewModel.sharedDatabaseSize = getDatabaseSize()
         viewModel.databaseUpdateTime = getDatabaseUpdateTime()
 
-//        if (viewModel.checkOpenableDatabase()) {
-//            if (!viewModel.isUnitFragmentActive)
-//                createUnitListFragment()
-//        } else {
-//            createAlertFragment()
-//        }
-
-        if (!viewModel.isUnitFragmentActive)
-            createUnitListFragment()
+        if (viewModel.checkOpenableDatabase()) {
+            if (!viewModel.isUnitFragmentActive)
+                createUnitListFragment()
+        } else {
+            createAlertFragment()
+        }
 
         viewModel.floatingButtonState.observe(this, Observer {
             floatingActionButton.visibility = if (it) View.VISIBLE else View.INVISIBLE
