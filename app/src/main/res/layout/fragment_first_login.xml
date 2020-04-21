@@ -4,9 +4,6 @@
          xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable
-                name="viewmodel"
-                type="net.gas.miriada.viewmodel.FirstLoginViewModel" />
     </data>
 
 <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
@@ -76,11 +73,13 @@
 
     <Spinner
         android:id="@+id/spinner"
+        style="@style/Widget.AppCompat.Spinner.DropDown.ActionBar"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#7E959F"
+        android:spinnerMode="dialog"
         app:layout_constraintEnd_toEndOf="@+id/loginUsernameTextInputLayout"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/loginUsernameTextInputLayout"
         app:layout_constraintTop_toTopOf="parent" />
 
