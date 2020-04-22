@@ -276,14 +276,14 @@ class MainListActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun updateDatabase() {
+    /*private fun updateDatabase() {
         if (checkInternetConnection()) {
             createAlertFragment()
             viewModel.startUpdatingDB()
         } else
             Snackbar.make(root,
                 "Проверьте подключение к интернету!", Snackbar.LENGTH_LONG).show()
-    }
+    }*/
 
 
 
