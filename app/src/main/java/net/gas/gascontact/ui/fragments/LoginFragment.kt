@@ -66,6 +66,7 @@ class LoginFragment : Fragment() {
             Log.e("KEY", "$downloadType")
         }
 
+
         val realmArray = arrayListOf<String>()
         ORGANIZATIONUNITLIST.forEach { realmArray.add(it.name) }
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, realmArray)
@@ -96,6 +97,7 @@ class LoginFragment : Fragment() {
                                     else
                                         viewModel.startUpdatingDbTest(response)
                                 }
+                                viewModel.realmSpinnerPosition = spinner.selectedItemPosition
                                 Toast.makeText(context, "Success! Response code is ${response.code()}", Toast.LENGTH_LONG).show()
                             } else {
                                 Log.e("Controller", "DownloadDatabase Not success")

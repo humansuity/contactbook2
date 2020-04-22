@@ -76,6 +76,7 @@ class BranchListViewModel(application: Application)
     lateinit var databaseUpdateTime: String
     private var currentDatabaseSize: Long = 0
     private var unitId = 0
+    var realmSpinnerPosition = 1
 
     fun onUnitItemClick(id: Int) {
         spinnerState.value = true
