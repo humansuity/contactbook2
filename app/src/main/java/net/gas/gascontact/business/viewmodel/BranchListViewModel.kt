@@ -2,6 +2,7 @@ package net.gas.gascontact.business.viewmodel
 
 import android.app.Application
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.database.sqlite.SQLiteException
 import android.graphics.PointF
@@ -16,9 +17,13 @@ import net.gas.gascontact.business.model.DataModel
 import net.gas.gascontact.model.TokenResponse
 import net.gas.gascontact.network.api.KeycloackRetrofitFactory
 import net.gas.gascontact.network.api.KeycloackRetrofitService
+import net.gas.gascontact.network.api.MiriadaApiRetrofitFactory
+import net.gas.gascontact.network.api.MiriadaApiRetrofitService
 import net.gas.gascontact.utils.ORGANIZATIONUNITLIST
 import net.gas.gascontact.utils.Var
+import okhttp3.ResponseBody
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.net.ConnectException
@@ -48,7 +53,7 @@ class BranchListViewModel(application: Application)
     var floatingButtonState: MutableLiveData<Boolean> = MutableLiveData()
     var downloadSpinnerState: MutableLiveData<Boolean> = MutableLiveData()
     var dbDownloadingProgressState: MutableLiveData<PointF> = MutableLiveData()
-    var userLoginState: MutableLiveData<Boolean> = MutableLiveData()
+    var userLoginState: MutableLiveData<String> = MutableLiveData()
 
     var unitFragmentCallback: (() -> Unit)? = null
     var initUnitFragmentCallback: (() -> Unit)? = null
@@ -71,6 +76,7 @@ class BranchListViewModel(application: Application)
     lateinit var databaseUpdateTime: String
     private var currentDatabaseSize: Long = 0
     private var unitId = 0
+    var realmSpinnerPosition = 1
 
     fun onUnitItemClick(id: Int) {
         spinnerState.value = true
@@ -103,7 +109,7 @@ class BranchListViewModel(application: Application)
         checkPermissionsCallBack?.invoke()
     }
 
-    fun startDownloadingDB() {
+    fun startDownloadingDB(realm: String, token: String) {
         viewModelScope.launch(Dispatchers.Default) {
             downloadDb("")
             viewModelScope.launch(Dispatchers.Main) {
@@ -128,7 +134,7 @@ class BranchListViewModel(application: Application)
     }
 
 
-    fun startUpdatingDB() {
+    fun startUpdatingDB(realm: String, token: String) {
         viewModelScope.launch(Dispatchers.Default) {
             downloadDb("UPDATING")
             viewModelScope.launch(Dispatchers.Main) {
@@ -372,8 +378,8 @@ class BranchListViewModel(application: Application)
                             //realm = _realm
                             Log.e("Controller ", "CheckValidPassword success");
                             //identityScopes(viewModel)
+                            userLoginState.value = tokens.access_token
                         }
-                        userLoginState.value = true
                     } else {
                         /*Log.e("Controller", "CheckValidPassword Not success")
                     if (response.code() == 401){
@@ -382,7 +388,7 @@ class BranchListViewModel(application: Application)
                     }
                     viewModel.SuccessLogin.value = false*/
                         Toast.makeText(context, "Ошибка авторизации", Toast.LENGTH_LONG).show()
-                        userLoginState.value = false
+                        userLoginState.value = ""
                     }
                 }
             } catch (e: HttpException) {
@@ -400,5 +406,120 @@ class BranchListViewModel(application: Application)
             }
         }
     }
+
+    private fun downloadDatabaseViaApi(realm: String, token: String) {
+        val apiService = MiriadaApiRetrofitFactory.makeRetrofitService()
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = apiService.requestGetDownloadDB(realm, "refresh_token","Bearer $token")
+            try {
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            Toast.makeText(context, "Response code is ${response.code()}", Toast.LENGTH_LONG).show()
+                            startDownloadingDbTest(response)
+                        }
+                        Toast.makeText(context, "Success! Response code is ${response.code()}", Toast.LENGTH_LONG).show()
+                    } else {
+                        Log.e("Controller", "DownloadDatabase Not success")
+                        Toast.makeText(context, "Не удаётся скачать базу данных!", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: HttpException) {
+                Log.e("Controller", "Exception in DownloadDatabase ${e.message}")
+                Toast.makeText(context, "Ошибка авторизации", Toast.LENGTH_LONG).show()
+            } catch (e: Throwable) {
+                Log.e("Controller", "Ooops: Something else went wrong ${e.message}")
+            }
+        }
+    }
+
+    fun startDownloadingDbTest(response: Response<ResponseBody>) {
+        viewModelScope.launch(Dispatchers.Default) {
+            downloadDbTest("", response)
+            viewModelScope.launch(Dispatchers.Main) {
+                if (checkOpenableDatabase()) {
+                    initUnitFragmentCallback?.invoke()
+                    putUpdateDatabaseDateToConfig()
+                    updateDatabase()
+                }
+            }
+        }
+    }
+
+
+    private fun downloadDbTest(flag: String, response: Response<ResponseBody>) {
+        try {
+            val url = URL(Var.URL_TO_DATABASE)
+            if (response.code() == 410) {
+                viewModelScope.launch(Dispatchers.Main) {
+                    onNetworkErrorCallback?.invoke("ACCESS_DENIED_ERROR")
+                }
+            } else {
+                Log.e("response", "565665655464564")
+                downloadSpinnerState.postValue(true)
+                currentDatabaseSize = response.body()!!.contentLength()
+                if (currentDatabaseSize > 0 && currentDatabaseSize != 125L) {  //dont know why size may be equal 125L
+                    onReceiveDatabaseSizeCallBack?.invoke(currentDatabaseSize)
+                }
+                downloadViaHttpConnectionTest(response.body()!!, url, flag)
+            }
+        } catch (e: ConnectException) {
+            viewModelScope.launch(Dispatchers.Main) {
+                if (flag == "UPDATING") {
+                    onNetworkErrorCallback?.invoke("UPDATING_ERROR")
+                } else onNetworkErrorCallback?.invoke("DOWNLOAD_ERROR")
+            }
+        }
+    }
+
+
+    private fun downloadViaHttpConnectionTest(body: ResponseBody, url: URL, flag: String) {
+        var fileOutputStream: FileOutputStream? = null
+        try {
+            val buffer = ByteArray(1024)
+            val pathToSaveFile = File(context.filesDir.toURI())
+            val fullPath = File(pathToSaveFile, url.path.split("/").last())
+            fileOutputStream = FileOutputStream(fullPath)
+            while(true) {
+                val len = body.byteStream().read(buffer)
+                if (len != -1) {
+                    fileOutputStream.write(buffer, 0, len)
+                    val currentFileSize = fullPath.length().toFloat()
+                    val currentDatabaseSize = currentDatabaseSize.toFloat()
+                    val percent = currentFileSize.div(currentDatabaseSize).times(100)
+                    dbDownloadingProgressState.postValue(PointF(percent, percent))
+                }
+                else break
+            }
+        } catch (e: Exception) {
+            viewModelScope.launch(Dispatchers.Main) {
+                if (flag == "UPDATING") {
+                    onNetworkErrorCallback?.invoke("UPDATING_ERROR")
+                } else onNetworkErrorCallback?.invoke("DOWNLOAD_ERROR")
+            }
+        } finally {
+            fileOutputStream?.close()
+        }
+    }
+
+
+    fun startUpdatingDbTest(response: Response<ResponseBody>) {
+        viewModelScope.launch(Dispatchers.Default) {
+            downloadDbTest("UPDATING", response)
+            viewModelScope.launch(Dispatchers.Main) {
+                if (isDownloadedFileValid(context.filesDir.path + "/" + Var.DATABASE_NAME)) {
+                    deleteOldRoomFile()
+                    putUpdateDatabaseDateToConfig()
+                    updateDatabase()
+                    isUnitFragmentActive = false
+                    onDatabaseUpdated?.invoke(true)
+                } else {
+                    deleteDownloadedDatabase()
+                    onDatabaseUpdated?.invoke(false)
+                }
+            }
+        }
+    }
+
 
 }
