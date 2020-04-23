@@ -12,7 +12,7 @@ import com.example.contactbook.R
 
 class SpinnerRealmAdapter(context: Context, resource: Int,
                           private val realmArray: ArrayList<String>,
-                          private val icons: Array<Int>)
+                          private val icons: ArrayList<Int>)
     : ArrayAdapter<String>(context, resource) {
 
     override fun getCount(): Int {
@@ -21,7 +21,7 @@ class SpinnerRealmAdapter(context: Context, resource: Int,
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var viewHolder = ViewHolder()
-        val view: View
+        var view: View = View(context)
         if (convertView == null) {
             val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             view = layoutInflater.inflate(R.layout.spinner_realm_row, parent, false)
@@ -32,13 +32,14 @@ class SpinnerRealmAdapter(context: Context, resource: Int,
             viewHolder = convertView.tag as ViewHolder
         }
 
-        //viewHolder.icon =
+        viewHolder.icon?.setImageResource(icons[position])
+        viewHolder.realmName?.text = realmArray[position]
 
-        return super.getView(position, convertView, parent)
+        return convertView ?: view
     }
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        return super.getDropDownView(position, convertView, parent)
+        return getView(position, convertView, parent)
     }
 
 

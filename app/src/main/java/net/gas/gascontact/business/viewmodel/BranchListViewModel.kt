@@ -134,6 +134,13 @@ class BranchListViewModel(application: Application)
     }
 
 
+    fun putRealmToConfig(realm: String) {
+        val editor = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE).edit()
+        editor.putString("REALM", realm)
+        editor.apply()
+    }
+
+
     fun startUpdatingDB(realm: String, token: String) {
         viewModelScope.launch(Dispatchers.Default) {
             downloadDb("UPDATING")
