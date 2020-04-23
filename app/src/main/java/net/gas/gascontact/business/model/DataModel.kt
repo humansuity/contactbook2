@@ -19,7 +19,7 @@ class DataModel(private val context: Context) {
     fun updateDatabase() {
         ContactbookDatabase.destroyInstance()
         database = ContactbookDatabase
-            .getInstance(context, key = Var.stringMD5(getCurrentDbUpdateDate()!!))
+            .getInstance(context, key = Var.stringMD5(getGlobalKey() + getRealmFromConfig()))
     }
 
     private fun getCurrentDbUpdateDate() : String? {

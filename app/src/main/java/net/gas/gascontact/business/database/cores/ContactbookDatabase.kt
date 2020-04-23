@@ -1,6 +1,7 @@
 package net.gas.gascontact.business.database.cores
 
 import android.content.Context
+import android.widget.Toast
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -39,7 +40,6 @@ abstract class ContactbookDatabase : RoomDatabase() {
             val pathToDatabase = context.filesDir.path + "/" + DB_NAME
             if (INSTANCE == null) {
                 synchronized(ContactbookDatabase::class) {
-                    //val factory = SafeHelperFactory("d41d8cd98f00b204e9800998ecf8427e".toCharArray(), SafeHelperFactory.POST_KEY_SQL_V3)
                     val factory = SafeHelperFactory(key.toCharArray(), SafeHelperFactory.POST_KEY_SQL_V3)
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,

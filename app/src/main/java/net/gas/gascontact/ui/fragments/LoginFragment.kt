@@ -137,8 +137,9 @@ class LoginFragment : Fragment() {
                                             // Toast.makeText(context, "Response code is ${response.code()}", Toast.LENGTH_LONG).show()
                                             if (downloadType == "DOWNLOAD")
                                                 viewModel.startDownloadingDbTest(response)
-                                            else
+                                            else {
                                                 viewModel.startUpdatingDbTest(response)
+                                            }
                                         }
                                         viewModel.realmSpinnerPosition =
                                             spinner.selectedItemPosition
