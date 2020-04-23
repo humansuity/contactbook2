@@ -1,6 +1,7 @@
 package net.gas.gascontact.business.model
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
@@ -13,12 +14,12 @@ import net.gas.gascontact.utils.Var
 class DataModel(private val context: Context) {
 
     private var database = ContactbookDatabase
-        .getInstance(context, Var.stringMD5(getCurrentDbUpdateDate()!!))
+        .getInstance(context, Var.stringMD5(getGlobalKey() + getRealmFromConfig()))
 
     fun updateDatabase() {
         ContactbookDatabase.destroyInstance()
         database = ContactbookDatabase
-            .getInstance(context, key = Var.stringMD5(getCurrentDbUpdateDate()!!))
+            .getInstance(context, key = Var.stringMD5(getGlobalKey() + getRealmFromConfig()))
     }
 
     private fun getCurrentDbUpdateDate() : String? {
@@ -26,8 +27,23 @@ class DataModel(private val context: Context) {
         return if (sharedPreferences.contains(Var.APP_DATABASE_UPDATE_DATE)) {
             sharedPreferences.getString(Var.APP_DATABASE_UPDATE_DATE, "")
         } else ""
+    }
+
+    private fun getRealmFromConfig() : String? {
+        val sharedPreferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+        return if (sharedPreferences.contains("REALM")) {
+            sharedPreferences.getString("REALM", "")
+        } else ""
 
     }
+
+    init {
+        Log.e("KEY", Var.stringMD5(getGlobalKey() + getRealmFromConfig()))
+    }
+
+
+    private fun getGlobalKey() : String = "velikoborecami"
+
 
     fun getUnitEntities() : LiveData<List<Units>> {
         return try {

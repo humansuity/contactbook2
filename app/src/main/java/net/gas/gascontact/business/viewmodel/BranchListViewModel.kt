@@ -394,7 +394,7 @@ class BranchListViewModel(application: Application)
                         viewModel.ErrorMessageDescription.value = "Введенный логин или пароль недействительны"
                     }
                     viewModel.SuccessLogin.value = false*/
-                        Toast.makeText(context, "Ошибка авторизации", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Ошибка авторизации, проверьте введённые данные", Toast.LENGTH_LONG).show()
                         userLoginState.value = ""
                     }
                 }

@@ -34,6 +34,7 @@ class LoginFragment : Fragment() {
     private lateinit var viewModel: BranchListViewModel
     private lateinit var downloadType: String
     private var selectedRealm = ""
+    private var isLoginButtonActive = false
 
 
     companion object {
@@ -59,6 +60,8 @@ class LoginFragment : Fragment() {
     }
 
 
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -80,15 +83,20 @@ class LoginFragment : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
-        /*if (downloadType == "UPDATE") {
+        if (downloadType == "UPDATE") {
+            viewModel.appToolbarStateCallback?.invoke("Авторизация", true)
             val preferences = context?.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             if (preferences != null) {
-                if (preferences.contains("UPDATE")) {
-                    spinner.setSelection(realmArray.indexOf(preferences.getString("UPDATE", "Витебскоблгаз")))
+                preferences.getString("REALM", "topgas")
+                if (preferences.contains("REALM")) {
+                    spinner.setSelection(realmArray.indexOf(ORGANIZATIONUNITLIST.find { it.code == preferences.getString("REALM", "topgas") }?.name))
                     spinner.isEnabled = false
+                    spinner.isActivated = false
                 }
+            } else {
+                Toast.makeText(context, "Возникла ошибка!", Toast.LENGTH_SHORT).show()
             }
-        }*/
+        }
 
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -97,61 +105,70 @@ class LoginFragment : Fragment() {
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 selectedRealm = realmArray[p2]
-                viewModel.putRealmToConfig(selectedRealm)
+                if (downloadType != "UPDATE") {
+                    viewModel.putRealmToConfig(ORGANIZATIONUNITLIST.find { it.name == selectedRealm }?.code!!)
+                }
             }
-
         }
 
         loginButton.setOnClickListener {
+            isLoginButtonActive = true
             viewModel.tryToLogin(ORGANIZATIONUNITLIST.find { it.name == selectedRealm }?.code, loginUsernameText.text.toString(), loginPasswordText.text.toString())
         }
 
         viewModel.userLoginState.observe(viewLifecycleOwner, Observer {
-            if (!it.isNullOrBlank()) {
-                viewModel.afterSuccessLoginCallback?.invoke()
-                viewModel.downloadSpinnerState.value = true
+            if (isLoginButtonActive) {
+                if (!it.isNullOrBlank()) {
+                    viewModel.afterSuccessLoginCallback?.invoke()
 
-                val apiService = MiriadaApiRetrofitFactory.makeRetrofitService()
-                viewModel.viewModelScope.launch(Dispatchers.IO) {
-                    try {
-                        val response = apiService.requestGetDownloadDB(
-                            ORGANIZATIONUNITLIST.find { it.name == selectedRealm }?.code!!,
-                            "refresh_token", "Bearer $it"
-                        )
-
+                    val apiService = MiriadaApiRetrofitFactory.makeRetrofitService()
+                    viewModel.viewModelScope.launch(Dispatchers.IO) {
                         try {
-                            withContext(Dispatchers.Main) {
-                                if (response.isSuccessful) {
-                                    response.body()?.let {
-                                        // Toast.makeText(context, "Response code is ${response.code()}", Toast.LENGTH_LONG).show()
-                                        if (downloadType == "DOWNLOAD")
-                                            viewModel.startDownloadingDbTest(response)
-                                        else
-                                            viewModel.startUpdatingDbTest(response)
-                                    }
-                                    viewModel.realmSpinnerPosition = spinner.selectedItemPosition
-                                    Toast.makeText(
-                                        context,
-                                        "Success! Response code is ${response.code()}",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                } else {
-                                    Log.e("Controller", "DownloadDatabase Not success")
-                                    Toast.makeText(
-                                        context,
-                                        "Не удаётся скачать базу данных!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            }
-                        } catch (e: HttpException) {
-                            Log.e("Controller", "Exception in DownloadDatabase ${e.message}")
-                            Toast.makeText(context, "Ошибка авторизации", Toast.LENGTH_LONG).show()
-                        } catch (e: Throwable) {
-                            Log.e("Controller", "Ooops: Something else went wrong ${e.message}")
-                        }
-                    } catch (e: KotlinNullPointerException) {
+                            val response = apiService.requestGetDownloadDB(
+                                ORGANIZATIONUNITLIST.find { it.name == selectedRealm }?.code!!,
+                                "refresh_token", "Bearer $it"
+                            )
 
+                            try {
+                                withContext(Dispatchers.Main) {
+                                    if (response.isSuccessful) {
+                                        viewModel.downloadSpinnerState.value = true
+                                        response.body()?.let {
+                                            // Toast.makeText(context, "Response code is ${response.code()}", Toast.LENGTH_LONG).show()
+                                            if (downloadType == "DOWNLOAD")
+                                                viewModel.startDownloadingDbTest(response)
+                                            else {
+                                                viewModel.startUpdatingDbTest(response)
+                                            }
+                                        }
+                                        viewModel.realmSpinnerPosition =
+                                            spinner.selectedItemPosition
+                                        Toast.makeText(
+                                            context,
+                                            "Success! Response code is ${response.code()}",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    } else {
+                                        activity?.supportFragmentManager?.popBackStack();
+                                        Log.e("Controller", "DownloadDatabase Not success")
+                                        Toast.makeText(
+                                            context,
+                                            "Не удаётся скачать базу данных! Ошибка ${response.code()}",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                    }
+                                }
+                            } catch (e: HttpException) {
+                                Log.e("Controller", "Exception in DownloadDatabase ${e.message}")
+                                Toast.makeText(context, "Ошибка авторизации, проверьте введённые данные", Toast.LENGTH_LONG)
+                                    .show()
+                            } catch (e: Throwable) {
+                                Log.e("Controller", "Ooops: Something else went wrong ${e.message}")
+                            }
+                        } catch (e: KotlinNullPointerException) {
+
+                        }
                     }
                 }
             }
