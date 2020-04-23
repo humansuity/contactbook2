@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.contactbook.R
 
+
 class SpinnerRealmAdapter(context: Context, resource: Int,
                           private val realmArray: ArrayList<String>,
                           private val icons: Array<Int>)
@@ -19,13 +20,20 @@ class SpinnerRealmAdapter(context: Context, resource: Int,
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val viewHolder = ViewHolder()
+        var viewHolder = ViewHolder()
         val view: View
         if (convertView == null) {
             val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             view = layoutInflater.inflate(R.layout.spinner_realm_row, parent, false)
-            //viewHolder.realmName = view.
+            viewHolder.realmName = view.findViewById(R.id.realmDescription) as TextView
+            viewHolder.icon = view.findViewById(R.id.realmIcon) as ImageView
+            view.tag = viewHolder
+        } else {
+            viewHolder = convertView.tag as ViewHolder
         }
+
+        //viewHolder.icon =
+
         return super.getView(position, convertView, parent)
     }
 
@@ -34,9 +42,9 @@ class SpinnerRealmAdapter(context: Context, resource: Int,
     }
 
 
-    private inner class ViewHolder {
-        val icon: ImageView? = null
-        val realmName: TextView? = null
+    private final inner class ViewHolder {
+        var icon: ImageView? = null
+        var realmName: TextView? = null
     }
 
 }
