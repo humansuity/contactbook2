@@ -69,6 +69,7 @@ class MainListActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
@@ -248,9 +249,6 @@ class MainListActivity : AppCompatActivity() {
             }
             R.id.action_birthday -> {
                 createViewPagerFragment()
-            }
-            R.id.action_download -> {
-
             }
         }
         return super.onOptionsItemSelected(item)

@@ -38,19 +38,24 @@ class BirthdayPersonListAdapterOptimized(private val mViewModel: BranchListViewM
                         val decodedString = withContext(Dispatchers.Default) {
                             it.photo?.decodeToString()
                         }
-                        val byteArray = withContext(Dispatchers.Default) {
-                            Base64.decode(decodedString, Base64.DEFAULT)
-                        }
-                        launch(Dispatchers.Main) {
-                            try {
-                                GlideApp.with(binding.root.context)
-                                    .asBitmap()
-                                    .placeholder(R.drawable.ic_user_30)
-                                    .load(byteArray)
-                                    .apply(RequestOptions().transform(RoundedCorners(30)))
-                                    .into(binding.image)
-                            } catch (e: Exception) {
-                                Log.e("Glide", "Some error when load image while activity is destroyed")
+                        if (!decodedString.isNullOrBlank()) {
+                            val byteArray = withContext(Dispatchers.Default) {
+                                Base64.decode(decodedString, Base64.DEFAULT)
+                            }
+                            launch(Dispatchers.Main) {
+                                try {
+                                    GlideApp.with(binding.root.context)
+                                        .asBitmap()
+                                        .placeholder(R.drawable.ic_user_30)
+                                        .load(byteArray)
+                                        .apply(RequestOptions().transform(RoundedCorners(30)))
+                                        .into(binding.image)
+                                } catch (e: Exception) {
+                                    Log.e(
+                                        "Glide",
+                                        "Some error when load image while activity is destroyed"
+                                    )
+                                }
                             }
                         }
                     }
