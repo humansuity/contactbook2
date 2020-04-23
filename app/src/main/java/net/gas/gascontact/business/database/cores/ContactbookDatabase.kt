@@ -1,6 +1,8 @@
 package net.gas.gascontact.business.database.cores
 
 import android.content.Context
+import android.util.Log
+import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import androidx.room.Database
 import androidx.room.Room
@@ -10,6 +12,7 @@ import net.gas.gascontact.business.database.daos.*
 import net.gas.gascontact.business.database.entities.*
 import net.gas.gascontact.utils.Var
 import java.io.File
+import java.lang.Exception
 
 
 @Database(
@@ -40,15 +43,20 @@ abstract class ContactbookDatabase : RoomDatabase() {
             val pathToDatabase = context.filesDir.path + "/" + DB_NAME
             if (INSTANCE == null) {
                 synchronized(ContactbookDatabase::class) {
-                    val factory = SafeHelperFactory(key.toCharArray(), SafeHelperFactory.POST_KEY_SQL_V3)
-                    INSTANCE = Room.databaseBuilder(
-                        context.applicationContext,
-                        ContactbookDatabase::class.java,
-                        DB_NAME
-                    )
-                        .openHelperFactory(factory)
-                        .createFromFile(File(pathToDatabase))
-                        .build()
+                    try {
+                        val factory = SafeHelperFactory(key.toCharArray(), SafeHelperFactory.POST_KEY_SQL_V3)
+                        Log.e("KEY", key)
+                        INSTANCE = Room.databaseBuilder(
+                            context.applicationContext,
+                            ContactbookDatabase::class.java,
+                            DB_NAME
+                        )
+                            .openHelperFactory(factory)
+                            .createFromFile(File(pathToDatabase))
+                            .build()
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "ERROR", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
             return INSTANCE

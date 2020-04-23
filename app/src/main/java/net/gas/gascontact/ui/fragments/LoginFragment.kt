@@ -120,7 +120,6 @@ class LoginFragment : Fragment() {
             if (isLoginButtonActive) {
                 if (!it.isNullOrBlank()) {
                     viewModel.afterSuccessLoginCallback?.invoke()
-                    viewModel.downloadSpinnerState.value = true
 
                     val apiService = MiriadaApiRetrofitFactory.makeRetrofitService()
                     viewModel.viewModelScope.launch(Dispatchers.IO) {
@@ -133,6 +132,7 @@ class LoginFragment : Fragment() {
                             try {
                                 withContext(Dispatchers.Main) {
                                     if (response.isSuccessful) {
+                                        viewModel.downloadSpinnerState.value = true
                                         response.body()?.let {
                                             // Toast.makeText(context, "Response code is ${response.code()}", Toast.LENGTH_LONG).show()
                                             if (downloadType == "DOWNLOAD")
@@ -149,17 +149,19 @@ class LoginFragment : Fragment() {
                                             Toast.LENGTH_LONG
                                         ).show()
                                     } else {
+                                        activity?.supportFragmentManager?.popBackStack();
                                         Log.e("Controller", "DownloadDatabase Not success")
                                         Toast.makeText(
                                             context,
-                                            "Не удаётся скачать базу данных!",
+                                            "Не удаётся скачать базу данных! Ошибка ${response.code()}",
                                             Toast.LENGTH_LONG
                                         ).show()
+
                                     }
                                 }
                             } catch (e: HttpException) {
                                 Log.e("Controller", "Exception in DownloadDatabase ${e.message}")
-                                Toast.makeText(context, "Ошибка авторизации", Toast.LENGTH_LONG)
+                                Toast.makeText(context, "Ошибка авторизации, проверьте введённые данные", Toast.LENGTH_LONG)
                                     .show()
                             } catch (e: Throwable) {
                                 Log.e("Controller", "Ooops: Something else went wrong ${e.message}")
