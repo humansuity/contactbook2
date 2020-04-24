@@ -69,6 +69,7 @@ class MainListActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
@@ -249,9 +250,6 @@ class MainListActivity : AppCompatActivity() {
             R.id.action_birthday -> {
                 createViewPagerFragment()
             }
-            R.id.action_download -> {
-
-            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -276,14 +274,14 @@ class MainListActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun updateDatabase() {
+    /*private fun updateDatabase() {
         if (checkInternetConnection()) {
             createAlertFragment()
             viewModel.startUpdatingDB()
         } else
             Snackbar.make(root,
                 "Проверьте подключение к интернету!", Snackbar.LENGTH_LONG).show()
-    }
+    }*/
 
 
 

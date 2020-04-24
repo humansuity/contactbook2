@@ -13,8 +13,5 @@
         android:id="@+id/action_settings"
         android:title="@string/settings_res"/>
 
-    <item
-        android:id="@+id/action_download"
-        android:title="volley"/>
 
 </menu>

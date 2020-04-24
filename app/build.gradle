@@ -4,17 +4,31 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-android-extensions'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'me.moallemi.advanced-build-version'
 }
 
 android {
+    advancedVersioning {
+        nameOptions {
+            versionMajor 1
+        }
+        codeOptions {
+            versionCodeType 'AUTO_INCREMENT_ONE_STEP'
+        }
+    }
+
+    def appVersionName = advancedVersioning.versionName
+    def appVersionCode = advancedVersioning.versionCode
+
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
+
     defaultConfig {
-        applicationId "com.example.contactbook"
+        applicationId "net.gas.gascontact"
         minSdkVersion 22
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName "${appVersionName}.${appVersionCode}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
