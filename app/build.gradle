@@ -11,7 +11,6 @@ android {
     advancedVersioning {
         nameOptions {
             versionMajor 1
-            versionMinor 0
         }
         codeOptions {
             versionCodeType 'AUTO_INCREMENT_ONE_STEP'
@@ -29,7 +28,7 @@ android {
         minSdkVersion 22
         targetSdkVersion 29
         versionCode appVersionCode
-        versionName appVersionName
+        versionName "${appVersionName}.${appVersionCode}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
