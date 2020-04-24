@@ -376,8 +376,8 @@ class BranchListViewModel(application: Application)
         var tokens: TokenResponse
         val keycloackservice: KeycloackRetrofitService = KeycloackRetrofitFactory.makeRetrofitService()
         viewModelScope.launch(Dispatchers.IO) {
-            val response = keycloackservice.requestGrant(realm!!, "microservicegasclient", ORGANIZATIONUNITLIST.find {it.code == realm}!!.secret, "password", username!!, password!!)
             try {
+                val response = keycloackservice.requestGrant(realm!!, "microservicegasclient", ORGANIZATIONUNITLIST.find {it.code == realm}!!.secret, "password", username!!, password!!)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         response.body()?.let {
@@ -408,7 +408,9 @@ class BranchListViewModel(application: Application)
 //                viewModel.ErrorMessageDescription.value = "Ooops: Something else went wrong"
 //                viewModel.SuccessLogin.value = false
                 Log.e("Controller", "Ooops: Something else went wrong")
-                Toast.makeText(context, "Ошибка авторизации", Toast.LENGTH_LONG).show()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Ошибка авторизации, проверьте подключение к сети организации", Toast.LENGTH_LONG).show()
+                }
 
             }
         }
