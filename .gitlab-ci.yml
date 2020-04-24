@@ -30,7 +30,7 @@ deployDebug:
   before_script:
     - ./gradlew assembleDebug
   script:
-    - cp app/build/outputs/apk/release/$APK_BASE_NAME ~/apk/$APK_NAME
+    - cp app/build/outputs/apk/debug/app-debug.apk ~/apk/$APK_NAME
   after_script:
     - scp -i ~/.ssh/id_rsa -o ProxyJump=$JUMP_URL ~/apk/$APK_NAME $BASE_URL:/var/www/f-droid/repo
     - ssh -J $JUMP_URL $BASE_URL "cd /var/www/f-droid/ && fdroid update -c && fdroid update"
