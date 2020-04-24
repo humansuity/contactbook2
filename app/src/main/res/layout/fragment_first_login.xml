@@ -84,6 +84,7 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/add_dialog_round_borders"
         android:backgroundTint="#FFFFFF"
+        android:elevation="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@+id/loginUsernameTextInputLayout"
         app:layout_constraintStart_toStartOf="@+id/loginUsernameTextInputLayout"
