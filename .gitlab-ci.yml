@@ -29,4 +29,4 @@ deployDebug:
     - scp -i ~/.ssh/id_rsa -o ProxyJump=$JUMP_URL ~/apk/$APK_NAME $BASE_URL:/var/www/f-droid/repo
     - ssh -J $JUMP_URL $BASE_URL "cd /var/www/f-droid/ && fdroid update -c && fdroid update"
   dependencies:
-    - deployDebug
+    - assembleDebug
