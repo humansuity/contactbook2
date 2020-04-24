@@ -1,6 +1,5 @@
 variables:
   APK_NAME: "contactbook-$CI_COMMIT_REF_NAME-$CI_PIPELINE_ID-build.apk"
-  APK_BASE_NAME: "app-release-unsigned.apk"
   JUMP_URL: "f-droid@192.168.220.5"
   BASE_URL: "f-droid@172.20.220.11"
 
@@ -22,7 +21,6 @@ assembleDebug:
     name: "$CI_COMMIT_REF_NAME-$CI_JOB_ID"
     paths:
       - app/build/outputs/apk/debug/app-debug.apk
-
 
 deployDebug:
   stage: deploy
