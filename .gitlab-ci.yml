@@ -16,6 +16,8 @@ assembleDebug:
     - export ANDROID_HOME=~
   script:
     - ./gradlew assembleDebug
+  after_script:
+    - cp app/build/outputs/apk/debug/app-debug.apk ~/apk/$APK_NAME
   artifacts:
     name: "$CI_COMMIT_REF_NAME-$CI_JOB_ID"
     paths:
@@ -27,10 +29,6 @@ deployDebug:
   when: manual
   only:
     - release
-  before_script:
-    - ./gradlew assembleDebug
-  script:
-    - cp app/build/outputs/apk/debug/app-debug.apk ~/apk/$APK_NAME
   after_script:
     - scp -i ~/.ssh/id_rsa -o ProxyJump=$JUMP_URL ~/apk/$APK_NAME $BASE_URL:/var/www/f-droid/repo
     - ssh -J $JUMP_URL $BASE_URL "cd /var/www/f-droid/ && fdroid update -c && fdroid update"
