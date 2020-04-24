@@ -10,6 +10,8 @@ stages:
 
 assembleDebug:
   stage: build
+  except:
+    - release
   before_script:
     - export ANDROID_HOME=~
   script:
@@ -26,6 +28,7 @@ deployDebug:
   only:
     - release
   before_script:
+    - export ANDROID_HOME=~
     - ./gradlew assembleRelease
   script:
     - cp app/build/outputs/apk/release/$APK_BASE_NAME ~/apk/$APK_NAME
