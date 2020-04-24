@@ -10,6 +10,8 @@ stages:
 
 assembleDebug:
   stage: build
+  except:
+    - release
   before_script:
     - export ANDROID_HOME=~
   script:
