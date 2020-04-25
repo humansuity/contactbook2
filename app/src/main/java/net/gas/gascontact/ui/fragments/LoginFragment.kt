@@ -94,7 +94,7 @@ class LoginFragment : Fragment() {
                     spinner.isActivated = false
                 }
             } else {
-                Toast.makeText(context, "Возникла ошибка!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Возникла ошибка!!!", Toast.LENGTH_SHORT).show()
             }
         }
 
