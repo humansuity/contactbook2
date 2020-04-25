@@ -2,7 +2,7 @@
 
 package net.gas.gascontact.utils
 
-import com.example.contactbook.R
+import net.gas.gascontact.R
 import net.gas.gascontact.model.OrganizationUnit
 
 

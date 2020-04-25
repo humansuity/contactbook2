@@ -10,8 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.contactbook.R
-import com.example.contactbook.databinding.UnitsListFragmentBinding
+import net.gas.gascontact.R
+import net.gas.gascontact.databinding.UnitsListFragmentBinding
 import net.gas.gascontact.business.adapters.UnitListAdapterOptimized
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 
