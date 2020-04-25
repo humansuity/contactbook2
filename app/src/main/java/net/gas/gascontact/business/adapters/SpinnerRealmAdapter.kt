@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.contactbook.R
+import net.gas.gascontact.R
 
 
 class SpinnerRealmAdapter(context: Context, resource: Int,

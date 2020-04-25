@@ -22,7 +22,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.contactbook.R
+import net.gas.gascontact.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.gascontact.business.viewmodel.BranchListViewModel

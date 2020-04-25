@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.contactbook.R
-import com.example.contactbook.databinding.PersonListFragmentBinding
+import net.gas.gascontact.R
+import net.gas.gascontact.databinding.PersonListFragmentBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

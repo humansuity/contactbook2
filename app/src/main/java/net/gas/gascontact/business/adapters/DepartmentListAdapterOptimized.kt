@@ -3,8 +3,8 @@ package net.gas.gascontact.business.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.contactbook.R
-import com.example.contactbook.databinding.DepartmentRecyclerItemBinding
+import net.gas.gascontact.R
+import net.gas.gascontact.databinding.DepartmentRecyclerItemBinding
 import net.gas.gascontact.business.database.entities.Departments
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.utils.GlideApp

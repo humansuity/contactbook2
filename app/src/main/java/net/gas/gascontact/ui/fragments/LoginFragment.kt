@@ -14,8 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.contactbook.R
-import com.example.contactbook.databinding.FragmentFirstLoginBinding
+import net.gas.gascontact.R
+import net.gas.gascontact.databinding.FragmentFirstLoginBinding
 import kotlinx.android.synthetic.main.fragment_first_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
