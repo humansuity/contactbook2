@@ -11,6 +11,7 @@ assembleDebug:
   stage: build
   before_script:
     - export ANDROID_HOME=~
+    - cp ~/apk/version.properties app/version.properties
   script:
     - ./gradlew assembleDebug
   after_script:
