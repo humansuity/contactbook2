@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.contactbook.R
+import net.gas.gascontact.R
 import kotlinx.android.synthetic.main.fragment_viewpager.*
 import net.gas.gascontact.business.adapters.BirthdayPagerAdapter
 import net.gas.gascontact.business.viewmodel.BranchListViewModel

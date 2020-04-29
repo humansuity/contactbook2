@@ -11,8 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.contactbook.R
-import com.example.contactbook.databinding.SearchFragmentBinding
+import net.gas.gascontact.R
+import net.gas.gascontact.databinding.SearchFragmentBinding
 import kotlinx.android.synthetic.main.search_fragment.*
 import net.gas.gascontact.business.adapters.PersonListAdapter
 import net.gas.gascontact.business.database.entities.Persons

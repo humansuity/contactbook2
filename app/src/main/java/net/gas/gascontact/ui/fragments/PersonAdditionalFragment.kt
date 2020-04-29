@@ -24,8 +24,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.example.contactbook.R
-import com.example.contactbook.databinding.PersonAdditionalFragmentBinding
+import net.gas.gascontact.R
+import net.gas.gascontact.databinding.PersonAdditionalFragmentBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import net.gas.gascontact.business.database.entities.Persons

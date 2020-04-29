@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:181568623633:android:4eaec06c73114c32964db0",
         "android_client_info": {
-          "package_name": "com.example.contactbook"
+          "package_name": "net.gas.gascontact"
         }
       },
       "oauth_client": [
