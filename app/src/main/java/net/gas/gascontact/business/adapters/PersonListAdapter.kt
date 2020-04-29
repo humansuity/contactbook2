@@ -19,6 +19,7 @@ import kotlinx.coroutines.withContext
 import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.utils.GlideApp
+import java.lang.Exception
 
 class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: LifecycleOwner) :
     DataBoundListAdapter<Persons>(diffCallback = object: DiffUtil.ItemCallback<Persons>() {
@@ -46,19 +47,24 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
                     mViewModel.setupPhotoEntity(item.photoID)
                     mViewModel.photoEntity.observe(lifecycleOwner, Observer {
                         GlobalScope.launch(Dispatchers.Default) {
-                            val decodedString = withContext(Dispatchers.Default) {
-                                it.photo!!.decodeToString()
+                            try {
+                                val decodedString = withContext(Dispatchers.Default) {
+                                    it.photo!!.decodeToString()
+                                }
+                                val byteArray = withContext(Dispatchers.Default) {
+                                    Base64.decode(decodedString, Base64.DEFAULT)
+                                }
+                                launch(Dispatchers.Main) {
+                                    GlideApp.with(context)
+                                        .asBitmap()
+                                        .placeholder(R.drawable.ic_user_30)
+                                        .load(byteArray)
+                                        .apply(RequestOptions().transform(RoundedCorners(30)))
+                                        .into(binding.image)
+                                }
+                            } catch (e: Exception) {
+
                             }
-                            val byteArray = withContext(Dispatchers.Default) {
-                                Base64.decode(decodedString, Base64.DEFAULT)
-                            }
-                            launch(Dispatchers.Main) {
-                                GlideApp.with(context)
-                                    .asBitmap()
-                                    .placeholder(R.drawable.ic_user_30)
-                                    .load(byteArray)
-                                    .apply(RequestOptions().transform(RoundedCorners(30)))
-                                    .into(binding.image) }
                         }
                     })
                 } else {
