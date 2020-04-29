@@ -1,1 +1,1 @@
-Contactbook-kotlin
+Contactbook-kotlin-app
