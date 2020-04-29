@@ -1,6 +1,5 @@
 variables:
   APK_NAME: "contactbook-$CI_COMMIT_REF_NAME-$CI_PIPELINE_ID-build.apk"
-  APK_BASE_NAME: "app-release-unsigned.apk"
   JUMP_URL: "f-droid@192.168.220.5"
   BASE_URL: "f-droid@172.20.220.11"
 
@@ -10,28 +9,24 @@ stages:
 
 assembleDebug:
   stage: build
-  except:
-    - release
   before_script:
     - export ANDROID_HOME=~
   script:
     - ./gradlew assembleDebug
+  after_script:
+    - cp app/build/outputs/apk/debug/app-debug.apk ~/apk/$APK_NAME
   artifacts:
     name: "$CI_COMMIT_REF_NAME-$CI_JOB_ID"
     paths:
       - app/build/outputs/apk/debug/app-debug.apk
-
 
 deployDebug:
   stage: deploy
   when: manual
   only:
     - release
-  before_script:
-    - export ANDROID_HOME=~
-    - ./gradlew assembleRelease
   script:
-    - cp app/build/outputs/apk/release/$APK_BASE_NAME ~/apk/$APK_NAME
-  after_script:
     - scp -i ~/.ssh/id_rsa -o ProxyJump=$JUMP_URL ~/apk/$APK_NAME $BASE_URL:/var/www/f-droid/repo
     - ssh -J $JUMP_URL $BASE_URL "cd /var/www/f-droid/ && fdroid update -c && fdroid update"
+  dependencies:
+    - assembleDebug
