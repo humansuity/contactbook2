@@ -22,13 +22,6 @@ class DataModel(private val context: Context) {
             .getInstance(context, key = Var.stringMD5(getGlobalKey() + getRealmFromConfig()))
     }
 
-    private fun getCurrentDbUpdateDate() : String? {
-        val sharedPreferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
-        return if (sharedPreferences.contains(Var.APP_DATABASE_UPDATE_DATE)) {
-            sharedPreferences.getString(Var.APP_DATABASE_UPDATE_DATE, "")
-        } else ""
-    }
-
     private fun getRealmFromConfig() : String? {
         val sharedPreferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
         return if (sharedPreferences.contains("REALM")) {
@@ -75,9 +68,6 @@ class DataModel(private val context: Context) {
 
     fun getUnitEntityById(id: Int) : LiveData<Units>
             = database?.unitsDao()!!.getEntityById(id)
-
-    fun getPostsEntities() : LiveData<List<Posts>> = database?.postsDao()!!.getEntities()
-    fun getPersonsEntities() : LiveData<List<Persons>> = database?.personsDao()!!.getEntities()
 
     suspend fun getPersonListByLastNameTag(tag: String) : LiveData<List<Persons>>
             = withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByLastNameTag(tag) }
