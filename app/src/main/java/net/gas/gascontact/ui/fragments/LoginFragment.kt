@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -25,7 +24,6 @@ import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.network.api.MiriadaApiRetrofitFactory
 import net.gas.gascontact.utils.ORGANIZATIONUNITLIST
 import net.gas.gascontact.utils.Var
-import okhttp3.ResponseBody
 import retrofit2.HttpException
 
 class LoginFragment : Fragment() {
@@ -136,9 +134,9 @@ class LoginFragment : Fragment() {
                                         response.body()?.let {
                                             // Toast.makeText(context, "Response code is ${response.code()}", Toast.LENGTH_LONG).show()
                                             if (downloadType == "DOWNLOAD")
-                                                viewModel.startDownloadingDbTest(response)
+                                                viewModel.startDownloadingDb(response)
                                             else {
-                                                viewModel.startUpdatingDbTest(response)
+                                                viewModel.startUpdatingDb(response)
                                             }
                                         }
                                         viewModel.realmSpinnerPosition =

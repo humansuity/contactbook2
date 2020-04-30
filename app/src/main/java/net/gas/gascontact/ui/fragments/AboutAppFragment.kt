@@ -1,5 +1,6 @@
 package net.gas.gascontact.ui.fragments
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +38,12 @@ class AboutAppFragment : Fragment() {
             Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_SHORT).show()
         }
 
+        try {
+            val pkgInfo = context?.packageManager?.getPackageInfo(context!!.packageName, 0)
+            app_version_text.text = pkgInfo?.versionName
+        } catch (e: PackageManager.NameNotFoundException) {
+            app_version_text.text = "1.0.0"
+        }
         textDatabaseUpdateTime.text = viewModel.databaseUpdateTime
 
     }
