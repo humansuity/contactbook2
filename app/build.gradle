@@ -14,7 +14,7 @@ android {
         }
         codeOptions {
             versionCodeType 'AUTO_INCREMENT_ONE_STEP'
-            dependsOnTasks 'debug', 'assemble'
+            dependsOnTasks 'debug'
         }
     }
 
