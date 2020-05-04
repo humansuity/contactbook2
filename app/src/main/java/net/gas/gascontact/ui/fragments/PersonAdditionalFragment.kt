@@ -400,7 +400,12 @@ class PersonAdditionalFragment : Fragment() {
                             .apply(RequestOptions().transform(RoundedCorners(30)))
                             .into(binding.image)
                     } catch (e: Exception) {
-
+                        launch(Dispatchers.Main) {
+                            GlideApp.with(binding.root.context)
+                                .asDrawable()
+                                .load(binding.root.context.resources.getDrawable(R.drawable.ic_user_30))
+                                .into(binding.image)
+                        }
                     }
                 }
             } else {
