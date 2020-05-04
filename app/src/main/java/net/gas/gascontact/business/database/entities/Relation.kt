@@ -21,6 +21,6 @@ import androidx.room.PrimaryKey
 )
 data class Relation (
     @PrimaryKey val id: Int,
-    @ColumnInfo(name = "unit_id", index = true) val unitID: Short?,
-    @ColumnInfo(name = "department_id", index = true) val departmentID: Short?
+    @ColumnInfo(name = "unit_id", index = true) val unitID: Int?,
+    @ColumnInfo(name = "department_id", index = true) val departmentID: Int?
 )
