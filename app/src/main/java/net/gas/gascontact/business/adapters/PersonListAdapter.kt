@@ -79,7 +79,10 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
                 //binding.textName.text = markupName(item.lastName, item.firstName, item.patronymic, searchWord)
                 mViewModel.setupPostEntity(item.postID?.toInt())
                 mViewModel.postEntity.observe(lifecycleOwner, Observer {
-                    binding.postItem = it.name
+                    if (it != null)
+                        binding.postItem = it.name
+                    else
+                        binding.postItem = "Не определено"
                 })
 
 

@@ -11,10 +11,12 @@ assembleDebug:
   stage: build
   before_script:
     - export ANDROID_HOME=~
+    - cp ~/apk/version.properties app/version.properties
   script:
     - ./gradlew assembleDebug
   after_script:
     - cp app/build/outputs/apk/debug/app-debug.apk ~/apk/$APK_NAME
+    - cp app/version.properties ~/apk
   artifacts:
     name: "$CI_COMMIT_REF_NAME-$CI_JOB_ID"
     paths:

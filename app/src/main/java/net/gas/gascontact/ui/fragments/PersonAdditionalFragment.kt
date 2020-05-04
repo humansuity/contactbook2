@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -32,6 +33,7 @@ import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.database.entities.Photos
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.utils.GlideApp
+import java.lang.NullPointerException
 
 class PersonAdditionalFragment : Fragment() {
 
@@ -351,15 +353,26 @@ class PersonAdditionalFragment : Fragment() {
     private fun startObserveEntities(personEntity: Persons) {
         viewModel.postEntity
             .observe(viewLifecycleOwner, Observer {
-                binding.post = it.name
+                if (it != null)
+                    binding.post = it.name
+                else
+                    binding.post = "Должность не определена"
             })
+
         viewModel.unitEntity
             .observe(viewLifecycleOwner, Observer {
-                binding.unit = it.name
+                if (it != null)
+                    binding.unit = it.name
+                else
+                    binding.post = "Филиал не определён"
             })
+
         viewModel.departmentEntity
             .observe(viewLifecycleOwner, Observer {
-                binding.department = it.name
+                if (it != null)
+                    binding.department = it.name
+                else
+                    binding.post = "Отдел не определён"
             })
 
         startObservePhoto(viewModel.photoEntity, personEntity.photoID)

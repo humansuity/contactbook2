@@ -94,6 +94,7 @@ class BranchListViewModel(application: Application)
 
     fun onDepartmentItemClick(id: Int) {
         spinnerState.value = true
+        Log.e("!!!!!!!!!!!!!!!!!", "!! " +  unitId.toString() + " " + id.toString() )
         viewModelScope.launch(Dispatchers.Default) {
             personList = liveData(Dispatchers.IO) {
                 emitSource(dataModel.getPersonsEntitiesByIds(unitId, id))
