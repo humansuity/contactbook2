@@ -118,56 +118,7 @@ class LoginFragment : Fragment() {
             if (isLoginButtonActive) {
                 if (!it.isNullOrBlank()) {
                     viewModel.afterSuccessLoginCallback?.invoke()
-
-                    val apiService = MiriadaApiRetrofitFactory.makeRetrofitService()
-                    viewModel.viewModelScope.launch(Dispatchers.IO) {
-                        try {
-                            viewModel.downloadSpinnerState.postValue(true)
-                            val response = apiService.requestGetDownloadDB(
-                                ORGANIZATIONUNITLIST.find { it.name == selectedRealm }?.code!!,
-                                "refresh_token", "Bearer $it"
-                            )
-
-                            try {
-                                withContext(Dispatchers.Main) {
-                                    if (response.isSuccessful) {
-                                        response.body()?.let {
-                                            // Toast.makeText(context, "Response code is ${response.code()}", Toast.LENGTH_LONG).show()
-                                            if (downloadType == "DOWNLOAD")
-                                                viewModel.startDownloadingDb(response)
-                                            else {
-                                                viewModel.startUpdatingDb(response)
-                                            }
-                                        }
-                                        viewModel.realmSpinnerPosition =
-                                            spinner.selectedItemPosition
-                                        Toast.makeText(
-                                            context,
-                                            "Success! Response code is ${response.code()}",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    } else {
-                                        Log.e("Controller", "DownloadDatabase Not success")
-                                        Toast.makeText(
-                                            context,
-                                            "Не удаётся скачать базу данных! Ошибка ${response.code()}",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                        viewModel.downloadSpinnerState.value = false
-                                        activity?.supportFragmentManager?.popBackStack();
-                                    }
-                                }
-                            } catch (e: HttpException) {
-                                Log.e("Controller", "Exception in DownloadDatabase ${e.message}")
-                                Toast.makeText(context, "Ошибка авторизации, проверьте введённые данные", Toast.LENGTH_LONG)
-                                    .show()
-                            } catch (e: Throwable) {
-                                Log.e("Controller", "Ooops: Something else went wrong ${e.message}")
-                            }
-                        } catch (e: KotlinNullPointerException) {
-
-                        }
-                    }
+                    viewModel.makeRequestToDatabase(it, selectedRealm, downloadType)
                 }
             }
         })

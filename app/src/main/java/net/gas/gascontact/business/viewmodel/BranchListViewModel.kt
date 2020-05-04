@@ -8,6 +8,7 @@ import android.graphics.PointF
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
+import kotlinx.android.synthetic.main.fragment_first_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -16,6 +17,7 @@ import net.gas.gascontact.business.model.DataModel
 import net.gas.gascontact.model.TokenResponse
 import net.gas.gascontact.network.api.KeycloackRetrofitFactory
 import net.gas.gascontact.network.api.KeycloackRetrofitService
+import net.gas.gascontact.network.api.MiriadaApiRetrofitFactory
 import net.gas.gascontact.utils.ORGANIZATIONUNITLIST
 import net.gas.gascontact.utils.Var
 import okhttp3.ResponseBody
@@ -73,7 +75,6 @@ class BranchListViewModel(application: Application)
     lateinit var databaseUpdateTime: String
     private var currentDatabaseSize: Long = 0
     private var unitId = 0
-    var realmSpinnerPosition = 1
 
     fun onUnitItemClick(id: Int) {
         spinnerState.value = true
@@ -459,6 +460,57 @@ class BranchListViewModel(application: Application)
                     onDatabaseUpdated?.invoke(false)
                     Toast.makeText(context, "Updating database invalid", Toast.LENGTH_SHORT).show()
                 }
+            }
+        }
+    }
+
+
+    fun makeRequestToDatabase(token: String, selectedRealm: String, downloadType: String) {
+        val apiService = MiriadaApiRetrofitFactory.makeRetrofitService()
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                downloadSpinnerState.postValue(true)
+                val response = apiService.requestGetDownloadDB(
+                    ORGANIZATIONUNITLIST.find { it.name == selectedRealm }?.code!!,
+                    "refresh_token", "Bearer $token"
+                )
+
+                try {
+                    withContext(Dispatchers.Main) {
+                        if (response.isSuccessful) {
+                            response.body()?.let {
+                                // Toast.makeText(context, "Response code is ${response.code()}", Toast.LENGTH_LONG).show()
+                                if (downloadType == "DOWNLOAD")
+                                    startDownloadingDb(response)
+                                else {
+                                    startUpdatingDb(response)
+                                }
+                            }
+                            Toast.makeText(
+                                context,
+                                "Success! Response code is ${response.code()}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            Log.e("Controller", "DownloadDatabase Not success")
+                            Toast.makeText(
+                                context,
+                                "Не удаётся скачать базу данных! Ошибка ${response.code()}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            downloadSpinnerState.value = false
+                            //activity?.supportFragmentManager?.popBackStack();
+                        }
+                    }
+                } catch (e: HttpException) {
+                    Log.e("Controller", "Exception in DownloadDatabase ${e.message}")
+                    Toast.makeText(context, "Ошибка авторизации, проверьте введённые данные", Toast.LENGTH_LONG)
+                        .show()
+                } catch (e: Throwable) {
+                    Log.e("Controller", "Ooops: Something else went wrong ${e.message}")
+                }
+            } catch (e: KotlinNullPointerException) {
+
             }
         }
     }
