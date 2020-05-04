@@ -40,7 +40,7 @@ class DataModel(private val context: Context) {
 
     fun getUnitEntities() : LiveData<List<Units>> {
         return try {
-            database?.unitsDao()!!.getEntities()
+            database?.unitsDao()!!.getPrimaryEntities()
         } catch (e: Exception) {
             Toast.makeText(context, "Smth went wrong", Toast.LENGTH_SHORT).show()
             liveData {  }
@@ -77,6 +77,9 @@ class DataModel(private val context: Context) {
             = withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByPatronymicTag(tag) }
     suspend fun getPersonListByMobilePhoneTag(tag: String) : LiveData<List<Persons>>
             = withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByMobilePhoneTag(tag) }
+
+    suspend fun getSecondaryEntities(parentId: Int) : LiveData<List<Units>>
+            = withContext(Dispatchers.IO) { database?.unitsDao()!!.getSecondaryEntities(parentId) }
 
 
     fun getUpcomingPersonWithBirthday(period: String) : LiveData<List<Persons>> {
