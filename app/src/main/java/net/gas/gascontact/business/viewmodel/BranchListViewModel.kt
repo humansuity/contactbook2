@@ -78,6 +78,14 @@ class BranchListViewModel(application: Application)
 
     fun onUnitItemClick(id: Int) {
         spinnerState.value = true
+        var additionalUnitList: LiveData<List<Units>>
+
+//        viewModelScope.launch(Dispatchers.Default) {
+//            additionalUnitList = liveData(Dispatchers.IO) {
+//                emitSource(dataModel.getSecondaryEntities(id))
+//            }
+//        }
+
         viewModelScope.launch(Dispatchers.Default) {
             departmentList = liveData(Dispatchers.IO) {
                 emitSource(dataModel.getDepartmentEntitiesById(id))
