@@ -17,6 +17,7 @@ import kotlinx.coroutines.withContext
 import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.utils.GlideApp
+import java.lang.NullPointerException
 
 class PersonListAdapterOptimized(private val mViewModel: BranchListViewModel, private val viewLifecycleOwner: LifecycleOwner)
     : RecyclerView.Adapter<PersonListAdapterOptimized.ViewHolder>() {
@@ -61,7 +62,10 @@ class PersonListAdapterOptimized(private val mViewModel: BranchListViewModel, pr
                     .into(binding.image)
 
             mViewModel.getPostByPersonId(item.postID!!.toInt()).observe(viewLifecycleOwner, Observer {
-                binding.postItem = it.name
+                if (it != null)
+                    binding.postItem = it.name
+                else
+                    binding.postItem = "Не определено"
             })
         }
     }
