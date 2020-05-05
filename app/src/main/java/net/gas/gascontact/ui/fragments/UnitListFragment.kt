@@ -1,12 +1,14 @@
 package net.gas.gascontact.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
@@ -70,9 +72,26 @@ class UnitListFragment : Fragment() {
                         emitSource(viewModel.dataModel.getDepartmentEntitiesById(viewModel.unitId))
                     }
                     viewModel.unitFragmentCallback?.invoke()
+                } else {
+                    if (it[0].parent_id == 0) {
+                        if (activity?.supportFragmentManager!!.backStackEntryCount > 0) {
+                            if (viewModel.isUnitFragmentActive) {
+                                Log.e("!!!!!!!!!", "i m here")
+                                val firstFragment: FragmentManager.BackStackEntry =
+                                    activity?.supportFragmentManager!!.getBackStackEntryAt(0)
+                                activity?.supportFragmentManager!!.popBackStack(
+                                    firstFragment.id,
+                                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+                                )
+                                viewModel.onCreateUnitListFragment?.invoke()
+                                viewModel.appToolbarStateCallback?.invoke("Филиалы", false)
+                            }
+                        }
+                    } else {
+                        viewModel.appToolbarStateCallback?.invoke("Филиалы", true)
+                    }
                 }
             }
-
             listAdapter = UnitListAdapterOptimized(viewModel)
             listAdapter.setupList(it)
             binding.recyclerView.adapter = listAdapter
