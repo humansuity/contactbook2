@@ -23,6 +23,9 @@ import androidx.room.*
             entity = Photos::class,
             parentColumns = ["id"],
             childColumns = ["photo_id"])
+    ],
+    indices = [
+        Index("firstname", "lastname", "patronymic", "mobile_phone", name = "personIndex", unique = false)
     ]
 )
 data class Persons (

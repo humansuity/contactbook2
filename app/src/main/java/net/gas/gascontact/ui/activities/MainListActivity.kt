@@ -16,6 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
@@ -51,8 +52,10 @@ class MainListActivity : AppCompatActivity() {
         viewModel.databaseUpdateTime = getDatabaseUpdateTime()
 
         if (viewModel.checkOpenableDatabase()) {
-            if (!viewModel.isUnitFragmentActive)
+            if (!viewModel.isUnitFragmentActive) {
+                viewModel.setupPrimaryUnitList()
                 createUnitListFragment()
+            }
         } else {
             createAlertFragment()
         }
@@ -73,6 +76,11 @@ class MainListActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onBackPressed() {
+        viewModel.onUnitFragmentBackPressed?.invoke()
+        super.onBackPressed()
     }
 
 
@@ -147,9 +155,7 @@ class MainListActivity : AppCompatActivity() {
         }
 
         viewModel.initUnitFragmentCallback = {
-            createUnitListFragment()
-
-            /////////////////
+            createAddUnitListFragment()
         }
 
         viewModel.onReceiveDatabaseSizeCallBack = {
@@ -192,6 +198,10 @@ class MainListActivity : AppCompatActivity() {
 
         viewModel.afterSuccessLoginCallback = {
             createAlertFragment()
+        }
+
+        viewModel.onCreateUnitListFragment = {
+            createUnitListFragment()
         }
     }
 
@@ -274,16 +284,6 @@ class MainListActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    /*private fun updateDatabase() {
-        if (checkInternetConnection()) {
-            createAlertFragment()
-            viewModel.startUpdatingDB()
-        } else
-            Snackbar.make(root,
-                "Проверьте подключение к интернету!", Snackbar.LENGTH_LONG).show()
-    }*/
-
-
 
     private fun createAlertFragment() {
         if (isDestroyed) return
@@ -297,13 +297,27 @@ class MainListActivity : AppCompatActivity() {
 
 
     private fun createUnitListFragment() {
-        viewModel.spinnerState.value = true
         if (isDestroyed) return
         val fragment = UnitListFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
             .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
             .replace(R.id.fragmentHolder, fragment, "INIT_FRAGMENT")
+            .commit()
+    }
+
+
+    private fun createAddUnitListFragment() {
+        viewModel.spinnerState.value = true
+        if (isDestroyed) return
+        val fragment = UnitListFragment()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction
+            .setCustomAnimations(
+                R.animator.enter_from_right, R.animator.exit_to_left,
+                R.animator.enter_from_left, R.animator.exit_to_right)
+            .replace(R.id.fragmentHolder, fragment)
+            .addToBackStack(null)
             .commit()
     }
 
