@@ -9,5 +9,6 @@ data class Units (
     @PrimaryKey val id: Int,
     var name: String?,
     val code: String?,
-    val rangir: Int?
+    val rangir: Int?,
+    val parent_id: Int?
 )

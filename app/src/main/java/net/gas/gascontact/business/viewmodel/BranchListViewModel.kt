@@ -3,12 +3,10 @@ package net.gas.gascontact.business.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.database.sqlite.SQLiteException
 import android.graphics.PointF
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
-import kotlinx.android.synthetic.main.fragment_first_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,7 +34,7 @@ class BranchListViewModel(application: Application)
     : AndroidViewModel(application) {
 
     val context: Context = application.applicationContext
-    private val dataModel = DataModel(context)
+    val dataModel = DataModel(context)
 
     var unitList: LiveData<List<Units>> = MutableLiveData<List<Units>>()
     var departmentList: LiveData<List<Departments>> = MutableLiveData<List<Departments>>()
@@ -69,24 +67,23 @@ class BranchListViewModel(application: Application)
     var onDatabaseUpdated: ((Boolean) -> Unit)? = null
     var onLoginCallback: (() -> Unit)? = null
     var afterSuccessLoginCallback: (() -> Unit)? = null
+    var onUnitFragmentBackPressed: (() -> Unit)? = null
+    var onCreateUnitListFragment: (() -> Unit)? = null
     var isUnitFragmentActive = false
     var isPersonFragmentActive = false
     var sharedDatabaseSize: Long = 0
     lateinit var databaseUpdateTime: String
     private var currentDatabaseSize: Long = 0
-    private var unitId = 0
+    var unitId = 0
 
     fun onUnitItemClick(id: Int) {
         spinnerState.value = true
-        viewModelScope.launch(Dispatchers.Default) {
-            departmentList = liveData(Dispatchers.IO) {
-                emitSource(dataModel.getDepartmentEntitiesById(id))
-            }
-        }
         unitId = id
-        unitFragmentCallback?.invoke()
-        deleteDownloadedDatabase()
-
+        viewModelScope.launch(Dispatchers.Default) {
+            launch(Dispatchers.Main) { initUnitFragmentCallback?.invoke() }
+            unitList = withContext(Dispatchers.IO) { dataModel.getSecondaryEntities(id) }
+        }
+        //deleteDownloadedDatabase()
     }
 
     fun getPostByPersonId(id: Int) : LiveData<Posts>
@@ -94,7 +91,6 @@ class BranchListViewModel(application: Application)
 
     fun onDepartmentItemClick(id: Int) {
         spinnerState.value = true
-        Log.e("!!!!!!!!!!!!!!!!!", "!! " +  unitId.toString() + " " + id.toString() )
         viewModelScope.launch(Dispatchers.Default) {
             personList = liveData(Dispatchers.IO) {
                 emitSource(dataModel.getPersonsEntitiesByIds(unitId, id))
@@ -267,14 +263,10 @@ class BranchListViewModel(application: Application)
         addContactIntentCallBack?.invoke(intent)
     }
 
-    fun setupUnitList() {
+    fun setupPrimaryUnitList() {
         spinnerState.value = true
         unitList = liveData(Dispatchers.IO) {
-            try {
-                emitSource(dataModel.getUnitEntities())
-            } catch (e: SQLiteException) {
-                Toast.makeText(context, "Smth went wrong", Toast.LENGTH_SHORT).show()
-            }
+            emitSource(dataModel.getPrimaryUnitEntities())
         }
     }
 
@@ -327,6 +319,11 @@ class BranchListViewModel(application: Application)
     }
 
 
+    fun setupSecondaryUnitList(id: Int) {
+        unitList = liveData { dataModel.getSecondaryEntities(id) }
+    }
+
+
     private fun deleteDownloadedDatabase() {
         val pathToDownloadedDatabase = context.filesDir.path + "/" + Var.DATABASE_NAME
         if (File(pathToDownloadedDatabase).exists()) {
@@ -335,7 +332,7 @@ class BranchListViewModel(application: Application)
     }
 
 
-    private fun updateDatabase() {
+    fun updateDatabase() {
         dataModel.updateDatabase()
     }
 
@@ -375,14 +372,15 @@ class BranchListViewModel(application: Application)
     }
 
 
-    fun startDownloadingDb(response: Response<ResponseBody>) {
+    private fun startDownloadingDb(response: Response<ResponseBody>) {
         viewModelScope.launch(Dispatchers.Default) {
             downloadDb("", response)
             viewModelScope.launch(Dispatchers.Main) {
                 if (checkOpenableDatabase()) {
-                    initUnitFragmentCallback?.invoke()
+                    onCreateUnitListFragment?.invoke()
                     putUpdateDatabaseDateToConfig()
                     updateDatabase()
+                    setupPrimaryUnitList()
                 }
             }
         }
@@ -445,7 +443,7 @@ class BranchListViewModel(application: Application)
     }
 
 
-    fun startUpdatingDb(response: Response<ResponseBody>) {
+    private fun startUpdatingDb(response: Response<ResponseBody>) {
         viewModelScope.launch(Dispatchers.Default) {
             downloadDb("UPDATING", response)
             viewModelScope.launch(Dispatchers.Main) {
@@ -479,7 +477,6 @@ class BranchListViewModel(application: Application)
                     withContext(Dispatchers.Main) {
                         if (response.isSuccessful) {
                             response.body()?.let {
-                                // Toast.makeText(context, "Response code is ${response.code()}", Toast.LENGTH_LONG).show()
                                 if (downloadType == "DOWNLOAD")
                                     startDownloadingDb(response)
                                 else {
