@@ -37,15 +37,8 @@ class DataModel(private val context: Context) {
 
     private fun getGlobalKey() : String = "velikoborecami"
 
-
-    fun getUnitEntities() : LiveData<List<Units>> {
-        return try {
-            database?.unitsDao()!!.getPrimaryEntities()
-        } catch (e: Exception) {
-            Toast.makeText(context, "Smth went wrong", Toast.LENGTH_SHORT).show()
-            liveData {  }
-        }
-    }
+    fun getPrimaryUnitEntities() : LiveData<List<Units>>
+           = database?.unitsDao()!!.getPrimaryEntities()
 
     fun getDepartmentEntitiesById(id: Int) : LiveData<List<Departments>>
             = database?.departmentsDao()!!.getEntitiesById(id)
@@ -78,8 +71,11 @@ class DataModel(private val context: Context) {
     suspend fun getPersonListByMobilePhoneTag(tag: String) : LiveData<List<Persons>>
             = withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByMobilePhoneTag(tag) }
 
-    suspend fun getSecondaryEntities(parentId: Int) : LiveData<List<Units>>
-            = withContext(Dispatchers.IO) { database?.unitsDao()!!.getSecondaryEntities(parentId) }
+    fun getSecondaryEntities(parentId: Int) : LiveData<List<Units>>
+            = database?.unitsDao()!!.getSecondaryEntities(parentId)
+
+    fun getUnitEntitiesByParentId(parentId: Int) : LiveData<List<Units>>
+            = database?.unitsDao()!!.getEntitiesByParentId(parentId)
 
 
     fun getUpcomingPersonWithBirthday(period: String) : LiveData<List<Persons>> {
