@@ -3,7 +3,6 @@ package net.gas.gascontact.business.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.database.sqlite.SQLiteException
 import android.graphics.PointF
 import android.util.Log
 import android.widget.Toast
@@ -84,7 +83,7 @@ class BranchListViewModel(application: Application)
             launch(Dispatchers.Main) { initUnitFragmentCallback?.invoke() }
             unitList = withContext(Dispatchers.IO) { dataModel.getSecondaryEntities(id) }
         }
-        deleteDownloadedDatabase()
+        //deleteDownloadedDatabase()
     }
 
     fun getPostByPersonId(id: Int) : LiveData<Posts>
@@ -333,7 +332,7 @@ class BranchListViewModel(application: Application)
     }
 
 
-    private fun updateDatabase() {
+    fun updateDatabase() {
         dataModel.updateDatabase()
     }
 
@@ -444,7 +443,7 @@ class BranchListViewModel(application: Application)
     }
 
 
-    fun startUpdatingDb(response: Response<ResponseBody>) {
+    private fun startUpdatingDb(response: Response<ResponseBody>) {
         viewModelScope.launch(Dispatchers.Default) {
             downloadDb("UPDATING", response)
             viewModelScope.launch(Dispatchers.Main) {
@@ -478,7 +477,6 @@ class BranchListViewModel(application: Application)
                     withContext(Dispatchers.Main) {
                         if (response.isSuccessful) {
                             response.body()?.let {
-                                // Toast.makeText(context, "Response code is ${response.code()}", Toast.LENGTH_LONG).show()
                                 if (downloadType == "DOWNLOAD")
                                     startDownloadingDb(response)
                                 else {

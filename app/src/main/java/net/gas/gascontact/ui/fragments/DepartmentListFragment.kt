@@ -26,7 +26,7 @@ class DepartmentListFragment : Fragment() {
     private lateinit var binding: DepartmentsListFragmentBinding
     private lateinit var viewModel: BranchListViewModel
     private lateinit var listAdapter: DepartmentListAdapterOptimized
-    private lateinit var departmentList: List<Departments>
+    private var departmentList: List<Departments>? = null
 
 
     override fun onCreateView(
@@ -52,7 +52,7 @@ class DepartmentListFragment : Fragment() {
         viewModel.onUnitFragmentBackPressed = {
             if (!departmentList.isNullOrEmpty()) {
                 viewModel.unitList = liveData(Dispatchers.IO) {
-                    emitSource(viewModel.dataModel.getUnitEntitiesByParentByDepartmentId(departmentList[0].id))
+                    emitSource(viewModel.dataModel.getUnitEntitiesByParentByDepartmentId(departmentList!![0].id))
                 }
                 viewModel.appToolbarStateCallback?.invoke("Филиалы", true)
             }

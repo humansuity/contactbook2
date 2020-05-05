@@ -177,6 +177,7 @@ class MainListActivity : AppCompatActivity() {
 
                 finish()
                 startActivity(intent)
+                viewModel.updateDatabase()
             } else {
                 if (supportFragmentManager.backStackEntryCount > 0) {
 
