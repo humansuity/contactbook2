@@ -76,7 +76,6 @@ class BranchListViewModel(application: Application)
     lateinit var databaseUpdateTime: String
     private var currentDatabaseSize: Long = 0
     var unitId = 0
-    private var i = 0
 
     fun onUnitItemClick(id: Int) {
         spinnerState.value = true
@@ -93,7 +92,6 @@ class BranchListViewModel(application: Application)
 
     fun onDepartmentItemClick(id: Int) {
         spinnerState.value = true
-        Log.e("!!!!!!!!!!!!!!!!!", "!! " +  unitId.toString() + " " + id.toString() )
         viewModelScope.launch(Dispatchers.Default) {
             personList = liveData(Dispatchers.IO) {
                 emitSource(dataModel.getPersonsEntitiesByIds(unitId, id))

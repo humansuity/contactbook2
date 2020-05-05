@@ -10,11 +10,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.liveData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.Dispatchers
 import net.gas.gascontact.R
 import net.gas.gascontact.databinding.DepartmentsListFragmentBinding
 import net.gas.gascontact.business.adapters.DepartmentListAdapterOptimized
+import net.gas.gascontact.business.database.entities.Departments
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 
 class DepartmentListFragment : Fragment() {
@@ -23,6 +26,7 @@ class DepartmentListFragment : Fragment() {
     private lateinit var binding: DepartmentsListFragmentBinding
     private lateinit var viewModel: BranchListViewModel
     private lateinit var listAdapter: DepartmentListAdapterOptimized
+    private lateinit var departmentList: List<Departments>
 
 
     override fun onCreateView(
@@ -44,6 +48,16 @@ class DepartmentListFragment : Fragment() {
         viewModel.appToolbarStateCallback?.invoke("Отделы", true)
         viewModel.floatingButtonState.value = true
         viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")
+
+        viewModel.onUnitFragmentBackPressed = {
+            if (!departmentList.isNullOrEmpty()) {
+                viewModel.unitList = liveData(Dispatchers.IO) {
+                    emitSource(viewModel.dataModel.getUnitEntitiesByParentByDepartmentId(departmentList[0].id))
+                }
+                viewModel.appToolbarStateCallback?.invoke("Филиалы", true)
+            }
+        }
+
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -65,6 +79,7 @@ class DepartmentListFragment : Fragment() {
                         listAdapter.setupList(it)
                         binding.recyclerView.adapter = listAdapter
                         viewModel.spinnerState.value = false
+                        departmentList = it
                     })
                 }
             })
@@ -75,6 +90,7 @@ class DepartmentListFragment : Fragment() {
                 listAdapter.setupList(it)
                 binding.recyclerView.adapter = listAdapter
                 viewModel.spinnerState.value = false
+                departmentList = it
             })
             return null
         }

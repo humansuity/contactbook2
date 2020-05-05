@@ -297,6 +297,7 @@ class MainListActivity : AppCompatActivity() {
 
 
     private fun createUnitListFragment() {
+        viewModel.isUnitFragmentActive = true
         if (isDestroyed) return
         val fragment = UnitListFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
@@ -308,7 +309,7 @@ class MainListActivity : AppCompatActivity() {
 
 
     private fun createAddUnitListFragment() {
-        viewModel.spinnerState.value = true
+        viewModel.appToolbarStateCallback?.invoke("Филиалы", true)
         if (isDestroyed) return
         val fragment = UnitListFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
