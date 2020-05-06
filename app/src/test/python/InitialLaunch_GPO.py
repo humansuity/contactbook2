@@ -24,13 +24,13 @@ class MriradaAppTest1Appium(unittest.TestCase):
     def setUpClass(cls):
         # Делаем необходимые настройки, данные приложения обнуляются
         desired_caps = {
-                'platformName': 'android',
-                #'deviceName': 'emulator-5554',
-                'deviceName': 'Galaxy_Nexus_API_28',
-                'appActivity': 'net.gas.gascontact.ui.activities.SplashActivity',
-                'appPackage': 'net.gas.gascontact',
-                'automationName': 'UiAutomator2',
-                }
+            'platformName': 'android',
+            #'deviceName': 'emulator-5554',
+            'deviceName': 'Galaxy_Nexus_API_28',
+            'appActivity': 'net.gas.gascontact.ui.activities.SplashActivity',
+            'appPackage': 'net.gas.gascontact',
+            'automationName': 'UiAutomator2',
+        }
         cls.driver = webdriver.Remote("http://localhost:4723/wd/hub", desired_caps)
 
     def test_enter(self):
