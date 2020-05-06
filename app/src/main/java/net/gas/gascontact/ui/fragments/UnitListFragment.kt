@@ -48,6 +48,7 @@ class UnitListFragment : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity()).get(BranchListViewModel::class.java)
         viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")
+        viewModel.fragmentType = "UNITS"
         viewModel.floatingButtonState.value = true
         viewModel.onUnitFragmentBackPressed = {
             if (!unitList.isNullOrEmpty()) {

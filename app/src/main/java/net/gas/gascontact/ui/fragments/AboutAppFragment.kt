@@ -29,6 +29,7 @@ class AboutAppFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
 
+
         viewModel.appToolbarStateCallback?.invoke("Настройки", true)
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
         viewModel.floatingButtonState.value = false
