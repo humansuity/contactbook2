@@ -80,7 +80,7 @@ class PersonAdditionalFragment : Fragment() {
             launch(Dispatchers.Main) { startObserveEntities(personEntity) }
         }
         binding.name =
-            personEntity.lastName + " " + personEntity.firstName + " " + personEntity.patronymic
+            personEntity.lastName + " "+ personEntity.firstName + " " + personEntity.patronymic
         binding.birthday = personEntity.birthday
         binding.person = personEntity
         binding.devPhoneNumber = personEntity.mobilePhone
@@ -151,6 +151,19 @@ class PersonAdditionalFragment : Fragment() {
                         )
                     )
             }
+            number.contains(";") -> {
+                formatNumber(
+                    number.substring(0, number.indexOf(";")),
+                    flag
+                )
+                    .plus("\n")
+                    .plus(
+                        formatNumber(
+                            number.substring(number.indexOf(";") + 1, number.length),
+                            flag
+                        )
+                    )
+            }
             else -> formatNumber(number, flag)
         }
     }
@@ -163,6 +176,17 @@ class PersonAdditionalFragment : Fragment() {
                     Snackbar.make(binding.root, "Невозможно определить номер!",
                         Snackbar.LENGTH_LONG).show()
                 personEntity.mobilePhone.contains(",") -> {
+                    val optionArray = makeOptionMobileArray(personEntity.mobilePhone)
+                    val dialogBuilder = AlertDialog.Builder(context)
+                    dialogBuilder.setTitle("Выберите номер")
+                    dialogBuilder.setSingleChoiceItems(optionArray, -1)
+                    { dialog, which ->
+                        dialog.dismiss()
+                        openContactDialog(personEntity, optionArray[which], binding.unit!!)
+                    }
+                    dialogBuilder.create().show()
+                }
+                personEntity.mobilePhone.contains(";") -> {
                     val optionArray = makeOptionMobileArray(personEntity.mobilePhone)
                     val dialogBuilder = AlertDialog.Builder(context)
                     dialogBuilder.setTitle("Выберите номер")
@@ -189,6 +213,9 @@ class PersonAdditionalFragment : Fragment() {
                 personEntity.mobilePhone.contains(",") -> {
                     openOptionNumberDialog(makeOptionMobileArray(personEntity.mobilePhone))
                 }
+                personEntity.mobilePhone.contains(";") -> {
+                    openOptionNumberDialog(makeOptionMobileArray(personEntity.mobilePhone))
+                }
                 else -> {
                     val callIntent = Intent(
                         Intent.ACTION_DIAL,
@@ -205,6 +232,9 @@ class PersonAdditionalFragment : Fragment() {
                     Snackbar.make(binding.root, "Невозможно определить номер!",
                         Snackbar.LENGTH_LONG).show()
                 personEntity.workPhone.contains(",") -> {
+                    openOptionNumberDialog(makeOptionMobileArray(personEntity.workPhone))
+                }
+                personEntity.workPhone.contains(";") -> {
                     openOptionNumberDialog(makeOptionMobileArray(personEntity.workPhone))
                 }
                 else -> {
@@ -273,10 +303,10 @@ class PersonAdditionalFragment : Fragment() {
 
     private fun makeOptionMobileArray(phoneNumber: String): Array<String> {
         val firstNumber = phoneNumber
-            .substring(0, phoneNumber.indexOf(","))
+            .substring(0, phoneNumber.indexOf(";"))
         val secondNumber = phoneNumber
             .substring(
-                phoneNumber.indexOf(",") + 1,
+                phoneNumber.indexOf(";") + 1,
                 phoneNumber.length
             )
         return arrayOf(firstNumber, secondNumber)
