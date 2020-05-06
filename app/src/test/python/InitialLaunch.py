@@ -43,14 +43,11 @@ class MriradaAppTest1Appium(unittest.TestCase):
         self.driver.find_element_by_id("com.android.packageinstaller:id/desc_container")
 
         time.sleep(1)
-        print("btnAllow")
         btnAllow=self.driver.find_element_by_id("com.android.packageinstaller:id/permission_allow_button")
-        print("Click Allow")
         btnAllow.click()
         time.sleep(1)
         self.driver.find_element_by_id("net.gas.gascontact:id/fragmentHolder")
         btnSpiner = self.driver.find_element_by_id("net.gas.gascontact:id/spinner")
-        print("Click List")
         btnSpiner.click()
         time.sleep(2)
 
@@ -76,42 +73,22 @@ class MriradaAppTest1Appium(unittest.TestCase):
         passwordUser = self.driver.find_element_by_id("net.gas.gascontact:id/loginPasswordText")
         passwordUser.send_keys("12358")
         time.sleep(1)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         # Нажать кнопку ВОЙТИ
         buttonEnter = self.driver.find_element_by_id("net.gas.gascontact:id/loginButton")
-        print("Click Enter")
         buttonEnter.click()
         time.sleep(2)
-        # Проверяем на основное окно
-        #self.driver.find_element_by_id("net.gas.miriada:id/my_nav_host_organizations_list_fragment")
-        #time.sleep(2)
 
-#    def test_first_login_window(self):
-#        """ Тестирование первого запуска программы c входом в систему """
-#        # Выбор компании и ввод логина и пароля
-#        time.sleep(4)
-#        self.driver.find_element_by_id("net.gas.miriada:id/toolbar_org")
-#        self.driver.find_element_by_id("net.gas.miriada:id/orglistView")
-#        elements = self.driver.find_elements_by_id("net.gas.miriada:id/title")
-#        # Ищем в списке элемент с "Витебскоблгаз"
-#        for element in elements:
-#            if element.text == "Витебскоблгаз":
-#                element.click()
-#                time.sleep(2)
-#                break
-#        el2 = self.driver.find_element_by_id("net.gas.miriada:id/loginUsernameText")
-#        el2.send_keys("kozlovmv")
-#        time.sleep(2)
-#        el3 = self.driver.find_element_by_id("net.gas.miriada:id/loginPasswordText")
-#        el3.send_keys("12358")
-#        time.sleep(2)
-#        el4 = self.driver.find_element_by_id("net.gas.miriada:id/loginButton")
-#        el4.click()
-#        time.sleep(2)
-#        # Проверяем на основное окно
-#        self.driver.find_element_by_id("net.gas.miriada:id/my_nav_host_organizations_list_fragment")
-#        time.sleep(2)
-#
+        #Проверка загрузка БД
+        self.driver.find_element_by_id("net.gas.gascontact:id/textView2")
+        editStatus = self.driver.find_element_by_id("net.gas.gascontact:id/textView5")
+
+        if (editStatus.text == "База данных загружается…"):
+            time.sleep(10)
+        else:
+            print ("Error 1: No load form LOAD")
+
+        time.sleep(5)
+
     @classmethod
     def tearDownClass(cls):
         cls.driver.quit()
