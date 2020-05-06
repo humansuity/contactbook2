@@ -75,6 +75,7 @@ class UnitListFragment : Fragment() {
                     viewModel.unitFragmentCallback?.invoke()
                 } else {
                     if (it[0].parent_id == 0) {
+                        viewModel.parentId = 0
                         if (activity?.supportFragmentManager!!.backStackEntryCount > 0) {
                             if (viewModel.isUnitFragmentActive) {
                                 Log.e("!!!!!!!!!", "i m here")
@@ -89,6 +90,7 @@ class UnitListFragment : Fragment() {
                             }
                         }
                     } else {
+                        viewModel.parentId = -1
                         viewModel.appToolbarStateCallback?.invoke("Филиалы", true)
                     }
                 }

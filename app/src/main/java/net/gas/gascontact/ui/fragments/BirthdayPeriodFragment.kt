@@ -29,6 +29,11 @@ class BirthdayPeriodFragment : Fragment() {
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.floatingButtonState.value = false
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
+        viewModel.onUnitFragmentBackPressed = {
+            if (viewModel.parentId == 0) {
+                viewModel.appToolbarStateCallback?.invoke("Филиалы", false)
+            }
+        }
 
         val pagerAdapter = BirthdayPagerAdapter(parentFragmentManager)
         viewPager.adapter = pagerAdapter
