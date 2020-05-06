@@ -34,6 +34,11 @@ class AboutAppFragment : Fragment() {
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
         viewModel.floatingButtonState.value = false
         viewModel.isUnitFragmentActive = true
+        viewModel.onUnitFragmentBackPressed = {
+            if (viewModel.parentId == 0) {
+                viewModel.appToolbarStateCallback?.invoke("Филиалы", false)
+            }
+        }
 
         notification_switch.setOnCheckedChangeListener { _, isChecked ->
             Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_SHORT).show()

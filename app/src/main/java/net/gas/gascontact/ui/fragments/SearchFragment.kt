@@ -48,6 +48,11 @@ class SearchFragment : Fragment() {
         viewModel.appToolbarStateCallback?.invoke("Поиск", true)
         viewModel.isUnitFragmentActive = true
         viewModel.floatingButtonState.value = false
+        viewModel.onUnitFragmentBackPressed = {
+            if (viewModel.parentId == 0) {
+                viewModel.appToolbarStateCallback?.invoke("Филиалы", false)
+            }
+        }
 
         val listAdapter = PersonListAdapter(viewModel, viewLifecycleOwner)
 

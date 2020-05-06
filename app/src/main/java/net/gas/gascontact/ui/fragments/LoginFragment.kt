@@ -68,6 +68,12 @@ class LoginFragment : Fragment() {
         viewModel.appToolbarStateCallback?.invoke("Авторизация", false)
         viewModel.floatingButtonState.value = false
 
+        viewModel.onUnitFragmentBackPressed = {
+            if (viewModel.parentId == 0) {
+                viewModel.appToolbarStateCallback?.invoke("Филиалы", false)
+            }
+        }
+
         arguments?.takeIf { it.containsKey("TYPE") }?.apply {
             downloadType = getString("TYPE")!!
             Log.e("KEY", downloadType)
