@@ -69,6 +69,7 @@ class BranchListViewModel(application: Application)
     var afterSuccessLoginCallback: (() -> Unit)? = null
     var onUnitFragmentBackPressed: (() -> Unit)? = null
     var onCreateUnitListFragment: (() -> Unit)? = null
+    var fragmentType: String = ""
     var isUnitFragmentActive = false
     var isPersonFragmentActive = false
     var sharedDatabaseSize: Long = 0

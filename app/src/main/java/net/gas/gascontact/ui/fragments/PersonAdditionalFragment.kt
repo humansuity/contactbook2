@@ -234,6 +234,9 @@ class PersonAdditionalFragment : Fragment() {
                 personEntity.workPhone.contains(",") -> {
                     openOptionNumberDialog(makeOptionMobileArray(personEntity.workPhone))
                 }
+                personEntity.workPhone.contains(";") -> {
+                    openOptionNumberDialog(makeOptionMobileArray(personEntity.workPhone))
+                }
                 else -> {
                     val callIntent = Intent(
                         Intent.ACTION_DIAL,
