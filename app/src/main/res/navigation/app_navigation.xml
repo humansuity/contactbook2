@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_navigation"
+    app:startDestination="@id/unitListFragment">
+
+    <fragment
+        android:id="@+id/unitListFragment"
+        android:name="net.gas.gascontact.ui.fragments.UnitListFragment"
+        android:label="UnitListFragment" >
+        <action
+            android:id="@+id/action_unitListFragment_to_departmentListFragment"
+            app:destination="@id/departmentListFragment" />
+        <action
+            android:id="@+id/action_unitListFragment_self3"
+            app:destination="@id/unitListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/departmentListFragment"
+        android:name="net.gas.gascontact.ui.fragments.DepartmentListFragment"
+        android:label="DepartmentListFragment" >
+        <action
+            android:id="@+id/action_departmentListFragment_to_personListFragment"
+            app:destination="@id/personListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/personListFragment"
+        android:name="net.gas.gascontact.ui.fragments.PersonListFragment"
+        android:label="PersonListFragment" >
+        <action
+            android:id="@+id/action_personListFragment_to_personAdditionalFragment"
+            app:destination="@id/personAdditionalFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/personAdditionalFragment"
+        android:name="net.gas.gascontact.ui.fragments.PersonAdditionalFragment"
+        android:label="PersonAdditionalFragment" />
+</navigation>

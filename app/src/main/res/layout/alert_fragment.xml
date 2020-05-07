@@ -104,6 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp"
             android:layout_marginEnd="35dp"
+            android:maxWidth="250dp"
             app:cardCornerRadius="10dp"
             app:cardElevation="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -112,7 +113,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="match_parent">
 
                 <ImageView
@@ -134,7 +135,6 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     android:backgroundTint="#C4F6B1"
-                    android:elevation="8dp"
                     android:fontFamily="@font/audiowide"
                     android:text="@string/download"
                     app:layout_constraintBottom_toBottomOf="parent"

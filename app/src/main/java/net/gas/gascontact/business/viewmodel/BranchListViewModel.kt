@@ -70,6 +70,7 @@ class BranchListViewModel(application: Application)
     var onUnitFragmentBackPressed: (() -> Unit)? = null
     var onCreateUnitListFragment: (() -> Unit)? = null
     var parentId = -1
+    var i = 0
     var fragmentType: String = ""
     var isUnitFragmentActive = false
     var isPersonFragmentActive = false
