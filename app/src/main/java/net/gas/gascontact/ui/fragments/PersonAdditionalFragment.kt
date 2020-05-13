@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,6 +57,8 @@ class PersonAdditionalFragment : Fragment() {
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
         viewModel.isPersonFragmentActive  = false
+
+        Log.e("ID", "Created personFragment")
 
         viewModel.personEntity.observe(viewLifecycleOwner, Observer {
             setupData(it)

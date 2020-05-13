@@ -43,10 +43,6 @@ class NotificationHelper(private val context: Context, private val personList: L
     }
 
     fun createNotification() {
-        val pendingIntent = PendingIntent.getActivity(
-            context, 0,
-            Intent(context, MainListActivity::class.java), 0)
-
         val summaryNotification = NotificationCompat.Builder(context, channelId)
             .setContentTitle("День рождения")
             .setContentText("Upcoming birthdays")
@@ -56,8 +52,12 @@ class NotificationHelper(private val context: Context, private val personList: L
             .build()
         notificationManager?.notify(1, summaryNotification)
 
-
         personList.forEach {
+            val intentToMainActivity = Intent(context, MainListActivity::class.java)
+            intentToMainActivity.putExtra("PERSON_ID", it.id)
+            val pendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID++,
+               intentToMainActivity, PendingIntent.FLAG_UPDATE_CURRENT)
+
             val notification = NotificationCompat.Builder(context, channelId)
                 .setContentTitle("${it.lastName} ${it.firstName} ${it.patronymic}, ${getAge(getRawAge(it.birthday))}")
                 .setSmallIcon(R.drawable.ic_gift_30)

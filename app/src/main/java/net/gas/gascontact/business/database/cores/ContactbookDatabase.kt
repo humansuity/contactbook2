@@ -44,7 +44,6 @@ abstract class ContactbookDatabase : RoomDatabase() {
                 synchronized(ContactbookDatabase::class) {
                     try {
                         val factory = SafeHelperFactory(key.toCharArray(), SafeHelperFactory.POST_KEY_SQL_V3)
-                        Log.e("KEY", key)
                         INSTANCE = Room.databaseBuilder(
                             context.applicationContext,
                             ContactbookDatabase::class.java,

@@ -21,6 +21,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
@@ -57,10 +58,18 @@ class MainListActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(BranchListViewModel::class.java)
 
         initResources()
-        /** Create unitlist fragment
-         * - start point of an app for user **/
-        createInitFragment()
-        setNotificationAlarm()
+
+        if (intent.hasExtra("PERSON_ID")) {
+            if (Var.checkIfDatabaseValid(applicationContext, viewModel)) {
+                viewModel.onPersonItemClick(intent.getIntExtra("PERSON_ID", 0))
+                Log.e("ID", intent.getIntExtra("PERSON_ID", 0).toString())
+            }
+        } else {
+            /** Create unitlist fragment
+             * - start point of an app for user **/
+            createInitFragment()
+            setNotificationAlarm()
+        }
     }
 
 
@@ -71,17 +80,16 @@ class MainListActivity : AppCompatActivity() {
             val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
             val repeatingTime = Calendar.getInstance().apply {
                 timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, 16)
-                set(Calendar.MINUTE, 36)
+                set(Calendar.HOUR_OF_DAY, 8)
             }
             val pendingIntent = PendingIntent.getService(
                 applicationContext,
                 0,
                 Intent(this, BirthdayNotificationService::class.java),
-                0
+                PendingIntent.FLAG_ONE_SHOT
             )
 
-            alarmManager!!.setRepeating(
+            alarmManager?.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 repeatingTime.timeInMillis,
                 AlarmManager.INTERVAL_DAY,
