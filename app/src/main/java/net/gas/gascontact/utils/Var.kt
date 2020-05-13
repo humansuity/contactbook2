@@ -1,8 +1,12 @@
 package net.gas.gascontact.utils
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import net.gas.gascontact.business.database.cores.ContactbookDatabase
+import java.io.File
 import java.math.BigInteger
+import java.security.AccessControlContext
 import java.security.MessageDigest
 
 object Var {
@@ -20,6 +24,7 @@ object Var {
     const val APP_DATABASE_SIZE = "dbsize"
     const val APP_DATABASE_UPDATE_TIME = "dbUpdateTime"
     const val APP_DATABASE_UPDATE_DATE = "dbUpdateDate"
+    const val APP_NOTIFICATION_ALARM_STATE = "NOTIFICATION_ALARM_STATE"
 
 
     inline fun <VM : ViewModel> viewModelFactory(crossinline f: () -> VM) =
@@ -32,5 +37,7 @@ object Var {
         val md = MessageDigest.getInstance("MD5")
         return BigInteger(1, md.digest(key.toByteArray())).toString(16).padStart(32, '0')
     }
+
+    fun checkDatabaseExist(context: Context) = (File (context.filesDir.path + "/" + Var.DATABASE_NAME).exists())
 
 }

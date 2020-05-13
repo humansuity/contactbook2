@@ -423,7 +423,7 @@ class PersonAdditionalFragment : Fragment() {
                             )
                         }
                         photoByteArray = byteArray
-                        GlideApp.with(context!!)
+                        GlideApp.with(requireContext())
                             .asBitmap()
                             .placeholder(R.drawable.ic_user_30)
                             .load(byteArray)
@@ -439,9 +439,9 @@ class PersonAdditionalFragment : Fragment() {
                     }
                 }
             } else {
-                GlideApp.with(context!!)
+                GlideApp.with(requireContext())
                     .asDrawable()
-                    .load(context!!.resources.getDrawable(R.drawable.ic_user_30))
+                    .load(requireContext().resources.getDrawable(R.drawable.ic_user_30))
                     .into(binding.image)
             }
         })

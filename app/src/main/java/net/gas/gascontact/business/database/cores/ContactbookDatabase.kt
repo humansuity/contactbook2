@@ -37,10 +37,9 @@ abstract class ContactbookDatabase : RoomDatabase() {
 
     companion object {
         private var INSTANCE: ContactbookDatabase? = null
-        private val DB_NAME = Var.DATABASE_NAME
 
         fun getInstance(context: Context, key: String) : ContactbookDatabase? {
-            val pathToDatabase = context.filesDir.path + "/" + DB_NAME
+            val pathToDatabase = context.filesDir.path + "/" + Var.DATABASE_NAME
             if (INSTANCE == null) {
                 synchronized(ContactbookDatabase::class) {
                     try {
@@ -49,7 +48,7 @@ abstract class ContactbookDatabase : RoomDatabase() {
                         INSTANCE = Room.databaseBuilder(
                             context.applicationContext,
                             ContactbookDatabase::class.java,
-                            DB_NAME
+                            Var.DATABASE_NAME
                         )
                             .openHelperFactory(factory)
                             .createFromFile(File(pathToDatabase))

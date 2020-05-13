@@ -15,4 +15,7 @@ interface PostsDao {
     @Query("select * from posts")
     fun getEntities() : LiveData<List<Posts>>
 
+    @Query("select * from posts where id in (:ids)")
+    fun getEntitiesByIds(ids: Array<Int>) : LiveData<List<Posts>>
+
 }

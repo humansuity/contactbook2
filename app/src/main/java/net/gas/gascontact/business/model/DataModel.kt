@@ -61,6 +61,12 @@ class DataModel(private val context: Context) {
     fun getUnitEntityById(id: Int) : LiveData<Units>
             = database?.unitsDao()!!.getEntityById(id)
 
+    fun getUnitEntitiesByIds(ids: Array<Int>) : LiveData<List<Units>>
+            = database?.unitsDao()!!.getEntitiesByIds(ids)
+
+    fun getPostEntitiesByIds(ids: Array<Int>) : LiveData<List<Posts>>
+            = database?.postsDao()!!.getEntitiesByIds(ids)
+
     suspend fun getPersonListByLastNameTag(tag: String) : LiveData<List<Persons>>
             = withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByLastNameTag(tag) }
     suspend fun getPersonListByNameTag(tag: String) : LiveData<List<Persons>>

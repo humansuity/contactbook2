@@ -1,7 +1,10 @@
 package net.gas.gascontact.ui.activities
 
 import android.Manifest
+import android.app.AlarmManager
 import android.app.AlertDialog
+import android.app.PendingIntent
+import android.app.Person
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -11,12 +14,13 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.net.ConnectivityManager
 import android.os.Build
+import android.os.Build.VERSION
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
@@ -26,9 +30,14 @@ import androidx.lifecycle.ViewModelProvider
 import net.gas.gascontact.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import net.gas.gascontact.business.BirthdayNotificationService
+import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.ui.NotificationHelper
 import net.gas.gascontact.ui.fragments.*
 import net.gas.gascontact.utils.Var
+import org.joda.time.LocalDate
+import org.joda.time.Years
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -47,10 +56,43 @@ class MainListActivity : AppCompatActivity() {
         preferences = getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
         viewModel = ViewModelProvider(this).get(BranchListViewModel::class.java)
 
-        initCallBacks()
-        viewModel.sharedDatabaseSize = getDatabaseSize()
-        viewModel.databaseUpdateTime = getDatabaseUpdateTime()
+        initResources()
+        /** Create unitlist fragment
+         * - start point of an app for user **/
+        createInitFragment()
+        setNotificationAlarm()
+    }
 
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun setNotificationAlarm() {
+        if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_STATE, false)) {
+            Log.e("Alarm", "Set repeating alarm")
+            val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+            val repeatingTime = Calendar.getInstance().apply {
+                timeInMillis = System.currentTimeMillis()
+                set(Calendar.HOUR_OF_DAY, 16)
+                set(Calendar.MINUTE, 36)
+            }
+            val pendingIntent = PendingIntent.getService(
+                applicationContext,
+                0,
+                Intent(this, BirthdayNotificationService::class.java),
+                0
+            )
+
+            alarmManager!!.setRepeating(
+                AlarmManager.RTC_WAKEUP,
+                repeatingTime.timeInMillis,
+                AlarmManager.INTERVAL_DAY,
+                pendingIntent
+            )
+
+            preferences.edit().putBoolean(Var.APP_NOTIFICATION_ALARM_STATE, true).apply()
+        }
+    }
+
+    private fun createInitFragment() {
         if (viewModel.checkOpenableDatabase()) {
             if (!viewModel.isUnitFragmentActive) {
                 viewModel.setupPrimaryUnitList()
@@ -58,17 +100,6 @@ class MainListActivity : AppCompatActivity() {
             }
         } else {
             createAlertFragment()
-        }
-
-        viewModel.floatingButtonState.observe(this, Observer {
-            floatingActionButton.visibility = if (it) View.VISIBLE else View.INVISIBLE
-        })
-        viewModel.spinnerState.observe(this, Observer {
-            unitProgressbar.visibility = if (it) View.VISIBLE else View.INVISIBLE
-        })
-
-        floatingActionButton.setOnClickListener {
-            createSearchFragment()
         }
     }
 
@@ -97,7 +128,14 @@ class MainListActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun initCallBacks() {
+    private fun initResources() {
+        viewModel.sharedDatabaseSize = getDatabaseSize()
+        viewModel.databaseUpdateTime = getDatabaseUpdateTime()
+
+        floatingActionButton.setOnClickListener {
+            createSearchFragment()
+        }
+
         viewModel.appToolbarStateCallback = { value, navButtonState ->
             if (navButtonState) main_toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_back_20)
             else main_toolbar.navigationIcon = null
@@ -131,7 +169,7 @@ class MainListActivity : AppCompatActivity() {
 
         viewModel.checkPermissionsCallBack = {
             if (checkInternetConnection()) {
-                if (Build.VERSION.SDK_INT != Build.VERSION_CODES.LOLLIPOP_MR1) {
+                if (VERSION.SDK_INT != Build.VERSION_CODES.LOLLIPOP_MR1) {
                     if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         == PackageManager.PERMISSION_DENIED
                     ) {
@@ -159,9 +197,7 @@ class MainListActivity : AppCompatActivity() {
         }
 
         viewModel.onReceiveDatabaseSizeCallBack = {
-            val editor = preferences.edit()
-            editor.putLong(Var.APP_DATABASE_SIZE, it)
-            editor.apply()
+            preferences.edit().putLong(Var.APP_DATABASE_SIZE, it).apply()
         }
 
         viewModel.onDatabaseUpdated = {
@@ -171,9 +207,7 @@ class MainListActivity : AppCompatActivity() {
                     Locale.forLanguageTag("en")
                 )
                 val currentDateTime = dateFormatter.format(Date())
-                val editor = preferences.edit()
-                editor.putString(Var.APP_DATABASE_UPDATE_TIME, currentDateTime)
-                editor.apply()
+                preferences.edit().putString(Var.APP_DATABASE_UPDATE_TIME, currentDateTime).apply()
 
                 finish()
                 startActivity(intent)
@@ -204,6 +238,13 @@ class MainListActivity : AppCompatActivity() {
         viewModel.onCreateUnitListFragment = {
             createUnitListFragment()
         }
+
+        viewModel.floatingButtonState.observe(this, Observer {
+            floatingActionButton.visibility = if (it) View.VISIBLE else View.INVISIBLE
+        })
+        viewModel.spinnerState.observe(this, Observer {
+            unitProgressbar.visibility = if (it) View.VISIBLE else View.INVISIBLE
+        })
     }
 
 

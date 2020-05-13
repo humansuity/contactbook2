@@ -19,7 +19,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
         <service
-            android:name=".business.NotificationService"
+            android:name=".business.BirthdayNotificationService"
             android:enabled="true"
             android:exported="true"></service>
 
