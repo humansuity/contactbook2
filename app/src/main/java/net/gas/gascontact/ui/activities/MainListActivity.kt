@@ -93,7 +93,7 @@ class MainListActivity : AppCompatActivity() {
     }
 
     private fun createInitFragment() {
-        if (viewModel.checkOpenableDatabase()) {
+        if (Var.checkIfDatabaseValid(applicationContext, viewModel)) {
             if (!viewModel.isUnitFragmentActive) {
                 viewModel.setupPrimaryUnitList()
                 createUnitListFragment()
@@ -210,8 +210,8 @@ class MainListActivity : AppCompatActivity() {
                 preferences.edit().putString(Var.APP_DATABASE_UPDATE_TIME, currentDateTime).apply()
 
                 finish()
-                startActivity(intent)
                 viewModel.updateDatabase()
+                startActivity(intent)
             } else {
                 if (supportFragmentManager.backStackEntryCount > 0) {
 

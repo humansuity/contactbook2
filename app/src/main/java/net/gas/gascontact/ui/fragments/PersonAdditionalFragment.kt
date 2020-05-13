@@ -503,15 +503,19 @@ class PersonAdditionalFragment : Fragment() {
                 if (person.photoID != null) {
                     viewModel.setupPhotoEntity(person.photoID)
                     viewModel.photoEntity.observe(viewLifecycleOwner, Observer {
-                        val decodedString = it.photo!!.decodeToString()
-                        val byteArray = Base64.decode(decodedString, Base64.DEFAULT)
-                        val row = ContentValues()
-                        val list = arrayListOf<ContentValues>()
-                        row.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
-                        row.put(ContactsContract.CommonDataKinds.Photo.PHOTO, byteArray)
-                        list.add(row)
-                        intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, list)
-                        viewModel.addNewContact(intent)
+                        try {
+                            val decodedString = it.photo!!.decodeToString()
+                            val byteArray = Base64.decode(decodedString, Base64.DEFAULT)
+                            val row = ContentValues()
+                            val list = arrayListOf<ContentValues>()
+                            row.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
+                            row.put(ContactsContract.CommonDataKinds.Photo.PHOTO, byteArray)
+                            list.add(row)
+                            intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, list)
+                            viewModel.addNewContact(intent)
+                        } catch (e: KotlinNullPointerException) {
+                            viewModel.addNewContact(intent)
+                        }
                     })
                 } else { viewModel.addNewContact(intent) }
             }

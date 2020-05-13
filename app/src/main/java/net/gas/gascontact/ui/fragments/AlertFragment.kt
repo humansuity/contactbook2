@@ -76,7 +76,6 @@ class AlertFragment : Fragment() {
                 lvblock.startAnim(800)
                 alertContainer.visibility = View.GONE
                 progressContainer.visibility = View.VISIBLE
-                viewModel.appToolbarStateCallback?.invoke("Загрузка...", false)
             }
             else {
                 lvblock.stopAnim()
