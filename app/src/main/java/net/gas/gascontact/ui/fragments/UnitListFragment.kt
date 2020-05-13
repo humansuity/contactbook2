@@ -78,7 +78,6 @@ class UnitListFragment : Fragment() {
                         viewModel.parentId = 0
                         if (activity?.supportFragmentManager!!.backStackEntryCount > 0) {
                             if (viewModel.isUnitFragmentActive) {
-                                Log.e("!!!!!!!!!", "i m here")
                                 val firstFragment: FragmentManager.BackStackEntry =
                                     activity?.supportFragmentManager!!.getBackStackEntryAt(0)
                                 activity?.supportFragmentManager!!.popBackStack(

@@ -13,6 +13,7 @@ import net.gas.gascontact.business.database.entities.Posts
 import net.gas.gascontact.business.database.entities.Units
 import net.gas.gascontact.business.model.DataModel
 import net.gas.gascontact.ui.NotificationHelper
+import net.gas.gascontact.utils.Var
 
 class BirthdayNotificationService : LifecycleService() {
 
@@ -28,39 +29,40 @@ class BirthdayNotificationService : LifecycleService() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e("Service", "Service active")
-        Toast.makeText(applicationContext, "Service is active", Toast.LENGTH_SHORT).show()
 
-        mDataModel = DataModel(applicationContext)
-        liveData { emitSource(mDataModel!!.getUpcomingPersonWithBirthday("TODAY")) }
-            .observe(this, Observer { personList ->
-                if (!personList.isNullOrEmpty()) {
-                    var unitIds = emptyArray<Int>()
-                    var postIds = emptyArray<Int>()
-                    var unitEntry = false
-                    var postEntry = false
-                    personList.forEach { item ->
-                        item.unitID?.let { unitIds += it }
-                        item.postID?.let { postIds += it }
+        if (applicationContext.getDatabasePath(Var.DATABASE_NAME).exists()) {
+            mDataModel = DataModel(applicationContext)
+            liveData { emitSource(mDataModel!!.getUpcomingPersonWithBirthday("TODAY")) }
+                .observe(this, Observer { personList ->
+                    if (!personList.isNullOrEmpty()) {
+                        var unitIds = emptyArray<Int>()
+                        var postIds = emptyArray<Int>()
+                        var unitEntry = false
+                        var postEntry = false
+                        personList.forEach { item ->
+                            item.unitID?.let { unitIds += it }
+                            item.postID?.let { postIds += it }
+                        }
+
+                        liveData { emitSource(mDataModel!!.getUnitEntitiesByIds(unitIds)) }
+                            .observe(this, Observer {
+                                unitEntry = true
+                                unitList = it
+                                if (unitEntry && postEntry)
+                                    createBirthdayNotification(personList, unitList, postList)
+                            })
+
+                        liveData { emitSource(mDataModel!!.getPostEntitiesByIds(postIds)) }
+                            .observe(this, Observer {
+                                postEntry = true
+                                postList = it
+                                if (unitEntry && postEntry)
+                                    createBirthdayNotification(personList, unitList, postList)
+                            })
                     }
 
-                    liveData { emitSource(mDataModel!!.getUnitEntitiesByIds(unitIds)) }
-                        .observe(this, Observer {
-                            unitEntry = true
-                            unitList = it
-                            if (unitEntry && postEntry)
-                                createBirthdayNotification(personList, unitList, postList)
-                        })
-
-                    liveData { emitSource(mDataModel!!.getPostEntitiesByIds(postIds)) }
-                        .observe(this, Observer {
-                            postEntry = true
-                            postList = it
-                            if (unitEntry && postEntry)
-                                createBirthdayNotification(personList, unitList, postList)
-                        })
-                }
-
-            })
+                })
+        } else stopSelf()
         return super.onStartCommand(intent, flags, startId)
     }
 
