@@ -1,5 +1,8 @@
 package net.gas.gascontact.business
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -15,6 +18,7 @@ import net.gas.gascontact.business.database.entities.Units
 import net.gas.gascontact.business.model.DataModel
 import net.gas.gascontact.ui.NotificationHelper
 import net.gas.gascontact.utils.Var
+import java.util.*
 
 class BirthdayNotificationService : LifecycleService() {
 
@@ -63,7 +67,10 @@ class BirthdayNotificationService : LifecycleService() {
                             })
                     }
                 })
-        } else stopSelf()
+        } else {
+            setNotificationAlarm(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 1)
+            stopSelf()
+        }
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -80,5 +87,33 @@ class BirthdayNotificationService : LifecycleService() {
     override fun onDestroy() {
         Log.e("Service", "Service was destroyed")
         super.onDestroy()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun setNotificationAlarm(hour: Int) {
+        if (!applicationContext.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+                .getBoolean(Var.APP_NOTIFICATION_ALARM_STATE, false)) {
+            Log.e("Alarm", "Set repeating alarm")
+            val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+            val repeatingTime = Calendar.getInstance().apply {
+                timeInMillis = System.currentTimeMillis()
+                set(Calendar.HOUR_OF_DAY, hour)
+            }
+            val pendingIntent = PendingIntent.getService(
+                applicationContext,
+                System.currentTimeMillis().toInt(),
+                Intent(this, BirthdayNotificationService::class.java),
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+            alarmManager?.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                repeatingTime.timeInMillis,
+                pendingIntent
+            )
+
+            applicationContext.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+                .edit().putBoolean(Var.APP_NOTIFICATION_ALARM_STATE, true).apply()
+        }
     }
 }
