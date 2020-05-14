@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.AlarmManager
 import android.app.AlertDialog
 import android.app.PendingIntent
-import android.app.Person
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -21,24 +20,19 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import net.gas.gascontact.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import net.gas.gascontact.R
 import net.gas.gascontact.business.BirthdayNotificationService
-import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
-import net.gas.gascontact.ui.NotificationHelper
 import net.gas.gascontact.ui.fragments.*
 import net.gas.gascontact.utils.Var
-import org.joda.time.LocalDate
-import org.joda.time.Years
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -59,17 +53,23 @@ class MainListActivity : AppCompatActivity() {
 
         initResources()
 
-        if (intent.hasExtra("PERSON_ID")) {
-            if (Var.checkIfDatabaseValid(applicationContext, viewModel)) {
-                viewModel.onPersonItemClick(intent.getIntExtra("PERSON_ID", 0))
-                Log.e("ID", intent.getIntExtra("PERSON_ID", 0).toString())
-            }
-        } else {
+        if (!isOpenedViaIntent()) {
             /** Create unitlist fragment
              * - start point of an app for user **/
             createInitFragment()
             setNotificationAlarm()
         }
+    }
+
+
+    private fun isOpenedViaIntent(): Boolean {
+        return if (intent.hasExtra("PERSON_ID")) {
+            if (Var.checkIfDatabaseValid(applicationContext, viewModel)) {
+                viewModel.setupPersonInfo(intent.getIntExtra("PERSON_ID", 0))
+                createPersonAdditionalFragment(backStackFlag = false)
+                true
+            } else false
+        } else false
     }
 
 
@@ -80,19 +80,19 @@ class MainListActivity : AppCompatActivity() {
             val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
             val repeatingTime = Calendar.getInstance().apply {
                 timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, 8)
+                set(Calendar.HOUR_OF_DAY, 12)
+                set(Calendar.MINUTE, 20)
             }
             val pendingIntent = PendingIntent.getService(
                 applicationContext,
-                0,
+                System.currentTimeMillis().toInt(),
                 Intent(this, BirthdayNotificationService::class.java),
-                PendingIntent.FLAG_ONE_SHOT
+                PendingIntent.FLAG_UPDATE_CURRENT
             )
 
-            alarmManager?.setRepeating(
+            alarmManager?.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 repeatingTime.timeInMillis,
-                AlarmManager.INTERVAL_DAY,
                 pendingIntent
             )
 
@@ -172,7 +172,7 @@ class MainListActivity : AppCompatActivity() {
         }
 
         viewModel.personFragmentCallBack = {
-            createPersonAdditionalFragment()
+            createPersonAdditionalFragment(true)
         }
 
         viewModel.checkPermissionsCallBack = {
@@ -399,15 +399,16 @@ class MainListActivity : AppCompatActivity() {
             .commit()
     }
 
-    private fun createPersonAdditionalFragment() {
+    private fun createPersonAdditionalFragment(backStackFlag: Boolean) {
         if (isDestroyed) return
         val fragment = PersonAdditionalFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .replace(R.id.fragmentHolder, fragment)
-            .addToBackStack(null)
-            .commit()
+        if (backStackFlag)
+            fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
         floatingActionButton.visibility = View.INVISIBLE
     }
 

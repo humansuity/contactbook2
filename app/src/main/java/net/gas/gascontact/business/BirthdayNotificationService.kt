@@ -6,8 +6,9 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.*
+import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
+import androidx.lifecycle.liveData
 import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.database.entities.Posts
 import net.gas.gascontact.business.database.entities.Units
@@ -29,6 +30,7 @@ class BirthdayNotificationService : LifecycleService() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e("Service", "Service active")
+        Toast.makeText(applicationContext, "Service active", Toast.LENGTH_LONG).show()
 
         if (applicationContext.getDatabasePath(Var.DATABASE_NAME).exists()) {
             mDataModel = DataModel(applicationContext)
@@ -60,7 +62,6 @@ class BirthdayNotificationService : LifecycleService() {
                                     createBirthdayNotification(personList, unitList, postList)
                             })
                     }
-
                 })
         } else stopSelf()
         return super.onStartCommand(intent, flags, startId)

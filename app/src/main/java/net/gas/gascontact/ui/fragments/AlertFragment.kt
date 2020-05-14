@@ -2,17 +2,15 @@ package net.gas.gascontact.ui.fragments
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import net.gas.gascontact.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.alert_fragment.*
+import net.gas.gascontact.R
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 
 class AlertFragment : Fragment() {

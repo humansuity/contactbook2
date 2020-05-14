@@ -10,14 +10,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Base64
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -26,15 +24,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import net.gas.gascontact.R
-import net.gas.gascontact.databinding.PersonAdditionalFragmentBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
+import net.gas.gascontact.R
 import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.database.entities.Photos
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.databinding.PersonAdditionalFragmentBinding
 import net.gas.gascontact.utils.GlideApp
-import java.lang.NullPointerException
 
 class PersonAdditionalFragment : Fragment() {
 
@@ -57,8 +54,6 @@ class PersonAdditionalFragment : Fragment() {
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
         viewModel.isPersonFragmentActive  = false
-
-        Log.e("ID", "Created personFragment")
 
         viewModel.personEntity.observe(viewLifecycleOwner, Observer {
             setupData(it)

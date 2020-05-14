@@ -3,7 +3,6 @@ package net.gas.gascontact.business.database.daos
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import net.gas.gascontact.business.database.entities.Posts
 import net.gas.gascontact.business.database.entities.Units
 
 

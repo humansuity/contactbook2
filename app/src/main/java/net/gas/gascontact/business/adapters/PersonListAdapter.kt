@@ -10,16 +10,15 @@ import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import net.gas.gascontact.R
-import net.gas.gascontact.databinding.PersonRecyclerItemBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.gas.gascontact.R
 import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.databinding.PersonRecyclerItemBinding
 import net.gas.gascontact.utils.GlideApp
-import java.lang.Exception
 
 class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: LifecycleOwner) :
     DataBoundListAdapter<Persons>(diffCallback = object: DiffUtil.ItemCallback<Persons>() {

@@ -15,10 +15,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.Dispatchers
 import net.gas.gascontact.R
-import net.gas.gascontact.databinding.DepartmentsListFragmentBinding
 import net.gas.gascontact.business.adapters.DepartmentListAdapterOptimized
 import net.gas.gascontact.business.database.entities.Departments
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.databinding.DepartmentsListFragmentBinding
 
 class DepartmentListFragment : Fragment() {
 

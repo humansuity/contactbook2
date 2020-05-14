@@ -4,11 +4,9 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import net.gas.gascontact.business.database.cores.ContactbookDatabase
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import java.io.File
 import java.math.BigInteger
-import java.security.AccessControlContext
 import java.security.MessageDigest
 
 object Var {

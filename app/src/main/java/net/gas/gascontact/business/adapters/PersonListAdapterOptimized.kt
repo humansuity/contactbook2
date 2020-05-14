@@ -8,16 +8,15 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import net.gas.gascontact.R
-import net.gas.gascontact.databinding.PersonRecyclerItemBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.gas.gascontact.R
 import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.databinding.PersonRecyclerItemBinding
 import net.gas.gascontact.utils.GlideApp
-import java.lang.NullPointerException
 
 class PersonListAdapterOptimized(private val mViewModel: BranchListViewModel, private val viewLifecycleOwner: LifecycleOwner)
     : RecyclerView.Adapter<PersonListAdapterOptimized.ViewHolder>() {

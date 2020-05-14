@@ -121,4 +121,7 @@ dependencies {
 
     //joda time libs
     compile 'joda-time:joda-time:2.10.6'
+
+    //viewpager2
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
 }

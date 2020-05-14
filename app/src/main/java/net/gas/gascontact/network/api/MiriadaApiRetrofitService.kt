@@ -4,10 +4,10 @@ package net.gas.gascontact.network.api
 import net.gas.gascontact.business.model.IdentityScopesResponse
 import net.gas.gascontact.business.model.StandardJsonResponse
 import okhttp3.ResponseBody
-
-
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Query
 
 interface MiriadaApiRetrofitService {
 

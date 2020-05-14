@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import net.gas.gascontact.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_about_app.*
+import net.gas.gascontact.R
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 
 class AboutAppFragment : Fragment() {
@@ -45,7 +45,7 @@ class AboutAppFragment : Fragment() {
         }
 
         try {
-            val pkgInfo = context?.packageManager?.getPackageInfo(context!!.packageName, 0)
+            val pkgInfo = context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
             app_version_text.text = pkgInfo?.versionName
         } catch (e: PackageManager.NameNotFoundException) {
             app_version_text.text = "1.0.0"

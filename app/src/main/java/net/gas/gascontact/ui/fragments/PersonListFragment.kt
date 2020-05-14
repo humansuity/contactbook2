@@ -13,9 +13,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.gas.gascontact.R
-import net.gas.gascontact.databinding.PersonListFragmentBinding
 import net.gas.gascontact.business.adapters.PersonListAdapterOptimized
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.databinding.PersonListFragmentBinding
 
 class PersonListFragment : Fragment() {
 

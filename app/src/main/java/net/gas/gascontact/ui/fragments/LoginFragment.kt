@@ -12,19 +12,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import net.gas.gascontact.R
-import net.gas.gascontact.databinding.FragmentFirstLoginBinding
 import kotlinx.android.synthetic.main.fragment_first_login.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import net.gas.gascontact.R
 import net.gas.gascontact.business.adapters.SpinnerRealmAdapter
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
-import net.gas.gascontact.network.api.MiriadaApiRetrofitFactory
+import net.gas.gascontact.databinding.FragmentFirstLoginBinding
 import net.gas.gascontact.utils.ORGANIZATIONUNITLIST
 import net.gas.gascontact.utils.Var
-import retrofit2.HttpException
 
 class LoginFragment : Fragment() {
 
