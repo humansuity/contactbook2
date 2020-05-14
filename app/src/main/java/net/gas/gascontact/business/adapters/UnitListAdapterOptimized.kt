@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import net.gas.gascontact.R
-import net.gas.gascontact.databinding.UnitRecyclerItemBinding
 import net.gas.gascontact.business.database.entities.Units
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.databinding.UnitRecyclerItemBinding
 import net.gas.gascontact.utils.GlideApp
 
 class UnitListAdapterOptimized(private val mViewModel: BranchListViewModel)

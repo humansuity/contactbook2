@@ -1,8 +1,6 @@
 package net.gas.gascontact.business.database.cores
 
 import android.content.Context
-import android.util.Log
-import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import androidx.room.Database
 import androidx.room.Room
@@ -12,7 +10,6 @@ import net.gas.gascontact.business.database.daos.*
 import net.gas.gascontact.business.database.entities.*
 import net.gas.gascontact.utils.Var
 import java.io.File
-import java.lang.Exception
 
 
 @Database(

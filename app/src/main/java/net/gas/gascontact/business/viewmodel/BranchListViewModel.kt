@@ -24,7 +24,6 @@ import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.net.ConnectException
-import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
@@ -176,6 +175,12 @@ class BranchListViewModel(application: Application)
     }
 
 
+    fun setupPersonInfo(id: Int) {
+        spinnerState.value = true
+        personEntity = liveData { emitSource(dataModel.getPersonEntityById(id)) }
+    }
+
+
     fun setupPhotoEntity(id: Int?) {
         photoEntity = liveData { emitSource(dataModel.getPhotoEntityById(id!!)) }
     }
@@ -203,12 +208,6 @@ class BranchListViewModel(application: Application)
         birthdayPersonList = liveData { emitSource(dataModel.getUpcomingPersonWithBirthday(period)) }
     }
 
-
-    fun setupSecondaryUnitList(id: Int) {
-        unitList = liveData { dataModel.getSecondaryEntities(id) }
-    }
-
-
     fun deleteDownloadedDatabase() {
         val pathToDownloadedDatabase = context.filesDir.path + "/" + Var.DATABASE_NAME
         if (File(pathToDownloadedDatabase).exists()) {
@@ -228,7 +227,11 @@ class BranchListViewModel(application: Application)
         val keycloackservice: KeycloackRetrofitService = KeycloackRetrofitFactory.makeRetrofitService()
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = keycloackservice.requestGrant(realm!!, "microservicegasclient", ORGANIZATIONUNITLIST.find {it.code == realm}!!.secret, "password", username!!, password!!)
+                val response = keycloackservice.requestGrant(
+                    realm!!, "microservicegasclient",
+                    ORGANIZATIONUNITLIST.find {it.code == realm}!!.secret,
+                    "password", username!!, password!!
+                )
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         response.body()?.let {
@@ -364,9 +367,8 @@ class BranchListViewModel(application: Application)
                             response.body()?.let {
                                 if (downloadType == "DOWNLOAD")
                                     startDownloadingDb(response)
-                                else {
+                                else
                                     startUpdatingDb(response)
-                                }
                             }
                             Log.e(logTag, "Success! Response code is ${response.code()}")
                         } else {
@@ -377,7 +379,6 @@ class BranchListViewModel(application: Application)
                                 Toast.LENGTH_LONG
                             ).show()
                             downloadSpinnerState.value = false
-                            //activity?.supportFragmentManager?.popBackStack();
                         }
                     }
                 } catch (e: HttpException) {
@@ -388,7 +389,6 @@ class BranchListViewModel(application: Application)
                     Log.e(logTag, "Ooops: Something else went wrong ${e.message}")
                 }
             } catch (e: KotlinNullPointerException) {
-
             }
         }
     }

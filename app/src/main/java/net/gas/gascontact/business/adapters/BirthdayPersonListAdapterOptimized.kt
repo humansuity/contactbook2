@@ -1,7 +1,6 @@
 package net.gas.gascontact.business.adapters
 
 import android.util.Base64
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -9,14 +8,14 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import net.gas.gascontact.R
-import net.gas.gascontact.databinding.PersonItemBirthdayBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.gas.gascontact.R
 import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.databinding.PersonItemBirthdayBinding
 import net.gas.gascontact.utils.GlideApp
 
 class BirthdayPersonListAdapterOptimized(private val mViewModel: BranchListViewModel, private val viewLifecycleOwner: LifecycleOwner)
@@ -51,13 +50,17 @@ class BirthdayPersonListAdapterOptimized(private val mViewModel: BranchListViewM
                                         .apply(RequestOptions().transform(RoundedCorners(30)))
                                         .into(binding.image)
                                 } catch (e: Exception) {
-                                    Log.e(
-                                        "Glide",
-                                        "Some error when load image while activity is destroyed"
-                                    )
+                                    GlideApp.with(binding.root.context)
+                                        .asDrawable()
+                                        .load(binding.root.context.resources.getDrawable(R.drawable.ic_user_30))
+                                        .into(binding.image)
                                 }
                             }
-                        }
+                        } else
+                            GlideApp.with(binding.root.context)
+                                .asDrawable()
+                                .load(binding.root.context.resources.getDrawable(R.drawable.ic_user_30))
+                                .into(binding.image)
                     }
                 })
             } else

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -11,13 +12,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import net.gas.gascontact.R
-import net.gas.gascontact.databinding.PersonListFragmentBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.gas.gascontact.R
 import net.gas.gascontact.business.adapters.BirthdayPersonListAdapterOptimized
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.databinding.PersonListFragmentBinding
 
 class BirthdayPersonListFragment : Fragment() {
 
@@ -48,15 +49,15 @@ class BirthdayPersonListFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
+
+        viewModel.spinnerState.value = true
 
         arguments?.takeIf { it.containsKey("PERIOD") }?.apply {
             viewModel.setUpcomingPersonsWithBirthday(getString("PERIOD")!!)
         }
 
-        viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
         viewModel.floatingButtonState.value = false
         viewModel.isUnitFragmentActive = true
@@ -73,6 +74,7 @@ class BirthdayPersonListFragment : Fragment() {
                 viewModel.viewModelScope.launch(Dispatchers.Main) {
                     listAdapter.setupList(it)
                     binding.recyclerView.adapter = listAdapter
+                    viewModel.spinnerState.value = false
                 }
             }
         })
