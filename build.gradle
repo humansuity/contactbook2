@@ -26,6 +26,14 @@ allprojects {
     }
 }
 
+task createVersionPropFile(dependsOn: 'assemble') {
+    def pathToFile = projectDir.toString() + "/app"
+    if (!(new File(pathToFile, 'version.properties')).exists()) {
+        new File(pathToFile, 'version.properties').text = ""
+        println("Created file")
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
