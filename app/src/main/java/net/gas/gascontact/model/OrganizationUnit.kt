@@ -6,4 +6,3 @@ data class OrganizationUnit(
     var image: Int,
     var secret: String
 )
-
