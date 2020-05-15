@@ -1,6 +1,7 @@
 package net.gas.gascontact.business
 
 import android.app.AlarmManager
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -12,11 +13,13 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.liveData
+import net.gas.gascontact.R
 import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.database.entities.Posts
 import net.gas.gascontact.business.database.entities.Units
 import net.gas.gascontact.business.model.DataModel
 import net.gas.gascontact.ui.NotificationHelper
+import net.gas.gascontact.ui.activities.MainListActivity
 import net.gas.gascontact.utils.Var
 import java.util.*
 
@@ -25,10 +28,6 @@ class BirthdayNotificationService : LifecycleService() {
     private var mDataModel: DataModel? = null
     private var unitList = listOf<Units>()
     private var postList = listOf<Posts>()
-
-    override fun onBind(intent: Intent): IBinder? {
-        return super.onBind(intent)
-    }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -68,9 +67,10 @@ class BirthdayNotificationService : LifecycleService() {
                     }
                 })
         } else {
-            setNotificationAlarm(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 1)
+            //setNotificationAlarm(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 1)
             stopSelf()
         }
+        //startForeground(1, Notification.Builder(applicationContext, "default_channel").build())
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -80,7 +80,6 @@ class BirthdayNotificationService : LifecycleService() {
         val notificationHelper = NotificationHelper(applicationContext, persons, units, posts)
         notificationHelper.createNotificationChannel("default_channel", "default", "some_channel")
         notificationHelper.createNotification()
-        stopSelf()
     }
 
 

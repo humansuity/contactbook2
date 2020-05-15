@@ -18,10 +18,15 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <receiver
+            android:name=".business.BirthdayAlarmReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
         <service
             android:name=".business.BirthdayNotificationService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".ui.activities.SplashActivity"

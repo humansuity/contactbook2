@@ -29,6 +29,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.gascontact.R
+import net.gas.gascontact.business.BirthdayAlarmReceiver
 import net.gas.gascontact.business.BirthdayNotificationService
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.ui.fragments.*
@@ -80,19 +81,20 @@ class MainListActivity : AppCompatActivity() {
             val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
             val repeatingTime = Calendar.getInstance().apply {
                 timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, 12)
-                set(Calendar.MINUTE, 20)
+                set(Calendar.HOUR_OF_DAY, 16)
+                set(Calendar.MINUTE, 31)
             }
-            val pendingIntent = PendingIntent.getService(
+            val pendingIntent = PendingIntent.getBroadcast(
                 applicationContext,
-                System.currentTimeMillis().toInt(),
-                Intent(this, BirthdayNotificationService::class.java),
+                0,
+                Intent(this, BirthdayAlarmReceiver::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
 
-            alarmManager?.setExactAndAllowWhileIdle(
+            alarmManager?.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 repeatingTime.timeInMillis,
+                1000 * 60 * 2,
                 pendingIntent
             )
 

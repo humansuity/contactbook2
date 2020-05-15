@@ -3,11 +3,13 @@ package net.gas.gascontact.business
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 
 class BirthdayAlarmReceiver : BroadcastReceiver() {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceive(context: Context, intent: Intent) {
-        // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
-        TODO("BirthdayAlarmReceiver.onReceive() is not implemented")
+        context.startService(Intent(context, BirthdayNotificationService::class.java))
     }
 }
