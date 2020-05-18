@@ -79,8 +79,8 @@ class MainListActivity : AppCompatActivity() {
             val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
             val repeatingTime = Calendar.getInstance().apply {
                 timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, 12)
-                set(Calendar.MINUTE, 46)
+                set(Calendar.HOUR_OF_DAY, 8)
+                set(Calendar.MINUTE, 0)
             }
             val pendingIntent = PendingIntent.getBroadcast(
                 applicationContext,
