@@ -86,7 +86,7 @@ class MainListActivity : AppCompatActivity() {
                 applicationContext,
                 Var.NOTIFICATION_SERVICE_ID,
                 Intent(this, BirthdayAlarmReceiver::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT
+                0
             )
 
             alarmManager?.setRepeating(
