@@ -33,7 +33,7 @@ class BirthdayNotificationService : LifecycleService() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e("Service", "Service active")
-        Toast.makeText(applicationContext, "Service active", Toast.LENGTH_LONG).show()
+        startForeground(1, Notification.Builder(applicationContext, "default_channel").build())
 
         if (applicationContext.getDatabasePath(Var.DATABASE_NAME).exists()) {
             mDataModel = DataModel(applicationContext)
@@ -67,10 +67,8 @@ class BirthdayNotificationService : LifecycleService() {
                     }
                 })
         } else {
-            //setNotificationAlarm(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 1)
             stopSelf()
         }
-        //startForeground(1, Notification.Builder(applicationContext, "default_channel").build())
         return super.onStartCommand(intent, flags, startId)
     }
 
