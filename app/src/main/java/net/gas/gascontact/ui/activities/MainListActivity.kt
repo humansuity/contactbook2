@@ -92,7 +92,7 @@ class MainListActivity : AppCompatActivity() {
             alarmManager?.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 repeatingTime.timeInMillis,
-                1000 * 60 * 10,
+                AlarmManager.INTERVAL_DAY,
                 pendingIntent
             )
 
