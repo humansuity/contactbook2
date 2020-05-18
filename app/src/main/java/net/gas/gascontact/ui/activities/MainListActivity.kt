@@ -30,7 +30,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.gascontact.R
 import net.gas.gascontact.business.BirthdayAlarmReceiver
-import net.gas.gascontact.business.BirthdayNotificationService
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.ui.fragments.*
 import net.gas.gascontact.utils.Var
@@ -74,19 +73,18 @@ class MainListActivity : AppCompatActivity() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun setNotificationAlarm() {
         if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_STATE, false)) {
             Log.e("Alarm", "Set repeating alarm")
             val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
             val repeatingTime = Calendar.getInstance().apply {
                 timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, 16)
-                set(Calendar.MINUTE, 31)
+                set(Calendar.HOUR_OF_DAY, 12)
+                set(Calendar.MINUTE, 46)
             }
             val pendingIntent = PendingIntent.getBroadcast(
                 applicationContext,
-                0,
+                Var.NOTIFICATION_SERVICE_ID,
                 Intent(this, BirthdayAlarmReceiver::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
@@ -94,7 +92,7 @@ class MainListActivity : AppCompatActivity() {
             alarmManager?.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 repeatingTime.timeInMillis,
-                1000 * 60 * 2,
+                1000 * 60 * 10,
                 pendingIntent
             )
 

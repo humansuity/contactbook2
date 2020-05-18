@@ -28,6 +28,8 @@ object Var {
     const val UNIT_FRAGMENT_ID = 1
     const val DEPARTMENT_FRAGMENT_ID = 2
 
+    const val NOTIFICATION_SERVICE_ID = 5
+
     const val APP_PREFERENCES = "appsettings"
     const val APP_DATABASE_SIZE = "dbsize"
     const val APP_DATABASE_UPDATE_TIME = "dbUpdateTime"
