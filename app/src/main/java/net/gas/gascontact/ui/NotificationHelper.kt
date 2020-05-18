@@ -14,6 +14,8 @@ import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.database.entities.Posts
 import net.gas.gascontact.business.database.entities.Units
 import net.gas.gascontact.ui.activities.MainListActivity
+import net.gas.gascontact.utils.ORGANIZATIONUNITLIST
+import net.gas.gascontact.utils.Var
 import org.joda.time.LocalDate
 import org.joda.time.Years
 
@@ -43,9 +45,11 @@ class NotificationHelper(private val context: Context, private val personList: L
     }
 
     fun createNotification() {
+        val realm = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE).getString("REALM", "")
+
         val summaryNotification = NotificationCompat.Builder(context, channelId)
             .setContentTitle("День рождения")
-            .setContentText("Upcoming birthdays")
+            .setContentText(ORGANIZATIONUNITLIST.find { realm == it.code }?.name)
             .setSmallIcon(R.drawable.ic_gift_30)
             .setGroup(NOTIFICATION_GROUP_KEY)
             .setGroupSummary(true)

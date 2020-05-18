@@ -73,19 +73,18 @@ class MainListActivity : AppCompatActivity() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun setNotificationAlarm() {
         if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_STATE, false)) {
             Log.e("Alarm", "Set repeating alarm")
             val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
             val repeatingTime = Calendar.getInstance().apply {
                 timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, 17)
-                set(Calendar.MINUTE, 5)
+                set(Calendar.HOUR_OF_DAY, 8)
+                set(Calendar.MINUTE, 0)
             }
             val pendingIntent = PendingIntent.getBroadcast(
                 applicationContext,
-                0,
+                Var.NOTIFICATION_SERVICE_ID,
                 Intent(this, BirthdayAlarmReceiver::class.java),
                 0
             )
