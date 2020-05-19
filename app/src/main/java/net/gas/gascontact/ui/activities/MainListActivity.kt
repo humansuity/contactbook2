@@ -74,7 +74,7 @@ class MainListActivity : AppCompatActivity() {
 
 
     private fun setNotificationAlarm() {
-        if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_STATE, false)) {
+        if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_INITIAL, false)) {
             Log.e("Alarm", "Set repeating alarm")
             val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
             val repeatingTime = Calendar.getInstance().apply {
@@ -96,7 +96,7 @@ class MainListActivity : AppCompatActivity() {
                 pendingIntent
             )
 
-            preferences.edit().putBoolean(Var.APP_NOTIFICATION_ALARM_STATE, true).apply()
+            preferences.edit().putBoolean(Var.APP_NOTIFICATION_ALARM_INITIAL, true).apply()
         }
     }
 
