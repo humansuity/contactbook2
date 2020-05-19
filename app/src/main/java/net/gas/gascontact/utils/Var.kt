@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import net.gas.gascontact.business.BirthdayAlarmReceiver
 import net.gas.gascontact.business.BirthdayNotificationService
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import java.io.File
@@ -35,6 +36,7 @@ object Var {
     const val APP_DATABASE_UPDATE_TIME = "dbUpdateTime"
     const val APP_DATABASE_UPDATE_DATE = "dbUpdateDate"
     const val APP_NOTIFICATION_ALARM_STATE = "NOTIFICATION_ALARM_STATE"
+    const val APP_NOTIFICATION_ALARM_INITIAL = "NOTIFICATION_ALARM_INITIAL_STATE"
 
 
     fun stringMD5(key: String) : String {
@@ -69,31 +71,31 @@ object Var {
     fun checkDownloadedFile(context: Context) = checkIfDatabaseFileExists(context)
 
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun setNotificationAlarm(context: Context, sharedPreferences: SharedPreferences, hour: Int) {
-        if (!context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
-                .getBoolean(Var.APP_NOTIFICATION_ALARM_STATE, false)) {
+    fun setNotificationAlarm(context: Context) {
+        val preferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+        if (!preferences.getBoolean(APP_NOTIFICATION_ALARM_STATE, false)) {
             Log.e("Alarm", "Set repeating alarm")
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
             val repeatingTime = Calendar.getInstance().apply {
                 timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, hour)
+                set(Calendar.HOUR_OF_DAY, 8)
+                set(Calendar.MINUTE, 0)
             }
-            val pendingIntent = PendingIntent.getService(
+            val pendingIntent = PendingIntent.getBroadcast(
                 context,
-                System.currentTimeMillis().toInt(),
-                Intent(context, BirthdayNotificationService::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT
+                NOTIFICATION_SERVICE_ID,
+                Intent(context, BirthdayAlarmReceiver::class.java),
+                0
             )
 
-            alarmManager?.setExactAndAllowWhileIdle(
+            alarmManager?.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 repeatingTime.timeInMillis,
+                1000 * 60 * 3,
                 pendingIntent
             )
 
-            context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
-                .edit().putBoolean(Var.APP_NOTIFICATION_ALARM_STATE, true).apply()
+            preferences.edit().putBoolean(APP_NOTIFICATION_ALARM_STATE, true).apply()
         }
     }
 

@@ -21,7 +21,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_chainStyle="packed">
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintWidth_max="500dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/loginUsernameText"
@@ -34,7 +35,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-<com.google.android.material.textfield.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginPasswordTextInputLayout"
         style="@style/AppTheme"
         android:layout_width="0dp"
@@ -45,22 +46,23 @@
         app:layout_constraintBottom_toTopOf="@+id/loginButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginUsernameTextInputLayout">
+        app:layout_constraintTop_toBottomOf="@+id/loginUsernameTextInputLayout"
+        app:layout_constraintWidth_max="500dp">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/loginPasswordText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Пароль"
-        android:inputType="textPassword"
-        android:maxLines="1"
-        android:text="" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/loginPasswordText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Пароль"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:text="" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"></LinearLayout>
-</com.google.android.material.textfield.TextInputLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"></LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/loginButton"
@@ -88,7 +90,8 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@+id/loginUsernameTextInputLayout"
         app:layout_constraintStart_toStartOf="@+id/loginUsernameTextInputLayout"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="500dp">
 
         <Spinner
             android:id="@+id/spinner"

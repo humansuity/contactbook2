@@ -109,13 +109,13 @@ class BranchListViewModel(application: Application)
 
     private fun putUpdateDatabaseDateToConfig() {
         val dateFormatter = SimpleDateFormat(
-            "dd.MM.yyyy",
+            "dd.MM.yyyy hh:mm a",
             Locale.forLanguageTag("en")
         )
-        val currentDate = dateFormatter.format(Date())
-        val editor = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE).edit()
-        editor.putString(Var.APP_DATABASE_UPDATE_DATE, currentDate)
-        editor.apply()
+        val currentDateTime = dateFormatter.format(Date())
+        context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            .edit().putString(Var.APP_DATABASE_UPDATE_TIME, currentDateTime)
+            .apply()
     }
 
 

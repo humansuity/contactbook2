@@ -73,6 +73,7 @@ class BirthdayNotificationService : LifecycleService() {
         } else {
             startForeground(1, Notification.Builder(applicationContext, "default_channel").build())
             setupAfterEnterNotificationAlarm()
+            stopForeground(true)
             stopSelf()
         }
         return super.onStartCommand(intent, flags, startId)
@@ -95,7 +96,7 @@ class BirthdayNotificationService : LifecycleService() {
         val currentHour = DateTime().hourOfDay
         val currentMinute = DateTime().minuteOfHour
         if (currentMinute >= 55)
-            setExactNotificationAlarm(currentHour + 1, 0)
+            setExactNotificationAlarm(currentHour + 1, 5)
         else
             setExactNotificationAlarm(currentHour, currentMinute + 5)
 
