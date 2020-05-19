@@ -1,8 +1,13 @@
 package net.gas.gascontact.business.adapters
 
+import android.graphics.Color
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.HorizontalScrollView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import net.gas.gascontact.R
 import net.gas.gascontact.business.database.entities.Units
 import net.gas.gascontact.business.viewmodel.BranchListViewModel

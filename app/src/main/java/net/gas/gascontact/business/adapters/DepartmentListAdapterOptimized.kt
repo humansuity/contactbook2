@@ -1,5 +1,6 @@
 package net.gas.gascontact.business.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -43,7 +44,9 @@ class DepartmentListAdapterOptimized(private val mViewModel: BranchListViewModel
         notifyDataSetChanged()
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(items[position])
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(items[position])
+    }
 
     override fun getItemCount(): Int = items.size
 }

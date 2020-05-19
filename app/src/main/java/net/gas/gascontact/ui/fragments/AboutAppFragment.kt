@@ -47,6 +47,7 @@ class AboutAppFragment : Fragment() {
         }
 
         notification_switch.setOnCheckedChangeListener { _, isChecked ->
+            alarmSettingsButton.isEnabled = isChecked
             Snackbar.make(root, if (isChecked) "Уведомления включены" else "Уведомления отключены", Snackbar.LENGTH_SHORT).show()
         }
 
@@ -66,7 +67,7 @@ class AboutAppFragment : Fragment() {
         alarmSettingsButton.setOnClickListener {
             val date = DateTime()
             TimePickerDialog(requireContext(),
-                TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                     Snackbar.make(root, "Time is: $hourOfDay:$minute", Snackbar.LENGTH_SHORT).show()
                 },
                 date.hourOfDay,
