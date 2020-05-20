@@ -90,7 +90,7 @@ object Var {
         alarmManager?.setRepeating(
             AlarmManager.RTC_WAKEUP,
             repeatingTime.timeInMillis,
-            1000 * 60 * 3,
+            AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
 
