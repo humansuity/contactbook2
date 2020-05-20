@@ -58,6 +58,7 @@ class NotificationHelper(private val context: Context, private val personList: L
 
         personList.forEach {
             val intentToMainActivity = Intent(context, MainListActivity::class.java)
+            intentToMainActivity.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             intentToMainActivity.putExtra("PERSON_ID", it.id)
             val pendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID++,
                intentToMainActivity, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -68,6 +69,7 @@ class NotificationHelper(private val context: Context, private val personList: L
                 .setStyle(NotificationCompat.InboxStyle()
                     .addLine("${getPost(it.postID)}")
                     .addLine("${getUnit(it.unitID)}"))
+                .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
                 .setGroup(NOTIFICATION_GROUP_KEY)
                 .build()

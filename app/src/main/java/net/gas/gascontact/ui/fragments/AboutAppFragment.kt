@@ -78,6 +78,7 @@ class AboutAppFragment : Fragment() {
                 )
                 alarmManager?.cancel(pendingIntent)
                 preferences.edit().putBoolean(Var.APP_NOTIFICATION_ALARM_STATE, false).apply()
+                Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_LONG).show()
                 Log.e("Alarm manager", "Alarm manager was canceled")
             } else {
                 preferences.edit().putBoolean(Var.APP_NOTIFICATION_ALARM_STATE, true).apply()
