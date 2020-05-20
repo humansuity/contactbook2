@@ -52,8 +52,6 @@ class MainListActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(BranchListViewModel::class.java)
 
         initResources()
-        Snackbar.make(root, "created",
-            Snackbar.LENGTH_LONG).show()
 
         if (!isOpenedViaIntent()) {
             /** Create unitlist fragment
