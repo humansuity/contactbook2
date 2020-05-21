@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
@@ -22,7 +23,7 @@ import net.gas.gascontact.databinding.UnitsListFragmentBinding
 class UnitListFragment : Fragment() {
 
     private lateinit var binding: UnitsListFragmentBinding
-    private lateinit var viewModel: BranchListViewModel
+    private val viewModel by activityViewModels<BranchListViewModel>()
     private lateinit var listAdapter: UnitListAdapterOptimized
     private lateinit var unitList: List<Units>
 
@@ -44,7 +45,6 @@ class UnitListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity()).get(BranchListViewModel::class.java)
         viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")
         viewModel.fragmentType = "UNITS"
         viewModel.floatingButtonState.value = true

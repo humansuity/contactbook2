@@ -97,4 +97,30 @@ object Var {
         preferences.edit().putBoolean(APP_NOTIFICATION_ALARM_STATE, true).apply()
     }
 
+    fun setNotificationAlarm(context: Context, hour: Int, minute: Int) {
+        val preferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+        Log.e("Alarm", "Set repeating alarm")
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+        val repeatingTime = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            NOTIFICATION_SERVICE_ID,
+            Intent(context, BirthdayAlarmReceiver::class.java),
+            0
+        )
+
+        alarmManager?.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            repeatingTime.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
+
+        preferences.edit().putBoolean(APP_NOTIFICATION_ALARM_STATE, true).apply()
+    }
+
 }

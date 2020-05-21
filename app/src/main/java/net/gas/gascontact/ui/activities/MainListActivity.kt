@@ -20,10 +20,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -38,7 +40,7 @@ import java.util.*
 
 
 class MainListActivity : AppCompatActivity() {
-    private lateinit var viewModel: BranchListViewModel
+    private val viewModel by viewModels<BranchListViewModel>()
     private var optionItemMenuFlag = ""
     private lateinit var preferences: SharedPreferences
 
@@ -49,7 +51,6 @@ class MainListActivity : AppCompatActivity() {
         setSupportActionBar(main_toolbar)
 
         preferences = getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
-        viewModel = ViewModelProvider(this).get(BranchListViewModel::class.java)
 
         initResources()
 
@@ -338,11 +339,10 @@ class MainListActivity : AppCompatActivity() {
     private fun createAlertFragment() {
         if (isDestroyed) return
         val fragment = AlertFragment()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .replace(R.id.fragmentHolder, fragment)
-            .commit()
+        supportFragmentManager.commit {
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            replace(R.id.fragmentHolder, fragment)
+        }
     }
 
 
@@ -350,11 +350,10 @@ class MainListActivity : AppCompatActivity() {
         viewModel.isUnitFragmentActive = true
         if (isDestroyed) return
         val fragment = UnitListFragment()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction
-            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-            .replace(R.id.fragmentHolder, fragment, "INIT_FRAGMENT")
-            .commit()
+        supportFragmentManager.commit {
+            setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+            replace(R.id.fragmentHolder, fragment, "INIT_FRAGMENT")
+        }
     }
 
 
@@ -362,41 +361,45 @@ class MainListActivity : AppCompatActivity() {
         viewModel.appToolbarStateCallback?.invoke("Филиалы", true)
         if (isDestroyed) return
         val fragment = UnitListFragment()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction
-            .setCustomAnimations(
-                R.animator.enter_from_right, R.animator.exit_to_left,
-                R.animator.enter_from_left, R.animator.exit_to_right)
-            .replace(R.id.fragmentHolder, fragment)
-            .addToBackStack(null)
-            .commit()
+        supportFragmentManager.commit {
+            addToBackStack(null)
+            setCustomAnimations(
+                R.animator.enter_from_right,
+                R.animator.exit_to_left,
+                R.animator.enter_from_left,
+                R.animator.exit_to_right)
+            replace(R.id.fragmentHolder, fragment)
+        }
     }
 
 
     private fun createDepartmentFragment() {
         if (isDestroyed) return
         val fragment = DepartmentListFragment()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction
-            .setCustomAnimations(
-                R.animator.enter_from_right, R.animator.exit_to_left,
-                R.animator.enter_from_left, R.animator.exit_to_right)
-            .replace(R.id.fragmentHolder, fragment)
-            .addToBackStack(null)
-            .commit()
+        supportFragmentManager.commit {
+            addToBackStack(null)
+            setCustomAnimations(
+                R.animator.enter_from_right,
+                R.animator.exit_to_left,
+                R.animator.enter_from_left,
+                R.animator.exit_to_right)
+            replace(R.id.fragmentHolder, fragment)
+        }
     }
 
 
     private fun createPersonFragment() {
         if (isDestroyed) return
         val fragment = PersonListFragment()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction
-            .setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
-                R.animator.enter_from_left, R.animator.exit_to_right)
-            .replace(R.id.fragmentHolder, fragment)
-            .addToBackStack(null)
-            .commit()
+        supportFragmentManager.commit {
+            addToBackStack(null)
+            setCustomAnimations(
+                R.animator.enter_from_right,
+                R.animator.exit_to_left,
+                R.animator.enter_from_left,
+                R.animator.exit_to_right)
+            replace(R.id.fragmentHolder, fragment)
+        }
     }
 
     private fun createPersonAdditionalFragment(backStackFlag: Boolean) {
@@ -415,46 +418,42 @@ class MainListActivity : AppCompatActivity() {
     private fun createSearchFragment() {
         if (isDestroyed) return
         val fragment = SearchFragment()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-            .replace(R.id.fragmentHolder, fragment)
-            .addToBackStack(null)
-            .commit()
+        supportFragmentManager.commit {
+            addToBackStack(null)
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+            replace(R.id.fragmentHolder, fragment)
+        }
     }
 
     private fun createAboutAppFragment() {
         if (isDestroyed) return
         val fragment = AboutAppFragment()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .replace(R.id.fragmentHolder, fragment)
-            .addToBackStack(null)
-            .commit()
+        supportFragmentManager.commit {
+            addToBackStack(null)
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            replace(R.id.fragmentHolder, fragment)
+        }
     }
 
 
     private fun createViewPagerFragment() {
         if (isDestroyed) return
         val fragment = BirthdayPeriodFragment()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .replace(R.id.fragmentHolder, fragment)
-            .addToBackStack(null)
-            .commit()
+        supportFragmentManager.commit {
+            addToBackStack(null)
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            replace(R.id.fragmentHolder, fragment)
+        }
     }
 
 
     private fun createLoginFragment(type: String) {
         if (isDestroyed) return
         val fragment = LoginFragment.newInstance("TYPE", type)
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .replace(R.id.fragmentHolder, fragment)
-            .addToBackStack(null)
-            .commit()
+        supportFragmentManager.commit {
+            addToBackStack(null)
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            replace(R.id.fragmentHolder, fragment)
+        }
     }
 }
