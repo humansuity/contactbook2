@@ -62,21 +62,7 @@ class AboutAppFragment : Fragment() {
         notification_switch.setOnCheckedChangeListener { _, isChecked ->
             alarmSettingsButton.isEnabled = isChecked
             if (!isChecked) {
-                val alarmManager =
-                    requireContext().getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-                val pendingIntent = PendingIntent.getBroadcast(
-                    requireContext(),
-                    Var.NOTIFICATION_SERVICE_ID,
-                    Intent(requireContext(), BirthdayAlarmReceiver::class.java),
-                    0
-                )
-                requireContext().stopService(
-                    Intent(
-                        requireContext(),
-                        BirthdayNotificationService::class.java
-                    )
-                )
-                alarmManager?.cancel(pendingIntent)
+                cancelBirthdayNotification()
                 preferences.edit().putBoolean(Var.APP_NOTIFICATION_ALARM_STATE, false).apply()
                 Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_LONG).show()
                 Log.e("Alarm manager", "Alarm manager was canceled")
@@ -105,7 +91,9 @@ class AboutAppFragment : Fragment() {
             val date = DateTime()
             TimePickerDialog(requireContext(),
                 TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                    Snackbar.make(root, "Time is: $hourOfDay:$minute", Snackbar.LENGTH_SHORT).show()
+                    cancelBirthdayNotification()
+                    Var.setNotificationAlarm(requireContext(), hourOfDay, minute)
+                    Snackbar.make(root, "Уведомления настроены, время - $hourOfDay:$minute", Snackbar.LENGTH_LONG).show()
                 },
                 date.hourOfDay,
                 date.minuteOfHour,
@@ -114,4 +102,18 @@ class AboutAppFragment : Fragment() {
 
     }
 
+    private fun cancelBirthdayNotification() {
+        val alarmManager = requireContext()
+            .getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(),
+            Var.NOTIFICATION_SERVICE_ID,
+            Intent(requireContext(), BirthdayAlarmReceiver::class.java),
+            0
+        )
+        requireContext().stopService(
+            Intent(requireContext(), BirthdayNotificationService::class.java)
+        )
+        alarmManager?.cancel(pendingIntent)
+    }
 }
