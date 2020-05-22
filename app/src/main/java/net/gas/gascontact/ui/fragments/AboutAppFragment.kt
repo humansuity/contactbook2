@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -59,6 +60,12 @@ class AboutAppFragment : Fragment() {
             notification_switch.isChecked = preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_STATE, false)
         }
 
+        if (notification_switch.isChecked) {
+            val time = requireContext().getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+                .getString(Var.APP_NOTIFICATION_ALARM_TIME, "{NONE}")
+            notificationDescription.text = "Уведомления настроены на $time, период - 1 день"
+        }
+
         notification_switch.setOnCheckedChangeListener { _, isChecked ->
             alarmSettingsButton.isEnabled = isChecked
             if (!isChecked) {
@@ -93,6 +100,8 @@ class AboutAppFragment : Fragment() {
                 TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                     cancelBirthdayNotification()
                     Var.setNotificationAlarm(requireContext(), hourOfDay, minute)
+                    requireContext().getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+                        .edit { putString(Var.APP_NOTIFICATION_ALARM_TIME, "$hourOfDay:$minute") }
                     Snackbar.make(root, "Уведомления настроены, время - $hourOfDay:$minute", Snackbar.LENGTH_LONG).show()
                 },
                 date.hourOfDay,

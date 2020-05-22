@@ -31,49 +31,92 @@ class NotificationHelper(private val context: Context, private val personList: L
     private var yearSampleTwo = "год"
     private var yearSampleThree = "года"
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannel(id: String, name: String, description: String) {
-        val channel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH).apply {
-            this.description = description
-            enableLights(true)
-            lightColor = Color.RED
-            enableVibration(true)
-            vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
-            notificationManager?.createNotificationChannel(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH).apply {
+                this.description = description
+                enableLights(true)
+                lightColor = Color.RED
+                enableVibration(true)
+                vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
+                notificationManager?.createNotificationChannel(this)
+            }
+            channelId = id
         }
-        channelId = id
     }
+
 
     fun createNotification() {
         val realm = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE).getString("REALM", "")
 
-        val summaryNotification = NotificationCompat.Builder(context, channelId)
-            .setContentTitle("День рождения")
-            .setContentText(ORGANIZATIONUNITLIST.find { realm == it.code }?.name)
-            .setSmallIcon(R.drawable.ic_gift_30)
-            .setGroup(NOTIFICATION_GROUP_KEY)
-            .setGroupSummary(true)
-            .build()
-        notificationManager?.notify(1, summaryNotification)
-
-        personList.forEach {
-            val intentToMainActivity = Intent(context, MainListActivity::class.java)
-            intentToMainActivity.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            intentToMainActivity.putExtra("PERSON_ID", it.id)
-            val pendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID++,
-               intentToMainActivity, PendingIntent.FLAG_UPDATE_CURRENT)
-
-            val notification = NotificationCompat.Builder(context, channelId)
-                .setContentTitle("${it.lastName} ${it.firstName} ${it.patronymic}, ${getAge(getRawAge(it.birthday))}")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val summaryNotification = NotificationCompat.Builder(context, channelId)
+                .setChannelId(channelId)
+                .setContentTitle("День рождения")
+                .setContentText(ORGANIZATIONUNITLIST.find { realm == it.code }?.name)
                 .setSmallIcon(R.drawable.ic_gift_30)
-                .setStyle(NotificationCompat.InboxStyle()
-                    .addLine("${getPost(it.postID)}")
-                    .addLine("${getUnit(it.unitID)}"))
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
                 .setGroup(NOTIFICATION_GROUP_KEY)
+                .setGroupSummary(true)
                 .build()
-            notificationManager?.notify(NOTIFICATION_ID++, notification)
+            notificationManager?.notify(1, summaryNotification)
+
+            personList.forEach {
+                val intentToMainActivity = Intent(context, MainListActivity::class.java)
+                intentToMainActivity.flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                intentToMainActivity.putExtra("PERSON_ID", it.id)
+                val pendingIntent = PendingIntent.getActivity(
+                    context, NOTIFICATION_ID++,
+                    intentToMainActivity, PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
+                val notification = NotificationCompat.Builder(context, channelId)
+                    .setContentTitle(
+                        "${it.lastName} ${it.firstName} ${it.patronymic}, ${getAge(
+                            getRawAge(it.birthday)
+                        )}"
+                    )
+                    .setSmallIcon(R.drawable.ic_gift_30)
+                    .setStyle(
+                        NotificationCompat.InboxStyle()
+                            .addLine("${getPost(it.postID)}")
+                            .addLine("${getUnit(it.unitID)}")
+                    )
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .setGroup(NOTIFICATION_GROUP_KEY)
+                    .build()
+                notificationManager?.notify(NOTIFICATION_ID++, notification)
+            }
+        } else {
+            personList.forEach {
+                val intentToMainActivity = Intent(context, MainListActivity::class.java)
+                intentToMainActivity.flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                intentToMainActivity.putExtra("PERSON_ID", it.id)
+                val pendingIntent = PendingIntent.getActivity(
+                    context, NOTIFICATION_ID++,
+                    intentToMainActivity, PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
+                val notification = NotificationCompat.Builder(context, channelId)
+                    .setContentTitle(
+                        "${it.lastName} " +
+                        "${it.firstName} " +
+                        "${it.patronymic}, " +
+                         getAge(getRawAge(it.birthday))
+                    )
+                    .setSmallIcon(R.drawable.ic_gift_30)
+                    .setStyle(
+                        NotificationCompat.InboxStyle()
+                            .addLine("${getPost(it.postID)}")
+                            .addLine("${getUnit(it.unitID)}")
+                    )
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .build()
+                notificationManager?.notify(NOTIFICATION_ID++, notification)
+            }
         }
     }
 

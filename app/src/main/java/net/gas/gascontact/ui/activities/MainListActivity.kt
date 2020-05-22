@@ -3,6 +3,7 @@ package net.gas.gascontact.ui.activities
 import android.Manifest
 import android.app.AlarmManager
 import android.app.AlertDialog
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -21,17 +22,18 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.content.edit
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.gascontact.R
 import net.gas.gascontact.business.BirthdayAlarmReceiver
+import net.gas.gascontact.business.BirthdayNotificationService
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.ui.fragments.*
 import net.gas.gascontact.utils.Var
@@ -44,7 +46,6 @@ class MainListActivity : AppCompatActivity() {
     private var optionItemMenuFlag = ""
     private lateinit var preferences: SharedPreferences
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -136,13 +137,39 @@ class MainListActivity : AppCompatActivity() {
         } else "Не определена"
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+
+    private fun showNotification() {
+//        val notificationManager = applicationContext
+//            .getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+//
+//        val notification = NotificationCompat.Builder(applicationContext, "channel")
+//            .setSmallIcon(R.drawable.ic_gift_30)
+//            .setContentTitle("Великоборец антон 69 лет")
+//            .setStyle(
+//                NotificationCompat.InboxStyle()
+//                    .setBigContentTitle("Великоборец антон 69 лет")
+//                    .addLine("Инженер")
+//                    .addLine("Витебскоблгаз"))
+//            .setAutoCancel(true)
+//            .build()
+//        notificationManager?.notify(2, notification)
+
+        startService(Intent(applicationContext, BirthdayNotificationService::class.java))
+    }
+
     private fun initResources() {
+
+        if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_INITIAL, false)) {
+            applicationContext.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+                .edit { putString(Var.APP_NOTIFICATION_ALARM_TIME, "8:00") }
+        }
+
         viewModel.sharedDatabaseSize = getDatabaseSize()
         viewModel.databaseUpdateTime = getDatabaseUpdateTime()
 
         floatingActionButton.setOnClickListener {
             createSearchFragment()
+            //showNotification()
         }
 
         viewModel.appToolbarStateCallback = { value, navButtonState ->
@@ -178,7 +205,7 @@ class MainListActivity : AppCompatActivity() {
 
         viewModel.checkPermissionsCallBack = {
             if (checkInternetConnection()) {
-                if (VERSION.SDK_INT != Build.VERSION_CODES.LOLLIPOP_MR1) {
+                if (VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         == PackageManager.PERMISSION_DENIED
                     ) {
@@ -278,6 +305,7 @@ class MainListActivity : AppCompatActivity() {
                 else { Snackbar.make(root,
                     "Права не предоставлены!", Snackbar.LENGTH_LONG).show()
                 }
+                return
             }
         }
     }
@@ -450,10 +478,15 @@ class MainListActivity : AppCompatActivity() {
     private fun createLoginFragment(type: String) {
         if (isDestroyed) return
         val fragment = LoginFragment.newInstance("TYPE", type)
-        supportFragmentManager.commit {
-            addToBackStack(null)
-            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            replace(R.id.fragmentHolder, fragment)
-        }
+//        supportFragmentManager.commit {
+//            addToBackStack(null)
+//            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//            replace(R.id.fragmentHolder, fragment)
+//        }
+        supportFragmentManager.beginTransaction()
+            .addToBackStack(null)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .replace(R.id.fragmentHolder, fragment)
+            .commitAllowingStateLoss()
     }
 }

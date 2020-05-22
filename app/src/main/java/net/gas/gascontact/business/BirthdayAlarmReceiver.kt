@@ -9,9 +9,11 @@ import androidx.annotation.RequiresApi
 
 class BirthdayAlarmReceiver : BroadcastReceiver() {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceive(context: Context, intent: Intent) {
-        /** FOR ANDROID >= 8.0 **/
-        context.startForegroundService(Intent(context, BirthdayNotificationService::class.java))
+        val notificationService = Intent(context, BirthdayNotificationService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            context.startForegroundService(notificationService)
+        else
+            context.startService(notificationService)
     }
 }
