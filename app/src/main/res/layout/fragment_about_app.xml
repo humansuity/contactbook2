@@ -87,7 +87,7 @@
                 android:id="@+id/alarmSettingsButton"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="12dp"
                 android:background="@drawable/add_dialog_round_borders"
                 android:drawableRight="@drawable/ic_alarm_settings_35"
                 android:elevation="10dp"
@@ -97,10 +97,20 @@
                 android:paddingRight="8dp"
                 android:text="Настроить уведомления"
                 android:textAlignment="center"
-                app:layout_constraintBottom_toTopOf="@+id/view"
+                app:layout_constraintBottom_toTopOf="@+id/notificationDescription"
                 app:layout_constraintEnd_toEndOf="@+id/textView12"
                 app:layout_constraintStart_toStartOf="@+id/notification_switch"
                 app:layout_constraintWidth_max="500dp" />
+
+            <TextView
+                android:id="@+id/notificationDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@+id/view"
+                app:layout_constraintEnd_toEndOf="@+id/alarmSettingsButton"
+                app:layout_constraintStart_toStartOf="@+id/alarmSettingsButton" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

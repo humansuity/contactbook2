@@ -3,10 +3,12 @@ package net.gas.gascontact.business.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.database.sqlite.SQLiteDatabase
 import android.graphics.PointF
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
+import com.commonsware.cwac.saferoom.SQLCipherUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -149,6 +151,12 @@ class BranchListViewModel(application: Application)
 
     fun setupPrimaryUnitList() {
         spinnerState.value = true
+        net.sqlcipher.database.SQLiteDatabase.loadLibs(context)
+        if (SQLCipherUtils.getDatabaseState(context.getDatabasePath(Var.DATABASE_NAME))
+            == SQLCipherUtils.State.ENCRYPTED) {
+            Log.e("Room API", "Database is encrypted")
+        }
+
         unitList = liveData(Dispatchers.IO) {
             emitSource(dataModel.getPrimaryUnitEntities())
         }

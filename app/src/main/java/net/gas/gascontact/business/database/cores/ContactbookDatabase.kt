@@ -1,10 +1,12 @@
 package net.gas.gascontact.business.database.cores
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.commonsware.cwac.saferoom.SQLCipherUtils
 import com.commonsware.cwac.saferoom.SafeHelperFactory
 import net.gas.gascontact.business.database.daos.*
 import net.gas.gascontact.business.database.entities.*
