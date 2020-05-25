@@ -1,19 +1,21 @@
 package net.gas.gascontact.ui.fragments
 
 import android.app.AlarmManager
+import android.app.AlertDialog
 import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TimePicker
-import android.widget.Toast
+import android.widget.Button
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -95,18 +97,7 @@ class AboutAppFragment : Fragment() {
 
 
         alarmSettingsButton.setOnClickListener {
-            val date = DateTime()
-            TimePickerDialog(requireContext(),
-                TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                    cancelBirthdayNotification()
-                    Var.setNotificationAlarm(requireContext(), hourOfDay, minute)
-                    requireContext().getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
-                        .edit { putString(Var.APP_NOTIFICATION_ALARM_TIME, "$hourOfDay:$minute") }
-                    Snackbar.make(root, "Уведомления настроены, время - $hourOfDay:$minute", Snackbar.LENGTH_LONG).show()
-                },
-                date.hourOfDay,
-                date.minuteOfHour,
-                true).show()
+            openNotificationDialog()
         }
 
     }
@@ -116,7 +107,7 @@ class AboutAppFragment : Fragment() {
             .getSystemService(Context.ALARM_SERVICE) as? AlarmManager
         val pendingIntent = PendingIntent.getBroadcast(
             requireContext(),
-            Var.NOTIFICATION_SERVICE_ID,
+            Var.NOTIFICATION_INTENT_ID,
             Intent(requireContext(), BirthdayAlarmReceiver::class.java),
             0
         )
@@ -124,5 +115,47 @@ class AboutAppFragment : Fragment() {
             Intent(requireContext(), BirthdayNotificationService::class.java)
         )
         alarmManager?.cancel(pendingIntent)
+    }
+
+
+    private fun openNotificationDialog() {
+        val dialogBuilder = AlertDialog.Builder(context)
+        val view = layoutInflater.inflate(R.layout.dialog_setup_alarm, null)
+        dialogBuilder.setView(view)
+        val dialog = dialogBuilder.create()
+        val background = ColorDrawable(Color.TRANSPARENT)
+        val margins = InsetDrawable(background, 50)
+        dialog.window?.setBackgroundDrawable(margins)
+
+        view.findViewById<Button>(R.id.btnSetupForWeekDaysNotifs)
+            .setOnClickListener { openTimePicker("WEEKDAYS") }
+
+        view.findViewById<Button>(R.id.btnSetupForHolidaysNotifs)
+            .setOnClickListener { openTimePicker("HOLIDAYS") }
+
+        dialog.show()
+    }
+
+
+    private fun openTimePicker(flag: String) {
+        val date = DateTime()
+        TimePickerDialog(requireContext(),
+            TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+
+                if (flag == "WEEKDAYS") {
+                    //Var.setNotificationsForWeekdays()
+                } else {
+                   // Var.setNotificationsForHolidays()
+                }
+
+//                cancelBirthdayNotification()
+//                Var.setNotificationAlarm(requireContext(), hourOfDay, minute)
+//                requireContext().getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+//                    .edit { putString(Var.APP_NOTIFICATION_ALARM_TIME, "$hourOfDay:$minute") }
+                Snackbar.make(root, "Уведомления настроены, время - $hourOfDay:$minute", Snackbar.LENGTH_LONG).show()
+            },
+            date.hourOfDay,
+            date.minuteOfHour,
+            true).show()
     }
 }

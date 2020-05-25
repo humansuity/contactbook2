@@ -18,7 +18,7 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/btn_ok_update"
+                android:id="@+id/btnSetupForHolidaysNotifs"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -32,11 +32,11 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/btn_cancel_update"
+                app:layout_constraintStart_toEndOf="@+id/btnSetupForWeekDaysNotifs"
                 app:layout_constraintTop_toBottomOf="@+id/divider7" />
 
             <Button
-                android:id="@+id/btn_cancel_update"
+                android:id="@+id/btnSetupForWeekDaysNotifs"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -48,7 +48,7 @@
                 android:fontFamily="@font/audiowide"
                 android:text="@string/cancel"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_ok_update"
+                app:layout_constraintEnd_toStartOf="@+id/btnSetupForHolidaysNotifs"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider7" />

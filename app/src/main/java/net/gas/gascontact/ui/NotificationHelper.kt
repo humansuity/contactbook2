@@ -36,7 +36,7 @@ class NotificationHelper(private val context: Context, private val personList: L
             val channel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH).apply {
                 this.description = description
                 enableLights(true)
-                lightColor = Color.RED
+                lightColor = Color.WHITE
                 enableVibration(true)
                 vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
                 notificationManager?.createNotificationChannel(this)
@@ -50,8 +50,7 @@ class NotificationHelper(private val context: Context, private val personList: L
         val realm = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE).getString("REALM", "")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val summaryNotification = NotificationCompat.Builder(context, channelId)
-                .setChannelId(channelId)
+            val summaryNotification = NotificationCompat.Builder(context, Var.BIRTHDAY_NOTIFICATION_ID)
                 .setContentTitle("День рождения")
                 .setContentText(ORGANIZATIONUNITLIST.find { realm == it.code }?.name)
                 .setSmallIcon(R.drawable.ic_gift_30)
@@ -70,7 +69,7 @@ class NotificationHelper(private val context: Context, private val personList: L
                     intentToMainActivity, PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
-                val notification = NotificationCompat.Builder(context, channelId)
+                val notification = NotificationCompat.Builder(context, Var.BIRTHDAY_NOTIFICATION_ID)
                     .setContentTitle(
                         "${it.lastName} ${it.firstName} ${it.patronymic}, ${getAge(
                             getRawAge(it.birthday)
@@ -99,7 +98,7 @@ class NotificationHelper(private val context: Context, private val personList: L
                     intentToMainActivity, PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
-                val notification = NotificationCompat.Builder(context, channelId)
+                val notification = NotificationCompat.Builder(context, Var.BIRTHDAY_NOTIFICATION_ID)
                     .setContentTitle(
                         "${it.lastName} " +
                         "${it.firstName} " +

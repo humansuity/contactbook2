@@ -1,10 +1,7 @@
 package net.gas.gascontact.ui.activities
 
 import android.Manifest
-import android.app.AlarmManager
 import android.app.AlertDialog
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -16,14 +13,12 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
 import androidx.core.content.edit
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -32,9 +27,10 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.gascontact.R
-import net.gas.gascontact.business.BirthdayAlarmReceiver
 import net.gas.gascontact.business.BirthdayNotificationService
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.ui.AlarmHelper
+import net.gas.gascontact.ui.NotificationHelper
 import net.gas.gascontact.ui.fragments.*
 import net.gas.gascontact.utils.Var
 import java.text.SimpleDateFormat
@@ -52,7 +48,6 @@ class MainListActivity : AppCompatActivity() {
         setSupportActionBar(main_toolbar)
 
         preferences = getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
-
         initResources()
 
         if (!isOpenedViaIntent()) {
@@ -60,6 +55,24 @@ class MainListActivity : AppCompatActivity() {
              * - start point of an app for user **/
             createInitFragment()
             setNotificationAlarm()
+        }
+    }
+
+    private fun initResources() {
+        viewModel.sharedDatabaseSize = getDatabaseSize()
+        viewModel.databaseUpdateTime = getDatabaseUpdateTime()
+
+        setupCallbacksAndListeners()
+        putAlarmScheduleTimeToPrefs()
+        createNotificationChannels()
+        setupObservers()
+    }
+
+
+    private fun putAlarmScheduleTimeToPrefs() {
+        preferences.edit {
+            putString(Var.WEEKDAY_NOTIFICATION_SCHEDULE_TIME, "8:0")
+            putString(Var.HOLIDAY_NOTIFICATION_SCHEDULE_TIME, "10:0")
         }
     }
 
@@ -76,41 +89,7 @@ class MainListActivity : AppCompatActivity() {
 
 
     private fun setNotificationAlarm() {
-        if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_INITIAL, false)) {
-            Log.e("Alarm", "Set repeating alarm")
-            val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-            val repeatingTime = Calendar.getInstance().apply {
-                timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, 8)
-                set(Calendar.MINUTE, 0)
-            }
-            val pendingIntent = PendingIntent.getBroadcast(
-                applicationContext,
-                Var.NOTIFICATION_SERVICE_ID,
-                Intent(this, BirthdayAlarmReceiver::class.java),
-                0
-            )
-
-            alarmManager?.setRepeating(
-                AlarmManager.RTC_WAKEUP,
-                repeatingTime.timeInMillis,
-                AlarmManager.INTERVAL_DAY,
-                pendingIntent
-            )
-
-            preferences.edit().putBoolean(Var.APP_NOTIFICATION_ALARM_INITIAL, true).apply()
-        }
-    }
-
-    private fun createInitFragment() {
-        if (Var.checkIfDatabaseValid(applicationContext, viewModel)) {
-            if (!viewModel.isUnitFragmentActive) {
-                viewModel.setupPrimaryUnitList()
-                createUnitListFragment()
-            }
-        } else {
-            createAlertFragment()
-        }
+        //AlarmHelper.setInitialNotificationAlarm(applicationContext)
     }
 
 
@@ -118,6 +97,7 @@ class MainListActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
+
 
     override fun onBackPressed() {
         viewModel.onUnitFragmentBackPressed?.invoke()
@@ -131,6 +111,7 @@ class MainListActivity : AppCompatActivity() {
         } else 0
     }
 
+
     private fun getDatabaseUpdateTime() : String {
         return if (preferences.contains(Var.APP_DATABASE_UPDATE_TIME)) {
             preferences.getString(Var.APP_DATABASE_UPDATE_TIME, "Не определена")!!
@@ -138,48 +119,26 @@ class MainListActivity : AppCompatActivity() {
     }
 
 
-    private fun showNotification() {
-//        val notificationManager = applicationContext
-//            .getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
-//
-//        val notification = NotificationCompat.Builder(applicationContext, "channel")
-//            .setSmallIcon(R.drawable.ic_gift_30)
-//            .setContentTitle("Великоборец антон 69 лет")
-//            .setStyle(
-//                NotificationCompat.InboxStyle()
-//                    .setBigContentTitle("Великоборец антон 69 лет")
-//                    .addLine("Инженер")
-//                    .addLine("Витебскоблгаз"))
-//            .setAutoCancel(true)
-//            .build()
-//        notificationManager?.notify(2, notification)
-
-        startService(Intent(applicationContext, BirthdayNotificationService::class.java))
+    private fun createNotificationChannels() {
+        NotificationHelper(applicationContext, emptyList(), emptyList(), emptyList())
+            .apply {
+                createNotificationChannel(
+                    Var.FOREGROUND_NOTIFICATION_SERVICE_ID,
+                    Var.FOREGROUND_NOTIFICATION_NAME,
+                    "Управление уведомлениями о днях рождения"
+                )
+                createNotificationChannel(
+                    Var.BIRTHDAY_NOTIFICATION_ID,
+                    Var.BIRTHDAY_NOTIFICATION_NAME,
+                    ""
+                )
+            }
     }
 
-    private fun initResources() {
 
-        if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_INITIAL, false)) {
-            applicationContext.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
-                .edit { putString(Var.APP_NOTIFICATION_ALARM_TIME, "8:00") }
-        }
-
-        viewModel.sharedDatabaseSize = getDatabaseSize()
-        viewModel.databaseUpdateTime = getDatabaseUpdateTime()
-
-        floatingActionButton.setOnClickListener {
-            createSearchFragment()
-            //showNotification()
-        }
-
-        viewModel.appToolbarStateCallback = { value, navButtonState ->
-            if (navButtonState) main_toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_back_20)
-            else main_toolbar.navigationIcon = null
-            main_toolbar.title = value
-        }
-
+    private fun setupCallbacksAndListeners() {
         viewModel.callIntentCallback = {
-          startActivity(it)
+            startActivity(it)
         }
 
         viewModel.sendEmailIntentCallback = {
@@ -275,6 +234,19 @@ class MainListActivity : AppCompatActivity() {
             createUnitListFragment()
         }
 
+        viewModel.appToolbarStateCallback = { value, navButtonState ->
+            if (navButtonState) main_toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_back_20)
+            else main_toolbar.navigationIcon = null
+            main_toolbar.title = value
+        }
+
+        floatingActionButton.setOnClickListener {
+            createSearchFragment()
+        }
+    }
+
+
+    private fun setupObservers() {
         viewModel.floatingButtonState.observe(this, Observer {
             floatingActionButton.visibility = if (it) View.VISIBLE else View.INVISIBLE
         })
@@ -353,14 +325,26 @@ class MainListActivity : AppCompatActivity() {
         val margins = InsetDrawable(background, 50)
         dialog.window?.setBackgroundDrawable(margins)
 
-        view.findViewById<Button>(R.id.btn_cancel_update).setOnClickListener { dialog.dismiss() }
-        view.findViewById<Button>(R.id.btn_ok_update).setOnClickListener {
+        view.findViewById<Button>(R.id.btnSetupForWeekDaysNotifs).setOnClickListener { dialog.dismiss() }
+        view.findViewById<Button>(R.id.btnSetupForHolidaysNotifs).setOnClickListener {
             if (checkInternetConnection()) {
                 createLoginFragment("UPDATE")
             }
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+
+    private fun createInitFragment() {
+        if (Var.checkIfDatabaseValid(applicationContext, viewModel)) {
+            if (!viewModel.isUnitFragmentActive) {
+                viewModel.setupPrimaryUnitList()
+                createUnitListFragment()
+            }
+        } else {
+            createAlertFragment()
+        }
     }
 
 
@@ -478,11 +462,6 @@ class MainListActivity : AppCompatActivity() {
     private fun createLoginFragment(type: String) {
         if (isDestroyed) return
         val fragment = LoginFragment.newInstance("TYPE", type)
-//        supportFragmentManager.commit {
-//            addToBackStack(null)
-//            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-//            replace(R.id.fragmentHolder, fragment)
-//        }
         supportFragmentManager.beginTransaction()
             .addToBackStack(null)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

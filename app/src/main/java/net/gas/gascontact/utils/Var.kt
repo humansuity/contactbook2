@@ -4,15 +4,11 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.os.Build
+import android.graphics.Point
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import net.gas.gascontact.business.BirthdayAlarmReceiver
-import net.gas.gascontact.business.BirthdayNotificationService
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import org.joda.time.LocalDate
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -29,7 +25,12 @@ object Var {
     const val UNIT_FRAGMENT_ID = 1
     const val DEPARTMENT_FRAGMENT_ID = 2
 
-    const val NOTIFICATION_SERVICE_ID = 5
+    const val NOTIFICATION_INTENT_ID = 5
+
+    const val FOREGROUND_NOTIFICATION_SERVICE_ID = "foreground_notification_service"
+    const val FOREGROUND_NOTIFICATION_NAME = "Служба управления уведомлениями"
+    const val BIRTHDAY_NOTIFICATION_ID = "birthday_notification"
+    const val BIRTHDAY_NOTIFICATION_NAME = "Дни рождения"
 
     const val APP_PREFERENCES = "appsettings"
     const val APP_DATABASE_SIZE = "dbsize"
@@ -38,6 +39,10 @@ object Var {
     const val APP_NOTIFICATION_ALARM_STATE = "NOTIFICATION_ALARM_STATE"
     const val APP_NOTIFICATION_ALARM_INITIAL = "NOTIFICATION_ALARM_INITIAL_STATE"
     const val APP_NOTIFICATION_ALARM_TIME = "NOTIFICATION_ALARM_TIME"
+
+
+    const val WEEKDAY_NOTIFICATION_SCHEDULE_TIME = "notification-schedule-time-weekday"
+    const val HOLIDAY_NOTIFICATION_SCHEDULE_TIME = "notification-schedule-time-holiday"
 
 
     fun stringMD5(key: String) : String {
@@ -83,7 +88,7 @@ object Var {
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            NOTIFICATION_SERVICE_ID,
+            NOTIFICATION_INTENT_ID,
             Intent(context, BirthdayAlarmReceiver::class.java),
             0
         )
@@ -91,7 +96,7 @@ object Var {
         alarmManager?.setRepeating(
             AlarmManager.RTC_WAKEUP,
             repeatingTime.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
+            1000 * 60 * 3,
             pendingIntent
         )
 
@@ -109,7 +114,7 @@ object Var {
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            NOTIFICATION_SERVICE_ID,
+            NOTIFICATION_INTENT_ID,
             Intent(context, BirthdayAlarmReceiver::class.java),
             0
         )
@@ -124,4 +129,26 @@ object Var {
         preferences.edit().putBoolean(APP_NOTIFICATION_ALARM_STATE, true).apply()
     }
 
+
+    fun setNotificationsForWeekdays(context: Context, hour: Int, minute: Int) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+        val repeatingTime = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            NOTIFICATION_INTENT_ID,
+            Intent(context, BirthdayAlarmReceiver::class.java),
+            0
+        )
+
+        alarmManager?.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            repeatingTime.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
+    }
 }

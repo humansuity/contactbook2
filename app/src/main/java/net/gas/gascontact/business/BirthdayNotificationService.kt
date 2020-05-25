@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
@@ -76,31 +75,21 @@ class BirthdayNotificationService : LifecycleService() {
     }
 
 
+    override fun onDestroy() {
+        Log.e("Service", "Service was destroyed")
+        super.onDestroy()
+    }
+
+
     private fun startServiceOnForeground() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel("my_service", "My background service", "Background service for notifications")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             startForeground(
                 1,
-                Notification.Builder(applicationContext, "my_service").build())
-        } else {
+                Notification.Builder(applicationContext, Var.FOREGROUND_NOTIFICATION_SERVICE_ID).build())
+        else
             startForeground(
                 1,
                 NotificationCompat.Builder(applicationContext, "").build())
-        }
-    }
-
-    private fun createNotificationChannel(id: String, name: String, description: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH).apply {
-                this.description = description
-                enableLights(true)
-                lightColor = Color.RED
-                enableVibration(true)
-                vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
-                (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                    .createNotificationChannel(this)
-            }
-        }
     }
 
 
@@ -118,15 +107,9 @@ class BirthdayNotificationService : LifecycleService() {
 
     private fun createBirthdayNotification(persons: List<Persons>, units: List<Units>, posts: List<Posts>) {
         val notificationHelper = NotificationHelper(applicationContext, persons, units, posts)
-        notificationHelper.createNotificationChannel("default_channel", "default", "some_channel")
         notificationHelper.createNotification()
     }
 
-
-    override fun onDestroy() {
-        Log.e("Service", "Service was destroyed")
-        super.onDestroy()
-    }
 
     private fun setExactNotificationAlarm(hour: Int, minute: Int) {
         val alarmManager =
@@ -139,7 +122,7 @@ class BirthdayNotificationService : LifecycleService() {
 
         val pendingIntent = PendingIntent.getBroadcast(
             applicationContext,
-            Var.NOTIFICATION_SERVICE_ID + 1,
+            Var.NOTIFICATION_INTENT_ID + 1,
             Intent(this, BirthdayAlarmReceiver::class.java),
             PendingIntent.FLAG_CANCEL_CURRENT
         )
