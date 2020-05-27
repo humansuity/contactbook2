@@ -15,7 +15,6 @@ class BirthdayAlarmReceiver : BroadcastReceiver() {
             context.startForegroundService(notificationService)
         else
             context.startService(notificationService)
-
-        AlarmHelper.setupNotificationAlarm(context)
+        AlarmHelper.setupNotificationAlarmForNextDay(context)
     }
 }

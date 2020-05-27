@@ -13,6 +13,7 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -27,7 +28,6 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.gascontact.R
-import net.gas.gascontact.business.BirthdayNotificationService
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.ui.AlarmHelper
 import net.gas.gascontact.ui.NotificationHelper
@@ -54,7 +54,6 @@ class MainListActivity : AppCompatActivity() {
             /** Create unitlist fragment
              * - start point of an app for user **/
             createInitFragment()
-            setNotificationAlarm()
         }
     }
 
@@ -70,9 +69,12 @@ class MainListActivity : AppCompatActivity() {
 
 
     private fun putAlarmScheduleTimeToPrefs() {
-        preferences.edit {
-            putString(Var.WEEKDAY_NOTIFICATION_SCHEDULE_TIME, "8:0")
-            putString(Var.HOLIDAY_NOTIFICATION_SCHEDULE_TIME, "10:0")
+        if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_INIT_STATE, false)) {
+            preferences.edit {
+                putString(Var.WEEKDAY_NOTIFICATION_SCHEDULE_TIME, "8:0")
+                putString(Var.HOLIDAY_NOTIFICATION_SCHEDULE_TIME, "10:0")
+                Log.e("AlarmHelper", "Setting up alarm time preferences")
+            }
         }
     }
 
@@ -85,11 +87,6 @@ class MainListActivity : AppCompatActivity() {
                 true
             } else false
         } else false
-    }
-
-
-    private fun setNotificationAlarm() {
-        //AlarmHelper.setInitialNotificationAlarm(applicationContext)
     }
 
 

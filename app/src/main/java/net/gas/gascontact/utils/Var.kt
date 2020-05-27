@@ -17,14 +17,8 @@ import java.util.*
 object Var {
 
     const val URL_TO_DATABASE = "http://contactbook.oblgaz/contacts.db"
-    const val PENDING_INTENT_TYPE = "EVERY_DAY_AT_8_AM"
-    const val PENDING_INTENT_ACTION = "ACTION"
-    const val KEY_ID = "id"
     val DATABASE_NAME = URL_TO_DATABASE.split("/").last()
     const val STORAGE_PERMISSION_CODE = 1000
-    const val UNIT_FRAGMENT_ID = 1
-    const val DEPARTMENT_FRAGMENT_ID = 2
-
     const val NOTIFICATION_INTENT_ID = 5
 
     const val FOREGROUND_NOTIFICATION_SERVICE_ID = "foreground_notification_service"
@@ -32,14 +26,12 @@ object Var {
     const val BIRTHDAY_NOTIFICATION_ID = "birthday_notification"
     const val BIRTHDAY_NOTIFICATION_NAME = "Дни рождения"
 
-    const val APP_PREFERENCES = "appsettings"
-    const val APP_DATABASE_SIZE = "dbsize"
-    const val APP_DATABASE_UPDATE_TIME = "dbUpdateTime"
-    const val APP_DATABASE_UPDATE_DATE = "dbUpdateDate"
-    const val APP_NOTIFICATION_ALARM_STATE = "NOTIFICATION_ALARM_STATE"
-    const val APP_NOTIFICATION_ALARM_INITIAL = "NOTIFICATION_ALARM_INITIAL_STATE"
-    const val APP_NOTIFICATION_ALARM_TIME = "NOTIFICATION_ALARM_TIME"
+    const val APP_PREFERENCES = "app-settings"
+    const val APP_DATABASE_SIZE = "db-size"
+    const val APP_DATABASE_UPDATE_TIME = "db-update-time"
 
+    const val APP_NOTIFICATION_ALARM_STATE = "notification-alarm-state"
+    const val APP_NOTIFICATION_ALARM_INIT_STATE = "notification-alarm--init-state"
 
     const val WEEKDAY_NOTIFICATION_SCHEDULE_TIME = "notification-schedule-time-weekday"
     const val HOLIDAY_NOTIFICATION_SCHEDULE_TIME = "notification-schedule-time-holiday"
@@ -51,7 +43,8 @@ object Var {
             .toString(16).padStart(32, '0')
     }
 
-    private fun checkIfDatabaseFileExists(context: Context) = File(context.filesDir.path + "/" + DATABASE_NAME).exists()
+    private fun checkIfDatabaseFileExists(context: Context)
+            = File(context.filesDir.path + "/" + DATABASE_NAME).exists()
 
     private fun checkIfRoomDatabaseExists(context: Context) = context.getDatabasePath(Var.DATABASE_NAME).exists()
 
@@ -77,78 +70,4 @@ object Var {
     fun checkDownloadedFile(context: Context) = checkIfDatabaseFileExists(context)
 
 
-    fun setNotificationAlarm(context: Context) {
-        val preferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-        Log.e("Alarm", "Set repeating alarm")
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        val repeatingTime = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 8)
-            set(Calendar.MINUTE, 0)
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            NOTIFICATION_INTENT_ID,
-            Intent(context, BirthdayAlarmReceiver::class.java),
-            0
-        )
-
-        alarmManager?.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            repeatingTime.timeInMillis,
-            1000 * 60 * 3,
-            pendingIntent
-        )
-
-        preferences.edit().putBoolean(APP_NOTIFICATION_ALARM_STATE, true).apply()
-    }
-
-    fun setNotificationAlarm(context: Context, hour: Int, minute: Int) {
-        val preferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-        Log.e("Alarm", "Set repeating alarm")
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        val repeatingTime = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, hour)
-            set(Calendar.MINUTE, minute)
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            NOTIFICATION_INTENT_ID,
-            Intent(context, BirthdayAlarmReceiver::class.java),
-            0
-        )
-
-        alarmManager?.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            repeatingTime.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
-
-        preferences.edit().putBoolean(APP_NOTIFICATION_ALARM_STATE, true).apply()
-    }
-
-
-    fun setNotificationsForWeekdays(context: Context, hour: Int, minute: Int) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        val repeatingTime = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, hour)
-            set(Calendar.MINUTE, minute)
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            NOTIFICATION_INTENT_ID,
-            Intent(context, BirthdayAlarmReceiver::class.java),
-            0
-        )
-
-        alarmManager?.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            repeatingTime.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
-    }
 }

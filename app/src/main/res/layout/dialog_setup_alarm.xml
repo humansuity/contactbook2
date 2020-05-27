@@ -70,7 +70,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:fontFamily="@font/capriola"
-                android:text="Время получения уведомлений для данного устройства по умолчанию установлено на 8:00 утра. Если вы хотите изменить время получения уведомлений, выберите требуюмую опцию ниже."
+                android:text="Врумолчанию установлено на 8:00 утра. Если вы хотите изменить время получения уведомлений, выберите требуюмую опцию ниже."
                 android:textAlignment="textStart"
                 android:textAllCaps="false"
                 android:textColor="#757575"

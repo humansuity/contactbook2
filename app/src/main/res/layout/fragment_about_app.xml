@@ -15,13 +15,15 @@
             android:id="@+id/constraintLayout2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <View
-                android:id="@+id/view"
+                android:id="@+id/view3"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginBottom="16dp"
@@ -32,214 +34,174 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/textView12"
+                android:id="@+id/textView22"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="16dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="Настройки"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="17sp"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="sans-serif"
+                android:maxWidth="500dp"
+                android:text="О приложении"
+                android:textColor="#047639"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@+id/textView23"
+                app:layout_constraintEnd_toEndOf="@+id/textView"
+                app:layout_constraintStart_toStartOf="@+id/textView" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:background="#CECECE"
+                app:layout_constraintBottom_toTopOf="@+id/textView22"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_max="500dp" />
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <View
                 android:id="@+id/divider9"
                 android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
                 android:background="#CECECE"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView12" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Switch
                 android:id="@+id/notification_switch"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/add_dialog_round_borders"
+                android:layout_marginTop="20dp"
                 android:checked="true"
-                android:elevation="2dp"
                 android:enabled="true"
                 android:fontFamily="sans-serif"
-                android:paddingLeft="10dp"
-                android:paddingTop="8dp"
-                android:paddingRight="8dp"
-                android:paddingBottom="8dp"
-                android:switchPadding="10dp"
                 android:text="Получать уведомления о днях рождения"
-                android:textAlignment="center"
+                android:textAlignment="viewStart"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@+id/alarmSettingsButton"
-                app:layout_constraintEnd_toEndOf="@+id/textView12"
-                app:layout_constraintStart_toStartOf="@+id/textView12"
-                app:layout_constraintTop_toBottomOf="@+id/divider9"
-                app:layout_constraintWidth_max="500dp" />
-
-            <Button
-                android:id="@+id/alarmSettingsButton"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/add_dialog_round_borders"
-                android:drawableRight="@drawable/ic_alarm_settings_35"
-                android:elevation="10dp"
-                android:fontFamily="sans-serif"
-                android:maxWidth="500dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="8dp"
-                android:text="Настроить уведомления"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toTopOf="@+id/notificationDescription"
-                app:layout_constraintEnd_toEndOf="@+id/textView12"
-                app:layout_constraintStart_toStartOf="@+id/notification_switch"
+                app:layout_constraintBottom_toTopOf="@+id/textView16"
+                app:layout_constraintEnd_toEndOf="@+id/textView"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/textView"
                 app:layout_constraintWidth_max="500dp" />
 
             <TextView
-                android:id="@+id/notificationDescription"
+                android:id="@+id/textView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif"
+                android:text="Уведомления"
+                android:textColor="#047639"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider9"
+                app:layout_constraintWidth_max="500dp" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="28dp"
+                android:text="Нажмите, чтобы включить/отключить уведомления"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toTopOf="@+id/imageView6"
+                app:layout_constraintEnd_toEndOf="@+id/notification_switch"
+                app:layout_constraintStart_toStartOf="@+id/notification_switch" />
+
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Настроить время получения"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@+id/textView21"
+                app:layout_constraintEnd_toStartOf="@+id/imageView6"
+                app:layout_constraintStart_toStartOf="@+id/textView16" />
+
+            <ImageView
+                android:id="@+id/imageView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:tint="#047639"
+                app:layout_constraintBottom_toBottomOf="@+id/textView21"
+                app:layout_constraintEnd_toEndOf="@+id/textView16"
+                app:layout_constraintTop_toTopOf="@+id/textView19"
+                app:srcCompat="@drawable/ic_settings_30" />
+
+            <TextView
+                android:id="@+id/textView21"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:textSize="15sp"
+                android:text="Настройка времени получения уведомлений"
+                android:textSize="13sp"
                 app:layout_constraintBottom_toTopOf="@+id/view"
-                app:layout_constraintEnd_toEndOf="@+id/alarmSettingsButton"
-                app:layout_constraintStart_toStartOf="@+id/alarmSettingsButton" />
+                app:layout_constraintEnd_toEndOf="@+id/textView19"
+                app:layout_constraintEnd_toStartOf="@+id/imageView6"
+                app:layout_constraintStart_toStartOf="@+id/textView19" />
+
+            <View
+                android:id="@+id/alarmSettingWidget"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                app:layout_constraintBottom_toBottomOf="@+id/textView21"
+                app:layout_constraintEnd_toEndOf="@+id/imageView6"
+                app:layout_constraintStart_toStartOf="@+id/textView19"
+                app:layout_constraintTop_toTopOf="@+id/textView19" />
+
+            <TextView
+                android:id="@+id/textView23"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxWidth="500dp"
+                android:text="Версия приложения"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@+id/versionTextField"
+                app:layout_constraintEnd_toEndOf="@+id/textView22"
+                app:layout_constraintStart_toStartOf="@+id/textView22" />
+
+            <TextView
+                android:id="@+id/versionTextField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="26dp"
+                android:text="1.0.100"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toTopOf="@+id/textView26"
+                app:layout_constraintEnd_toEndOf="@+id/textView23"
+                app:layout_constraintStart_toStartOf="@+id/textView23" />
+
+            <TextView
+                android:id="@+id/textView26"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Дата обновления базы данных"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@+id/dbUpdateTimeTextField"
+                app:layout_constraintEnd_toEndOf="@+id/textView23"
+                app:layout_constraintStart_toStartOf="@+id/textView23" />
+
+            <TextView
+                android:id="@+id/dbUpdateTimeTextField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="26.05.2020 14:35"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toTopOf="@+id/view3"
+                app:layout_constraintEnd_toEndOf="@+id/textView26"
+                app:layout_constraintStart_toStartOf="@+id/textView26" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            app:cardElevation="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_max="500dp">
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/app_version_text"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:fontFamily="sans-serif"
-                    android:text="1"
-                    android:textAlignment="viewStart"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView17"
-                    app:layout_constraintEnd_toEndOf="@+id/textView14"
-                    app:layout_constraintStart_toStartOf="@+id/divider12"
-                    app:layout_constraintTop_toTopOf="@+id/textView17" />
-
-                <TextView
-                    android:id="@+id/textView14"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="О приложении"
-                    android:textAlignment="center"
-                    android:textColor="#000000"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <View
-                    android:id="@+id/divider8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:background="#CECECE"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView14" />
-
-                <TextView
-                    android:id="@+id/textView17"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:fontFamily="sans-serif"
-                    android:text="Версия приложения"
-                    android:textColor="#191919"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toStartOf="@+id/divider12"
-                    app:layout_constraintStart_toStartOf="@+id/textView14"
-                    app:layout_constraintTop_toBottomOf="@+id/divider8" />
-
-                <TextView
-                    android:id="@+id/textView18"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:fontFamily="sans-serif"
-                    android:text="Дата последнего обновления базы данных"
-                    android:textColor="#191919"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="@+id/textView17"
-                    app:layout_constraintStart_toStartOf="@+id/textView17"
-                    app:layout_constraintTop_toBottomOf="@+id/textView17" />
-
-                <View
-                    android:id="@+id/divider12"
-                    android:layout_width="1dp"
-                    android:layout_height="0dp"
-                    android:background="#CECECE"
-                    app:layout_constraintBottom_toTopOf="@+id/divider10"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.034"
-                    app:layout_constraintStart_toEndOf="@+id/textView18"
-                    app:layout_constraintTop_toBottomOf="@+id/divider8"
-                    app:layout_constraintVertical_bias="0.0" />
-
-                <TextView
-                    android:id="@+id/textDatabaseUpdateTime"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:fontFamily="sans-serif"
-                    android:text="17.02.2020 17:43"
-                    android:textAlignment="viewStart"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView18"
-                    app:layout_constraintEnd_toEndOf="@+id/textView14"
-                    app:layout_constraintStart_toStartOf="@+id/divider12"
-                    app:layout_constraintTop_toTopOf="@+id/textView18" />
-
-                <View
-                    android:id="@+id/divider10"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#CECECE"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView18" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
