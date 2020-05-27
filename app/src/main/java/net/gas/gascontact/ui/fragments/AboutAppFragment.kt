@@ -1,29 +1,22 @@
 package net.gas.gascontact.ui.fragments
 
-import android.app.AlarmManager
 import android.app.AlertDialog
-import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_about_app.*
 import net.gas.gascontact.R
-import net.gas.gascontact.business.BirthdayAlarmReceiver
-import net.gas.gascontact.business.BirthdayNotificationService
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.ui.AlarmHelper
 import net.gas.gascontact.utils.Var
@@ -59,28 +52,34 @@ class AboutAppFragment : Fragment() {
 
 
         val preferences = requireContext().getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
-        notification_switch.isChecked = AlarmHelper.getNotificationState(requireContext())
+        notificationSwitch.isChecked = AlarmHelper.getNotificationState(requireContext())
 
-        notification_switch.setOnCheckedChangeListener { _, isChecked ->
-            //alarmSettingsButton.isEnabled = isChecked
+        notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                AlarmHelper.setupNotificationState(requireContext(), state = true)
+                Snackbar.make(root, "Уведомления активны", Snackbar.LENGTH_LONG).show()
+            } else {
+                AlarmHelper.setupNotificationState(requireContext(), state = false)
+                Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_LONG).show()
+            }
         }
 
         try {
-            val pkgInfo = context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
-            //app_version_text.text = pkgInfo?.versionName
+            val packageInfo = context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
+            versionTextField.text = packageInfo?.versionName
         } catch (e: PackageManager.NameNotFoundException) {
-            //app_version_text.text = "1.0.0"
+            versionTextField.text = "Не определена"
         }
 
         val databaseUpdateTime = requireContext()
             .getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             .getString(Var.APP_DATABASE_UPDATE_TIME, "Не определена")
-        //textDatabaseUpdateTime.text = databaseUpdateTime
+        dbUpdateTimeTextField.text = databaseUpdateTime
 
 
-//        alarmSettingsButton.setOnClickListener {
-//            openNotificationDialog()
-//        }
+        alarmSettingWidget.setOnClickListener {
+            openNotificationDialog()
+        }
 
     }
 
@@ -108,24 +107,11 @@ class AboutAppFragment : Fragment() {
         val date = DateTime()
         TimePickerDialog(requireContext(),
             TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                setupNewAlarmTime(hourOfDay, minute, flag)
+                //setupNewAlarmTime(hourOfDay, minute, flag)
             },
             date.hourOfDay,
             date.minuteOfHour,
             true).show()
-    }
-
-
-    private fun setupNewAlarmTime(hourOfDay: Int, minute: Int, flag: Int) {
-        AlarmHelper.setupNewNotificationScheduleTime(
-            requireContext(),
-            "$hourOfDay:$minute",
-            flag
-        )
-        Snackbar.make(root, "Уведомления настроены для " +
-                "${if (flag == AlarmHelper.WEEKDAYS) "будних" else "выходных"} дней, " +
-                "время - $hourOfDay:$minute", Snackbar.LENGTH_LONG
-        ).show()
     }
 
 }

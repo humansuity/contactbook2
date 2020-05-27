@@ -98,6 +98,7 @@ class BirthdayNotificationService : LifecycleService() {
     private fun createBirthdayNotification(persons: List<Persons>, units: List<Units>, posts: List<Posts>) {
         val notificationHelper = NotificationHelper(applicationContext, persons, units, posts)
         notificationHelper.createNotification()
+        AlarmHelper.setupNotificationState(applicationContext, state = true)
     }
 
 }

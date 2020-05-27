@@ -69,7 +69,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Switch
-                android:id="@+id/notification_switch"
+                android:id="@+id/notificationSwitch"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -109,8 +109,8 @@
                 android:text="Нажмите, чтобы включить/отключить уведомления"
                 android:textSize="13sp"
                 app:layout_constraintBottom_toTopOf="@+id/imageView6"
-                app:layout_constraintEnd_toEndOf="@+id/notification_switch"
-                app:layout_constraintStart_toStartOf="@+id/notification_switch" />
+                app:layout_constraintEnd_toEndOf="@+id/notificationSwitch"
+                app:layout_constraintStart_toStartOf="@+id/notificationSwitch" />
 
             <TextView
                 android:id="@+id/textView19"
@@ -137,7 +137,7 @@
                 android:id="@+id/textView21"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="160dp"
                 android:text="Настройка времени получения уведомлений"
                 android:textSize="13sp"
                 app:layout_constraintBottom_toTopOf="@+id/view"
@@ -200,6 +200,17 @@
                 app:layout_constraintBottom_toTopOf="@+id/view3"
                 app:layout_constraintEnd_toEndOf="@+id/textView26"
                 app:layout_constraintStart_toStartOf="@+id/textView26" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="128dp"
+                android:text="TextView"
+                app:layout_constraintBottom_toTopOf="@+id/view"
+                app:layout_constraintEnd_toEndOf="@+id/imageView6"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/alarmSettingWidget" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
