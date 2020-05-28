@@ -128,4 +128,8 @@ dependencies {
 
     //viewpager2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
+
+    //sqlcipher
+    implementation "net.zetetic:android-database-sqlcipher:4.4.0"
+    implementation "androidx.sqlite:sqlite:2.1.0"
 }
