@@ -17,8 +17,6 @@ import net.gas.gascontact.business.model.DataModel
 import net.gas.gascontact.ui.AlarmHelper
 import net.gas.gascontact.ui.NotificationHelper
 import net.gas.gascontact.utils.Var
-import org.joda.time.DateTime
-import java.util.*
 
 class BirthdayNotificationService : LifecycleService() {
 
@@ -69,7 +67,6 @@ class BirthdayNotificationService : LifecycleService() {
                 })
         } else {
             Log.e("Service", "Notification service was closed. Database file doesn't exist")
-            AlarmHelper.setupNotificationState(applicationContext, false)
             stopForeground(true)
             stopSelf()
         }
@@ -86,11 +83,11 @@ class BirthdayNotificationService : LifecycleService() {
     private fun startServiceOnForeground() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             startForeground(
-                1,
-                Notification.Builder(applicationContext, Var.FOREGROUND_NOTIFICATION_SERVICE_ID).build())
+                2,
+                Notification.Builder(applicationContext, Var.FOREGROUND_NOTIFICATION_SERVICE_CHANNEL).build())
         else
             startForeground(
-                1,
+                2,
                 NotificationCompat.Builder(applicationContext, "").build())
     }
 
@@ -98,7 +95,8 @@ class BirthdayNotificationService : LifecycleService() {
     private fun createBirthdayNotification(persons: List<Persons>, units: List<Units>, posts: List<Posts>) {
         val notificationHelper = NotificationHelper(applicationContext, persons, units, posts)
         notificationHelper.createNotification()
-        AlarmHelper.setupNotificationState(applicationContext, state = true)
+        stopForeground(true)
+        stopSelf()
     }
 
 }

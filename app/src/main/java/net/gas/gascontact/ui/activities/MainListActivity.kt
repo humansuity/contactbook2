@@ -29,7 +29,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.gascontact.R
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
-import net.gas.gascontact.ui.AlarmHelper
 import net.gas.gascontact.ui.NotificationHelper
 import net.gas.gascontact.ui.fragments.*
 import net.gas.gascontact.utils.Var
@@ -120,12 +119,12 @@ class MainListActivity : AppCompatActivity() {
         NotificationHelper(applicationContext, emptyList(), emptyList(), emptyList())
             .apply {
                 createNotificationChannel(
-                    Var.FOREGROUND_NOTIFICATION_SERVICE_ID,
+                    Var.FOREGROUND_NOTIFICATION_SERVICE_CHANNEL,
                     Var.FOREGROUND_NOTIFICATION_NAME,
                     "Управление уведомлениями о днях рождения"
                 )
                 createNotificationChannel(
-                    Var.BIRTHDAY_NOTIFICATION_ID,
+                    Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL,
                     Var.BIRTHDAY_NOTIFICATION_NAME,
                     ""
                 )

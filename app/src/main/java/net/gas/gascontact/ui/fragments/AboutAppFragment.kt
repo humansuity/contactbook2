@@ -50,16 +50,18 @@ class AboutAppFragment : Fragment() {
             }
         }
 
-
-        val preferences = requireContext().getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
         notificationSwitch.isChecked = AlarmHelper.getNotificationState(requireContext())
+        weekdayTimeText.text = AlarmHelper.getWeekdayScheduleTime(requireContext())
+        holidayTimeText.text = AlarmHelper.getHolidayScheduleTime(requireContext())
 
         notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 AlarmHelper.setupNotificationState(requireContext(), state = true)
+                AlarmHelper.setupNotificationAlarmForNextDay(requireContext())
                 Snackbar.make(root, "Уведомления активны", Snackbar.LENGTH_LONG).show()
             } else {
                 AlarmHelper.setupNotificationState(requireContext(), state = false)
+                AlarmHelper.cancelNotificationAlarm(requireContext())
                 Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_LONG).show()
             }
         }
@@ -78,7 +80,10 @@ class AboutAppFragment : Fragment() {
 
 
         alarmSettingWidget.setOnClickListener {
-            openNotificationDialog()
+            if (AlarmHelper.getNotificationState(requireContext()))
+                openNotificationDialog()
+            else
+                Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_LONG).show()
         }
 
     }
@@ -94,24 +99,44 @@ class AboutAppFragment : Fragment() {
         dialog.window?.setBackgroundDrawable(margins)
 
         view.findViewById<Button>(R.id.btnSetupForWeekDaysNotifs)
-            .setOnClickListener { openTimePicker(AlarmHelper.HOLIDAYS) }
+            .setOnClickListener { openTimePicker(dialog, AlarmHelper.WEEKDAYS) }
 
         view.findViewById<Button>(R.id.btnSetupForHolidaysNotifs)
-            .setOnClickListener { openTimePicker(AlarmHelper.WEEKDAYS) }
+            .setOnClickListener { openTimePicker(dialog, AlarmHelper.HOLIDAYS) }
 
         dialog.show()
     }
 
 
-    private fun openTimePicker(flag: Int) {
+    private fun openTimePicker(mDialog: AlertDialog, flag: Int) {
         val date = DateTime()
-        TimePickerDialog(requireContext(),
+        val datePickerDialog = TimePickerDialog(requireContext(),
             TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                //setupNewAlarmTime(hourOfDay, minute, flag)
+                setupNewAlarmTime("$hourOfDay:$minute", flag)
+                Snackbar.make(root, "Время установлено: $hourOfDay:$minute", Snackbar.LENGTH_LONG).show()
+                weekdayTimeText.text = AlarmHelper.getWeekdayScheduleTime(requireContext())
+                holidayTimeText.text = AlarmHelper.getHolidayScheduleTime(requireContext())
+                AlarmHelper.cancelNotificationAlarm(requireContext())
+                AlarmHelper.setupNotificationAlarmForNextDay(requireContext())
+                mDialog.dismiss()
             },
             date.hourOfDay,
             date.minuteOfHour,
-            true).show()
+            true)
+        datePickerDialog.setTitle("Настройка для ${if(flag == AlarmHelper.WEEKDAYS) "будних" else "выходных"}")
+        datePickerDialog.setOnCancelListener {
+            datePickerDialog.dismiss()
+            mDialog.dismiss()
+        }
+        datePickerDialog.show()
+    }
+
+
+    private fun setupNewAlarmTime(scheduleTime: String, flag: Int) {
+        when(flag) {
+            AlarmHelper.HOLIDAYS -> { AlarmHelper.setupNewScheduleTimeForHolidays(requireContext(), scheduleTime) }
+            AlarmHelper.WEEKDAYS -> { AlarmHelper.setupNewScheduleTimeForWeekdays(requireContext(), scheduleTime) }
+        }
     }
 
 }

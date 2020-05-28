@@ -18,7 +18,7 @@ class AlarmHelper {
         const val HOLIDAYS = 2
 
         fun setupNotificationAlarmForNextDay(context: Context) {
-            val storedStringTime = getStoredNotificationTime(context)
+            val storedStringTime = getStoredScheduleTime(context)
             val hour = getScheduleHour(storedStringTime)
             val minute = getScheduleMinute(storedStringTime)
 
@@ -41,16 +41,17 @@ class AlarmHelper {
 
 
         fun setupInitialNotificationAlarm(context: Context) {
-            val storedStringTime = getStoredNotificationTime(context)
+            val storedStringTime = getStoredScheduleTime(context)
             val hour = getScheduleHour(storedStringTime)
             val minute = getScheduleMinute(storedStringTime)
 
             val executeTime = DateTime(DateTimeZone.forID("Europe/Minsk"))
                 .withDayOfMonth(DateTime(DateTimeZone.forID("Europe/Minsk")).dayOfMonth)
-                .withHourOfDay(hour)
-                .withMinuteOfHour(minute)
+                .withHourOfDay(9)
+                .withMinuteOfHour(5)
 
             setAlarm(context, executeTime.millis)
+            setupNotificationState(context, state = true)
             Log.e("Alarm", "Set initial alarm at " +
                     "[$hour:$minute], date [${executeTime.toDate()}], day of week [${DateTime().dayOfWeek}]")
         }
@@ -83,10 +84,11 @@ class AlarmHelper {
             )
 
             alarmManager?.cancel(pendingIntent)
+            Log.e("Alarm", "Notification alarm was cancelled")
         }
 
 
-        private fun getStoredNotificationTime(context: Context): String? {
+        private fun getStoredScheduleTime(context: Context): String? {
             val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             val dayOfWeek = LocalDate(DateTimeZone.forID("Europe/Minsk")).dayOfWeek
             return if (dayOfWeek !in 5..6)
@@ -95,18 +97,6 @@ class AlarmHelper {
                 preferences.getString(Var.HOLIDAY_NOTIFICATION_SCHEDULE_TIME, "10:0")
         }
 
-
-        fun setupNewNotificationScheduleTime(context: Context, stringScheduleTime: String, flag: Int) {
-            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
-            val hour = getScheduleHour(stringScheduleTime)
-            val minute = getScheduleMinute(stringScheduleTime)
-            preferences.edit {
-                if (flag == WEEKDAYS)
-                    putString(Var.WEEKDAY_NOTIFICATION_SCHEDULE_TIME, "$hour:$minute")
-                else
-                    putString(Var.HOLIDAY_NOTIFICATION_SCHEDULE_TIME, "$hour:$minute")
-            }
-        }
 
         fun setupNotificationState(context: Context, state: Boolean) {
             val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
@@ -128,23 +118,33 @@ class AlarmHelper {
         }
 
 
-        private fun setupRepeatingTimeForHolidays(hour: Int, minute: Int): Long {
-            return if(getNextDay() == 1)
-                DateTime(DateTimeZone.forID("Europe/Minsk"))
-                    .withMonthOfYear(getNextMonth())
-                    .withDayOfMonth(getNextDay())
-                    .withHourOfDay(hour)
-                    .withMinuteOfHour(minute)
-                    .millis
-            else
-                DateTime(DateTimeZone.forID("Europe/Minsk"))
-                    .withDayOfMonth(getNextDay())
-                    .withHourOfDay(hour)
-                    .withMinuteOfHour(minute)
-                    .millis
+        fun setupNewScheduleTimeForWeekdays(context: Context, scheduleTime: String) {
+            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            preferences.edit {
+                putString(Var.WEEKDAY_NOTIFICATION_SCHEDULE_TIME, scheduleTime)
+            }
+            Log.e("Alarm", "Set schedule alarm time for weekdays at [$scheduleTime]")
+        }
+
+        fun setupNewScheduleTimeForHolidays(context: Context, scheduleTime: String) {
+            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            preferences.edit {
+                putString(Var.HOLIDAY_NOTIFICATION_SCHEDULE_TIME, scheduleTime)
+            }
+            Log.e("Alarm", "Set schedule alarm time for holidays at [$scheduleTime]")
         }
 
 
+        fun getWeekdayScheduleTime(context: Context): String? {
+            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            return preferences.getString(Var.WEEKDAY_NOTIFICATION_SCHEDULE_TIME, "8:0")
+        }
+
+
+        fun getHolidayScheduleTime(context: Context): String? {
+            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            return preferences.getString(Var.HOLIDAY_NOTIFICATION_SCHEDULE_TIME, "10:0")
+        }
 
 
         fun getInitNotificationState(context: Context): Boolean {

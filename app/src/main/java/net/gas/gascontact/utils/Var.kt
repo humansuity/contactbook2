@@ -21,9 +21,9 @@ object Var {
     const val STORAGE_PERMISSION_CODE = 1000
     const val NOTIFICATION_INTENT_ID = 5
 
-    const val FOREGROUND_NOTIFICATION_SERVICE_ID = "foreground_notification_service"
+    const val FOREGROUND_NOTIFICATION_SERVICE_CHANNEL = "foreground_notification_channel"
     const val FOREGROUND_NOTIFICATION_NAME = "Служба управления уведомлениями"
-    const val BIRTHDAY_NOTIFICATION_ID = "birthday_notification"
+    const val BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL = "birthday_notification-channel"
     const val BIRTHDAY_NOTIFICATION_NAME = "Дни рождения"
 
     const val APP_PREFERENCES = "app-settings"
@@ -31,7 +31,7 @@ object Var {
     const val APP_DATABASE_UPDATE_TIME = "db-update-time"
 
     const val APP_NOTIFICATION_ALARM_STATE = "notification-alarm-state"
-    const val APP_NOTIFICATION_ALARM_INIT_STATE = "notification-alarm--init-state"
+    const val APP_NOTIFICATION_ALARM_INIT_STATE = "notification-alarm-init-state"
 
     const val WEEKDAY_NOTIFICATION_SCHEDULE_TIME = "notification-schedule-time-weekday"
     const val HOLIDAY_NOTIFICATION_SCHEDULE_TIME = "notification-schedule-time-holiday"
