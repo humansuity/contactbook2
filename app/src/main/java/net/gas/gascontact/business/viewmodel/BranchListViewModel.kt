@@ -18,6 +18,7 @@ import net.gas.gascontact.model.TokenResponse
 import net.gas.gascontact.network.api.KeycloackRetrofitFactory
 import net.gas.gascontact.network.api.KeycloackRetrofitService
 import net.gas.gascontact.network.api.MiriadaApiRetrofitFactory
+import net.gas.gascontact.ui.AlarmHelper
 import net.gas.gascontact.utils.ORGANIZATIONUNITLIST
 import net.gas.gascontact.utils.Var
 import okhttp3.ResponseBody
@@ -151,14 +152,17 @@ class BranchListViewModel(application: Application)
 
     fun setupPrimaryUnitList() {
         spinnerState.value = true
-        net.sqlcipher.database.SQLiteDatabase.loadLibs(context)
-        if (SQLCipherUtils.getDatabaseState(context.getDatabasePath(Var.DATABASE_NAME))
-            == SQLCipherUtils.State.ENCRYPTED) {
-            Log.e("Room API", "Database is encrypted")
-        }
-
         unitList = liveData(Dispatchers.IO) {
             emitSource(dataModel.getPrimaryUnitEntities())
+            setNotificationAlarm()
+        }
+    }
+
+    private fun setNotificationAlarm() {
+        val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+        if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_INIT_STATE, false)) {
+            AlarmHelper.setupInitialNotificationAlarm(context)
+            AlarmHelper.setupInitNotificationState(context, state = true)
         }
     }
 

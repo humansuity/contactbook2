@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import net.gas.gascontact.R
 import net.gas.gascontact.business.database.entities.Persons
@@ -26,7 +25,6 @@ class NotificationHelper(private val context: Context, private val personList: L
             = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
     private var NOTIFICATION_ID = 100
     private val NOTIFICATION_GROUP_KEY = "unique_group_key"
-    private var channelId = ""
     private var yearSampleOne = "лет"
     private var yearSampleTwo = "год"
     private var yearSampleThree = "года"
@@ -36,12 +34,11 @@ class NotificationHelper(private val context: Context, private val personList: L
             val channel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH).apply {
                 this.description = description
                 enableLights(true)
-                lightColor = Color.RED
+                lightColor = Color.WHITE
                 enableVibration(true)
                 vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
                 notificationManager?.createNotificationChannel(this)
             }
-            channelId = id
         }
     }
 
@@ -50,12 +47,13 @@ class NotificationHelper(private val context: Context, private val personList: L
         val realm = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE).getString("REALM", "")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val summaryNotification = NotificationCompat.Builder(context, channelId)
-                .setChannelId(channelId)
+            val summaryNotification = NotificationCompat.Builder(context, Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
+                .setChannelId(Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
                 .setContentTitle("День рождения")
                 .setContentText(ORGANIZATIONUNITLIST.find { realm == it.code }?.name)
                 .setSmallIcon(R.drawable.ic_gift_30)
                 .setGroup(NOTIFICATION_GROUP_KEY)
+                .setAutoCancel(true)
                 .setGroupSummary(true)
                 .build()
             notificationManager?.notify(1, summaryNotification)
@@ -70,7 +68,8 @@ class NotificationHelper(private val context: Context, private val personList: L
                     intentToMainActivity, PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
-                val notification = NotificationCompat.Builder(context, channelId)
+                val notification = NotificationCompat.Builder(context, Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
+                    .setChannelId(Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
                     .setContentTitle(
                         "${it.lastName} ${it.firstName} ${it.patronymic}, ${getAge(
                             getRawAge(it.birthday)
@@ -99,7 +98,7 @@ class NotificationHelper(private val context: Context, private val personList: L
                     intentToMainActivity, PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
-                val notification = NotificationCompat.Builder(context, channelId)
+                val notification = NotificationCompat.Builder(context, Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
                     .setContentTitle(
                         "${it.lastName} " +
                         "${it.firstName} " +

@@ -1,28 +1,24 @@
 package net.gas.gascontact.ui.fragments
 
-import android.app.AlarmManager
-import android.app.PendingIntent
+import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TimePicker
-import android.widget.Toast
-import androidx.core.content.edit
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_about_app.*
 import net.gas.gascontact.R
-import net.gas.gascontact.business.BirthdayAlarmReceiver
-import net.gas.gascontact.business.BirthdayNotificationService
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.ui.AlarmHelper
 import net.gas.gascontact.utils.Var
 import org.joda.time.DateTime
 
@@ -54,75 +50,93 @@ class AboutAppFragment : Fragment() {
             }
         }
 
-        val preferences = requireContext().getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+        notificationSwitch.isChecked = AlarmHelper.getNotificationState(requireContext())
+        weekdayTimeText.text = AlarmHelper.getWeekdayScheduleTime(requireContext())
+        holidayTimeText.text = AlarmHelper.getHolidayScheduleTime(requireContext())
 
-        if (preferences.contains(Var.APP_NOTIFICATION_ALARM_STATE)) {
-            notification_switch.isChecked = preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_STATE, false)
-        }
-
-        if (notification_switch.isChecked) {
-            val time = requireContext().getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
-                .getString(Var.APP_NOTIFICATION_ALARM_TIME, "{NONE}")
-            notificationDescription.text = "Уведомления настроены на $time, период - 1 день"
-        }
-
-        notification_switch.setOnCheckedChangeListener { _, isChecked ->
-            alarmSettingsButton.isEnabled = isChecked
-            if (!isChecked) {
-                cancelBirthdayNotification()
-                preferences.edit().putBoolean(Var.APP_NOTIFICATION_ALARM_STATE, false).apply()
-                Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_LONG).show()
-                Log.e("Alarm manager", "Alarm manager was canceled")
+        notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                AlarmHelper.setupNotificationState(requireContext(), state = true)
+                AlarmHelper.setupNotificationAlarmForNextDay(requireContext())
+                Snackbar.make(root, "Уведомления активны", Snackbar.LENGTH_LONG).show()
             } else {
-                preferences.edit().putBoolean(Var.APP_NOTIFICATION_ALARM_STATE, true).apply()
-                Var.setNotificationAlarm(requireContext())
-                Snackbar.make(root, "Уведомления активны (8:00)", Snackbar.LENGTH_LONG).show()
-                Log.e("Alarm manager", "Alarm manager has been initialized at 8:00")
+                AlarmHelper.setupNotificationState(requireContext(), state = false)
+                AlarmHelper.cancelNotificationAlarm(requireContext())
+                Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_LONG).show()
             }
         }
 
         try {
-            val pkgInfo = context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
-            app_version_text.text = pkgInfo?.versionName
+            val packageInfo = context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
+            versionTextField.text = packageInfo?.versionName
         } catch (e: PackageManager.NameNotFoundException) {
-            app_version_text.text = "1.0.0"
+            versionTextField.text = "Не определена"
         }
 
         val databaseUpdateTime = requireContext()
             .getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             .getString(Var.APP_DATABASE_UPDATE_TIME, "Не определена")
-        textDatabaseUpdateTime.text = databaseUpdateTime
+        dbUpdateTimeTextField.text = databaseUpdateTime
 
 
-        alarmSettingsButton.setOnClickListener {
-            val date = DateTime()
-            TimePickerDialog(requireContext(),
-                TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                    cancelBirthdayNotification()
-                    Var.setNotificationAlarm(requireContext(), hourOfDay, minute)
-                    requireContext().getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
-                        .edit { putString(Var.APP_NOTIFICATION_ALARM_TIME, "$hourOfDay:$minute") }
-                    Snackbar.make(root, "Уведомления настроены, время - $hourOfDay:$minute", Snackbar.LENGTH_LONG).show()
-                },
-                date.hourOfDay,
-                date.minuteOfHour,
-                true).show()
+        alarmSettingWidget.setOnClickListener {
+            if (AlarmHelper.getNotificationState(requireContext()))
+                openNotificationDialog()
+            else
+                Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_LONG).show()
         }
 
     }
 
-    private fun cancelBirthdayNotification() {
-        val alarmManager = requireContext()
-            .getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        val pendingIntent = PendingIntent.getBroadcast(
-            requireContext(),
-            Var.NOTIFICATION_SERVICE_ID,
-            Intent(requireContext(), BirthdayAlarmReceiver::class.java),
-            0
-        )
-        requireContext().stopService(
-            Intent(requireContext(), BirthdayNotificationService::class.java)
-        )
-        alarmManager?.cancel(pendingIntent)
+
+    private fun openNotificationDialog() {
+        val dialogBuilder = AlertDialog.Builder(context)
+        val view = layoutInflater.inflate(R.layout.dialog_setup_alarm, null)
+        dialogBuilder.setView(view)
+        val dialog = dialogBuilder.create()
+        val background = ColorDrawable(Color.TRANSPARENT)
+        val margins = InsetDrawable(background, 50)
+        dialog.window?.setBackgroundDrawable(margins)
+
+        view.findViewById<Button>(R.id.btnSetupForWeekDaysNotifs)
+            .setOnClickListener { openTimePicker(dialog, AlarmHelper.WEEKDAYS) }
+
+        view.findViewById<Button>(R.id.btnSetupForHolidaysNotifs)
+            .setOnClickListener { openTimePicker(dialog, AlarmHelper.HOLIDAYS) }
+
+        dialog.show()
     }
+
+
+    private fun openTimePicker(mDialog: AlertDialog, flag: Int) {
+        val date = DateTime()
+        val datePickerDialog = TimePickerDialog(requireContext(),
+            TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                setupNewAlarmTime("$hourOfDay:$minute", flag)
+                Snackbar.make(root, "Время установлено: $hourOfDay:$minute", Snackbar.LENGTH_LONG).show()
+                weekdayTimeText.text = AlarmHelper.getWeekdayScheduleTime(requireContext())
+                holidayTimeText.text = AlarmHelper.getHolidayScheduleTime(requireContext())
+                AlarmHelper.cancelNotificationAlarm(requireContext())
+                AlarmHelper.setupNotificationAlarmForNextDay(requireContext())
+                mDialog.dismiss()
+            },
+            date.hourOfDay,
+            date.minuteOfHour,
+            true)
+        datePickerDialog.setTitle("Настройка для ${if(flag == AlarmHelper.WEEKDAYS) "будних" else "выходных"}")
+        datePickerDialog.setOnCancelListener {
+            datePickerDialog.dismiss()
+            mDialog.dismiss()
+        }
+        datePickerDialog.show()
+    }
+
+
+    private fun setupNewAlarmTime(scheduleTime: String, flag: Int) {
+        when(flag) {
+            AlarmHelper.HOLIDAYS -> { AlarmHelper.setupNewScheduleTimeForHolidays(requireContext(), scheduleTime) }
+            AlarmHelper.WEEKDAYS -> { AlarmHelper.setupNewScheduleTimeForWeekdays(requireContext(), scheduleTime) }
+        }
+    }
+
 }

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ГазКонтакт</string>
     <string name="logo_title">Logp</string>
-    <string name="settings_res">О программе</string>
+    <string name="settings_res">Настройки</string>
     <string name="update_database_res">Обновление БД</string>
     <string name="contactData">Контактные данные</string>
     <string name="mobileType">Мобильный</string>

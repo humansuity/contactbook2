@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.annotation.RequiresApi
+import net.gas.gascontact.ui.AlarmHelper
 
 
 class BirthdayAlarmReceiver : BroadcastReceiver() {
@@ -15,5 +15,6 @@ class BirthdayAlarmReceiver : BroadcastReceiver() {
             context.startForegroundService(notificationService)
         else
             context.startService(notificationService)
+        AlarmHelper.setupNotificationAlarmForNextDay(context)
     }
 }
