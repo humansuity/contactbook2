@@ -29,6 +29,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.gascontact.R
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
+import net.gas.gascontact.ui.AlarmHelper
 import net.gas.gascontact.ui.NotificationHelper
 import net.gas.gascontact.ui.fragments.*
 import net.gas.gascontact.utils.Var
@@ -68,7 +69,7 @@ class MainListActivity : AppCompatActivity() {
 
 
     private fun putAlarmScheduleTimeToPrefs() {
-        if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_INIT_STATE, false)) {
+        if (!AlarmHelper.getInitNotificationState(applicationContext)) {
             preferences.edit {
                 putString(Var.WEEKDAY_NOTIFICATION_SCHEDULE_TIME, "8:0")
                 putString(Var.HOLIDAY_NOTIFICATION_SCHEDULE_TIME, "10:0")

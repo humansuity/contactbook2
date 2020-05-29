@@ -12,6 +12,7 @@ import net.gas.gascontact.business.database.daos.*
 import net.gas.gascontact.business.database.entities.*
 import net.gas.gascontact.utils.Var
 import net.sqlcipher.database.SQLiteDatabase
+import net.sqlcipher.database.SQLiteDatabaseHook
 import net.sqlcipher.database.SupportFactory
 import java.io.File
 
@@ -43,9 +44,15 @@ abstract class ContactbookDatabase : RoomDatabase() {
             val pathToDatabase = context.filesDir.path + "/" + Var.DATABASE_NAME
             if (INSTANCE == null) {
                 synchronized(ContactbookDatabase::class) {
-                    val supportFactory =
-                        SafeHelperFactory(key.toCharArray(), SafeHelperFactory.POST_KEY_SQL_V3)
-                    //val supportFactory = SupportFactory(SQLiteDatabase.getBytes(key.toCharArray()))
+                    val hook = object: SQLiteDatabaseHook {
+                        override fun preKey(database: SQLiteDatabase?) {}
+                        override fun postKey(database: SQLiteDatabase?) {
+                            database?.rawExecSQL("PRAGMA cipher_compatibility = 3;")
+                        }
+                    }
+                    val passphrase = SQLiteDatabase.getBytes(key.toCharArray())
+
+                    val supportFactory = SupportFactory(passphrase, hook)
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,
                         ContactbookDatabase::class.java,
@@ -54,6 +61,9 @@ abstract class ContactbookDatabase : RoomDatabase() {
                         .openHelperFactory(supportFactory)
                         .createFromFile(File(pathToDatabase))
                         .build()
+
+
+
                 }
             }
             return INSTANCE
