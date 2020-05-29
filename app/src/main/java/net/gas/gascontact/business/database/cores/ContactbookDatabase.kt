@@ -11,6 +11,9 @@ import com.commonsware.cwac.saferoom.SafeHelperFactory
 import net.gas.gascontact.business.database.daos.*
 import net.gas.gascontact.business.database.entities.*
 import net.gas.gascontact.utils.Var
+import net.sqlcipher.database.SQLiteDatabase
+import net.sqlcipher.database.SQLiteDatabaseHook
+import net.sqlcipher.database.SupportFactory
 import java.io.File
 
 
@@ -37,23 +40,30 @@ abstract class ContactbookDatabase : RoomDatabase() {
     companion object {
         private var INSTANCE: ContactbookDatabase? = null
 
-        fun getInstance(context: Context, key: String) : ContactbookDatabase? {
+        fun getInstance(context: Context, key: String): ContactbookDatabase? {
             val pathToDatabase = context.filesDir.path + "/" + Var.DATABASE_NAME
             if (INSTANCE == null) {
                 synchronized(ContactbookDatabase::class) {
-                    try {
-                        val factory = SafeHelperFactory(key.toCharArray(), SafeHelperFactory.POST_KEY_SQL_V3)
-                        INSTANCE = Room.databaseBuilder(
-                            context.applicationContext,
-                            ContactbookDatabase::class.java,
-                            Var.DATABASE_NAME
-                        )
-                            .openHelperFactory(factory)
-                            .createFromFile(File(pathToDatabase))
-                            .build()
-                    } catch (e: Exception) {
-                        Toast.makeText(context, "ERROR", Toast.LENGTH_SHORT).show()
+                    val hook = object: SQLiteDatabaseHook {
+                        override fun preKey(database: SQLiteDatabase?) {}
+                        override fun postKey(database: SQLiteDatabase?) {
+                            database?.rawExecSQL("PRAGMA cipher_compatibility = 3;")
+                        }
                     }
+                    val passphrase = SQLiteDatabase.getBytes(key.toCharArray())
+
+                    val supportFactory = SupportFactory(passphrase, hook)
+                    INSTANCE = Room.databaseBuilder(
+                        context.applicationContext,
+                        ContactbookDatabase::class.java,
+                        Var.DATABASE_NAME
+                    )
+                        .openHelperFactory(supportFactory)
+                        .createFromFile(File(pathToDatabase))
+                        .build()
+
+
+
                 }
             }
             return INSTANCE
