@@ -55,6 +55,8 @@ class MainListActivity : AppCompatActivity() {
              * - start point of an app for user **/
             if (Var.checkIfDatabaseValid(applicationContext, viewModel)) {
                 createInitFragment()
+            } else {
+                createAlertFragment()
             }
         }
     }
