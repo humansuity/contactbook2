@@ -8,7 +8,9 @@ import android.util.Log
 import androidx.core.content.edit
 import net.gas.gascontact.business.BirthdayAlarmReceiver
 import net.gas.gascontact.utils.Var
-import org.joda.time.*
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
+import org.joda.time.LocalDate
 
 class AlarmHelper {
 
@@ -22,7 +24,7 @@ class AlarmHelper {
             val hour = getScheduleHour(storedStringTime)
             val minute = getScheduleMinute(storedStringTime)
 
-            val executeTime = if(getNextDay() == 1)
+            val executeTime = if (getNextDay() == 1)
                 DateTime(DateTimeZone.forID("Europe/Minsk"))
                     .withMonthOfYear(getNextMonth())
                     .withDayOfMonth(getNextDay())
@@ -35,8 +37,10 @@ class AlarmHelper {
                     .withMinuteOfHour(minute)
 
             setAlarm(context, executeTime.millis)
-            Log.e("Alarm", "Set repeating alarm at " +
-                    "[$hour:$minute], date [${executeTime.toDate()}], day of week [${getNextDayOfWeek()}]")
+            Log.e(
+                "Alarm", "Set repeating alarm at " +
+                        "[$hour:$minute], date [${executeTime.toDate()}], day of week [${getNextDayOfWeek()}]"
+            )
         }
 
 
@@ -52,8 +56,10 @@ class AlarmHelper {
 
             setAlarm(context, executeTime.millis)
             setupNotificationState(context, state = true)
-            Log.e("Alarm", "Set initial alarm at " +
-                    "[$hour:$minute], date [${executeTime.toDate()}], day of week [${DateTime().dayOfWeek}]")
+            Log.e(
+                "Alarm", "Set initial alarm at " +
+                        "[$hour:$minute], date [${executeTime.toDate()}], day of week [${DateTime().dayOfWeek}]"
+            )
         }
 
 
@@ -89,7 +95,8 @@ class AlarmHelper {
 
 
         private fun getStoredScheduleTime(context: Context): String? {
-            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            val preferences =
+                context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             val dayOfWeek = LocalDate(DateTimeZone.forID("Europe/Minsk")).dayOfWeek
             return if (dayOfWeek !in 5..6)
                 preferences.getString(Var.WEEKDAY_NOTIFICATION_SCHEDULE_TIME, "8:0")
@@ -99,19 +106,22 @@ class AlarmHelper {
 
 
         fun setupNotificationState(context: Context, state: Boolean) {
-            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            val preferences =
+                context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             preferences.edit {
                 putBoolean(Var.APP_NOTIFICATION_ALARM_STATE, state)
             }
         }
 
         fun getNotificationState(context: Context): Boolean {
-            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            val preferences =
+                context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             return preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_STATE, false)
         }
 
         fun setupInitNotificationState(context: Context, state: Boolean) {
-            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            val preferences =
+                context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             preferences.edit {
                 putBoolean(Var.APP_NOTIFICATION_ALARM_INIT_STATE, state)
             }
@@ -119,7 +129,8 @@ class AlarmHelper {
 
 
         fun setupNewScheduleTimeForWeekdays(context: Context, scheduleTime: String) {
-            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            val preferences =
+                context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             preferences.edit {
                 putString(Var.WEEKDAY_NOTIFICATION_SCHEDULE_TIME, scheduleTime)
             }
@@ -127,7 +138,8 @@ class AlarmHelper {
         }
 
         fun setupNewScheduleTimeForHolidays(context: Context, scheduleTime: String) {
-            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            val preferences =
+                context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             preferences.edit {
                 putString(Var.HOLIDAY_NOTIFICATION_SCHEDULE_TIME, scheduleTime)
             }
@@ -136,34 +148,40 @@ class AlarmHelper {
 
 
         fun getWeekdayScheduleTime(context: Context): String? {
-            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            val preferences =
+                context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             return preferences.getString(Var.WEEKDAY_NOTIFICATION_SCHEDULE_TIME, "8:0")
         }
 
 
         fun getHolidayScheduleTime(context: Context): String? {
-            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            val preferences =
+                context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             return preferences.getString(Var.HOLIDAY_NOTIFICATION_SCHEDULE_TIME, "10:0")
         }
 
 
         fun getInitNotificationState(context: Context): Boolean {
-            val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            val preferences =
+                context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             return preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_INIT_STATE, false)
         }
 
 
-        private fun getNextDayOfWeek() = LocalDate(DateTimeZone.forID("Europe/Minsk")).plusDays(1).dayOfWeek
+        private fun getNextDayOfWeek() =
+            LocalDate(DateTimeZone.forID("Europe/Minsk")).plusDays(1).dayOfWeek
 
-        private fun getNextDay() = LocalDate(DateTimeZone.forID("Europe/Minsk")).plusDays(1).dayOfMonth
+        private fun getNextDay() =
+            LocalDate(DateTimeZone.forID("Europe/Minsk")).plusDays(1).dayOfMonth
 
-        private fun getNextMonth() = LocalDate(DateTimeZone.forID("Europe/Minsk")).plusMonths(1).monthOfYear
+        private fun getNextMonth() =
+            LocalDate(DateTimeZone.forID("Europe/Minsk")).plusMonths(1).monthOfYear
 
-        private fun getScheduleHour(storedStringTime: String?)
-                = storedStringTime?.split(":")?.first()?.toInt() ?: 0
+        private fun getScheduleHour(storedStringTime: String?) =
+            storedStringTime?.split(":")?.first()?.toInt() ?: 0
 
-        private fun getScheduleMinute(storedStringTime: String?)
-                = storedStringTime?.split(":")?.last()?.toInt() ?: 0
+        private fun getScheduleMinute(storedStringTime: String?) =
+            storedStringTime?.split(":")?.last()?.toInt() ?: 0
 
     }
 }

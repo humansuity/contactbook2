@@ -67,7 +67,8 @@ class AboutAppFragment : Fragment() {
         }
 
         try {
-            val packageInfo = context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
+            val packageInfo =
+                context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
             versionTextField.text = packageInfo?.versionName
         } catch (e: PackageManager.NameNotFoundException) {
             versionTextField.text = "Не определена"
@@ -110,10 +111,12 @@ class AboutAppFragment : Fragment() {
 
     private fun openTimePicker(mDialog: AlertDialog, flag: Int) {
         val date = DateTime()
-        val datePickerDialog = TimePickerDialog(requireContext(),
+        val datePickerDialog = TimePickerDialog(
+            requireContext(),
             TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                 setupNewAlarmTime("$hourOfDay:$minute", flag)
-                Snackbar.make(root, "Время установлено: $hourOfDay:$minute", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(root, "Время установлено: $hourOfDay:$minute", Snackbar.LENGTH_LONG)
+                    .show()
                 weekdayTimeText.text = AlarmHelper.getWeekdayScheduleTime(requireContext())
                 holidayTimeText.text = AlarmHelper.getHolidayScheduleTime(requireContext())
                 AlarmHelper.cancelNotificationAlarm(requireContext())
@@ -122,8 +125,9 @@ class AboutAppFragment : Fragment() {
             },
             date.hourOfDay,
             date.minuteOfHour,
-            true)
-        datePickerDialog.setTitle("Настройка для ${if(flag == AlarmHelper.WEEKDAYS) "будних" else "выходных"}")
+            true
+        )
+        datePickerDialog.setTitle("Настройка для ${if (flag == AlarmHelper.WEEKDAYS) "будних" else "выходных"}")
         datePickerDialog.setOnCancelListener {
             datePickerDialog.dismiss()
             mDialog.dismiss()
@@ -133,9 +137,13 @@ class AboutAppFragment : Fragment() {
 
 
     private fun setupNewAlarmTime(scheduleTime: String, flag: Int) {
-        when(flag) {
-            AlarmHelper.HOLIDAYS -> { AlarmHelper.setupNewScheduleTimeForHolidays(requireContext(), scheduleTime) }
-            AlarmHelper.WEEKDAYS -> { AlarmHelper.setupNewScheduleTimeForWeekdays(requireContext(), scheduleTime) }
+        when (flag) {
+            AlarmHelper.HOLIDAYS -> {
+                AlarmHelper.setupNewScheduleTimeForHolidays(requireContext(), scheduleTime)
+            }
+            AlarmHelper.WEEKDAYS -> {
+                AlarmHelper.setupNewScheduleTimeForWeekdays(requireContext(), scheduleTime)
+            }
         }
     }
 

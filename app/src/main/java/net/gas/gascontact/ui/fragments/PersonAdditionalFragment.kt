@@ -53,7 +53,7 @@ class PersonAdditionalFragment : Fragment() {
             .get(BranchListViewModel::class.java)
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
-        viewModel.isPersonFragmentActive  = false
+        viewModel.isPersonFragmentActive = false
 
         viewModel.personEntity.observe(viewLifecycleOwner, Observer {
             setupData(it)
@@ -78,7 +78,7 @@ class PersonAdditionalFragment : Fragment() {
             launch(Dispatchers.Main) { startObserveEntities(personEntity) }
         }
         binding.name =
-            personEntity.lastName + " "+ personEntity.firstName + " " + personEntity.patronymic
+            personEntity.lastName + " " + personEntity.firstName + " " + personEntity.patronymic
         binding.birthday = personEntity.birthday
         binding.person = personEntity
         binding.devPhoneNumber = personEntity.mobilePhone
@@ -171,8 +171,10 @@ class PersonAdditionalFragment : Fragment() {
         binding.addContactButton.setOnClickListener {
             when {
                 personEntity.mobilePhone.isNullOrBlank() ->
-                    Snackbar.make(binding.root, "Невозможно определить номер!",
-                        Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(
+                        binding.root, "Невозможно определить номер!",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 personEntity.mobilePhone.contains(",") -> {
                     val optionArray = makeOptionMobileArray(personEntity.mobilePhone)
                     val dialogBuilder = AlertDialog.Builder(context)
@@ -206,8 +208,10 @@ class PersonAdditionalFragment : Fragment() {
         binding.mobileNumberFrame.setOnClickListener {
             when {
                 personEntity.mobilePhone.isNullOrBlank() ->
-                    Snackbar.make(binding.root, "Невозможно определить номер!",
-                        Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(
+                        binding.root, "Невозможно определить номер!",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 personEntity.mobilePhone.contains(",") -> {
                     openOptionNumberDialog(makeOptionMobileArray(personEntity.mobilePhone))
                 }
@@ -227,8 +231,10 @@ class PersonAdditionalFragment : Fragment() {
         binding.workNumberFrame.setOnClickListener {
             when {
                 personEntity.workPhone.isNullOrBlank() ->
-                    Snackbar.make(binding.root, "Невозможно определить номер!",
-                        Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(
+                        binding.root, "Невозможно определить номер!",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 personEntity.workPhone.contains(",") -> {
                     openOptionNumberDialog(makeOptionMobileArray(personEntity.workPhone))
                 }
@@ -248,8 +254,10 @@ class PersonAdditionalFragment : Fragment() {
         binding.homeNumberFrame.setOnClickListener {
             when {
                 personEntity.homePhone.isNullOrBlank() ->
-                    Snackbar.make(binding.root, "Невозможно определить номер!",
-                        Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(
+                        binding.root, "Невозможно определить номер!",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 personEntity.homePhone.contains(",") -> {
                     openOptionNumberDialog(makeOptionMobileArray(personEntity.homePhone))
                 }
@@ -266,8 +274,10 @@ class PersonAdditionalFragment : Fragment() {
         binding.innerWorkFrame.setOnClickListener {
             when {
                 personEntity.shortPhone.isNullOrBlank() ->
-                    Snackbar.make(binding.root, "Невозможно определить номер!",
-                        Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(
+                        binding.root, "Невозможно определить номер!",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 personEntity.shortPhone.contains(",") -> {
                     openOptionNumberDialog(makeOptionMobileArray(personEntity.shortPhone))
                 }
@@ -284,8 +294,10 @@ class PersonAdditionalFragment : Fragment() {
         binding.emailFrame.setOnClickListener {
             when {
                 personEntity.email.isNullOrBlank() || !personEntity.email.contains("@") ->
-                    Snackbar.make(binding.root, "Невозможно определить email!",
-                        Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(
+                        binding.root, "Невозможно определить email!",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 personEntity.email.contains("@") -> {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
                         data = Uri.parse("mailto:" + personEntity.email)
@@ -506,16 +518,24 @@ class PersonAdditionalFragment : Fragment() {
                             val byteArray = Base64.decode(decodedString, Base64.DEFAULT)
                             val row = ContentValues()
                             val list = arrayListOf<ContentValues>()
-                            row.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
+                            row.put(
+                                ContactsContract.Contacts.Data.MIMETYPE,
+                                ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE
+                            )
                             row.put(ContactsContract.CommonDataKinds.Photo.PHOTO, byteArray)
                             list.add(row)
-                            intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, list)
+                            intent.putParcelableArrayListExtra(
+                                ContactsContract.Intents.Insert.DATA,
+                                list
+                            )
                             viewModel.addNewContact(intent)
                         } catch (e: KotlinNullPointerException) {
                             viewModel.addNewContact(intent)
                         }
                     })
-                } else { viewModel.addNewContact(intent) }
+                } else {
+                    viewModel.addNewContact(intent)
+                }
             }
         }
         dialog.show()

@@ -21,7 +21,7 @@ import net.gas.gascontact.databinding.PersonRecyclerItemBinding
 import net.gas.gascontact.utils.GlideApp
 
 class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: LifecycleOwner) :
-    DataBoundListAdapter<Persons>(diffCallback = object: DiffUtil.ItemCallback<Persons>() {
+    DataBoundListAdapter<Persons>(diffCallback = object : DiffUtil.ItemCallback<Persons>() {
         override fun areItemsTheSame(oldItem: Persons, newItem: Persons)
                 : Boolean = oldItem == newItem
 
@@ -39,7 +39,7 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
 
     @ExperimentalStdlibApi
     override fun bind(binding: ViewDataBinding, item: Persons, position: Int) {
-        when(binding) {
+        when (binding) {
             is PersonRecyclerItemBinding -> {
                 val context = binding.root.context
                 if (item.photoID != null) {
@@ -88,7 +88,6 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
                     else
                         binding.postItem = "Не определено"
                 })
-
 
 
             }

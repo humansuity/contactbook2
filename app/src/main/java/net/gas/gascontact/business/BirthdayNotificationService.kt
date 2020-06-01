@@ -1,6 +1,6 @@
 package net.gas.gascontact.business
 
-import android.app.*
+import android.app.Notification
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,7 +14,6 @@ import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.database.entities.Posts
 import net.gas.gascontact.business.database.entities.Units
 import net.gas.gascontact.business.model.DataModel
-import net.gas.gascontact.ui.AlarmHelper
 import net.gas.gascontact.ui.NotificationHelper
 import net.gas.gascontact.utils.Var
 
@@ -31,7 +30,8 @@ class BirthdayNotificationService : LifecycleService() {
         Log.e("Service", "Notification service is active")
 
         startServiceOnForeground()
-        preferences = applicationContext.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+        preferences =
+            applicationContext.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
         if (applicationContext.getDatabasePath(Var.DATABASE_NAME).exists()) {
             mDataModel = DataModel(applicationContext)
             liveData { emitSource(mDataModel!!.getUpcomingPersonWithBirthday("TODAY")) }
@@ -84,15 +84,24 @@ class BirthdayNotificationService : LifecycleService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             startForeground(
                 2,
-                Notification.Builder(applicationContext, Var.FOREGROUND_NOTIFICATION_SERVICE_CHANNEL).build())
+                Notification.Builder(
+                    applicationContext,
+                    Var.FOREGROUND_NOTIFICATION_SERVICE_CHANNEL
+                ).build()
+            )
         else
             startForeground(
                 2,
-                NotificationCompat.Builder(applicationContext, "").build())
+                NotificationCompat.Builder(applicationContext, "").build()
+            )
     }
 
 
-    private fun createBirthdayNotification(persons: List<Persons>, units: List<Units>, posts: List<Posts>) {
+    private fun createBirthdayNotification(
+        persons: List<Persons>,
+        units: List<Units>,
+        posts: List<Posts>
+    ) {
         val notificationHelper = NotificationHelper(applicationContext, persons, units, posts)
         notificationHelper.createNotification()
         stopForeground(true)

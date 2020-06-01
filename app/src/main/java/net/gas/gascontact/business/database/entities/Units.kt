@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "units")
-data class Units (
+data class Units(
     @PrimaryKey val id: Int,
     var name: String?,
     val code: String?,

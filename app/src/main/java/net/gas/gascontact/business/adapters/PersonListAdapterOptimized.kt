@@ -18,12 +18,15 @@ import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.databinding.PersonRecyclerItemBinding
 import net.gas.gascontact.utils.GlideApp
 
-class PersonListAdapterOptimized(private val mViewModel: BranchListViewModel, private val viewLifecycleOwner: LifecycleOwner)
-    : RecyclerView.Adapter<PersonListAdapterOptimized.ViewHolder>() {
+class PersonListAdapterOptimized(
+    private val mViewModel: BranchListViewModel,
+    private val viewLifecycleOwner: LifecycleOwner
+) : RecyclerView.Adapter<PersonListAdapterOptimized.ViewHolder>() {
 
     private var list: List<Persons> = emptyList()
 
-    inner class ViewHolder(val binding: PersonRecyclerItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: PersonRecyclerItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         @ExperimentalStdlibApi
         fun bind(item: Persons) {
             binding.apply {
@@ -65,12 +68,13 @@ class PersonListAdapterOptimized(private val mViewModel: BranchListViewModel, pr
                     .load(binding.root.context.resources.getDrawable(R.drawable.ic_user_30))
                     .into(binding.image)
 
-            mViewModel.getPostByPersonId(item.postID!!.toInt()).observe(viewLifecycleOwner, Observer {
-                if (it != null)
-                    binding.postItem = it.name
-                else
-                    binding.postItem = "Не определено"
-            })
+            mViewModel.getPostByPersonId(item.postID!!.toInt())
+                .observe(viewLifecycleOwner, Observer {
+                    if (it != null)
+                        binding.postItem = it.name
+                    else
+                        binding.postItem = "Не определено"
+                })
         }
     }
 

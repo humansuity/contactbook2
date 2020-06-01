@@ -10,25 +10,36 @@ import androidx.room.*
         ForeignKey(
             entity = Units::class,
             parentColumns = ["id"],
-            childColumns = ["unit_id"]),
+            childColumns = ["unit_id"]
+        ),
         ForeignKey(
             entity = Departments::class,
             parentColumns = ["id"],
-            childColumns = ["department_id"]),
+            childColumns = ["department_id"]
+        ),
         ForeignKey(
             entity = Posts::class,
             parentColumns = ["id"],
-            childColumns = ["post_id"]),
+            childColumns = ["post_id"]
+        ),
         ForeignKey(
             entity = Photos::class,
             parentColumns = ["id"],
-            childColumns = ["photo_id"])
+            childColumns = ["photo_id"]
+        )
     ],
     indices = [
-        Index("firstname", "lastname", "patronymic", "mobile_phone", name = "personIndex", unique = false)
+        Index(
+            "firstname",
+            "lastname",
+            "patronymic",
+            "mobile_phone",
+            name = "personIndex",
+            unique = false
+        )
     ]
 )
-data class Persons (
+data class Persons(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "firstname") val firstName: String?,
     @ColumnInfo(name = "lastname") val lastName: String?,

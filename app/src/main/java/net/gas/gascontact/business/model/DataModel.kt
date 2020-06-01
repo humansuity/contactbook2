@@ -21,8 +21,9 @@ class DataModel(private val context: Context) {
             .getInstance(context, key = Var.stringMD5(getGlobalKey() + getRealmFromConfig()))
     }
 
-    private fun getRealmFromConfig() : String? {
-        val sharedPreferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+    private fun getRealmFromConfig(): String? {
+        val sharedPreferences =
+            context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
         return if (sharedPreferences.contains("REALM")) {
             sharedPreferences.getString("REALM", "")
         } else ""
@@ -34,59 +35,58 @@ class DataModel(private val context: Context) {
     }
 
 
-    private fun getGlobalKey() : String = "velikoborecami"
+    private fun getGlobalKey(): String = "velikoborecami"
 
-    fun getPrimaryUnitEntities() : LiveData<List<Units>>
-           = database?.unitsDao()!!.getPrimaryEntities()
+    fun getPrimaryUnitEntities(): LiveData<List<Units>> =
+        database?.unitsDao()!!.getPrimaryEntities()
 
-    fun getDepartmentEntitiesById(id: Int) : LiveData<List<Departments>>
-            = database?.departmentsDao()!!.getEntitiesById(id)
+    fun getDepartmentEntitiesById(id: Int): LiveData<List<Departments>> =
+        database?.departmentsDao()!!.getEntitiesById(id)
 
-    fun getPersonsEntitiesByIds(unitId: Int, departmentId: Int) : LiveData<List<Persons>>
-            = database?.personsDao()!!.getEntitiesByIds(unitId, departmentId)
+    fun getPersonsEntitiesByIds(unitId: Int, departmentId: Int): LiveData<List<Persons>> =
+        database?.personsDao()!!.getEntitiesByIds(unitId, departmentId)
 
-    fun getPersonEntityById(id: Int) : LiveData<Persons>
-            = database?.personsDao()!!.getEntityById(id)
+    fun getPersonEntityById(id: Int): LiveData<Persons> = database?.personsDao()!!.getEntityById(id)
 
-    fun getPhotoEntityById(id: Int) : LiveData<Photos>
-            = database?.photosDao()!!.getEntityById(id)
+    fun getPhotoEntityById(id: Int): LiveData<Photos> = database?.photosDao()!!.getEntityById(id)
 
-    fun getPostEntityById(id: Int) : LiveData<Posts>
-            = database?.postsDao()!!.getEntityById(id)
+    fun getPostEntityById(id: Int): LiveData<Posts> = database?.postsDao()!!.getEntityById(id)
 
-    fun getDepartmentEntityById(id: Int) : LiveData<Departments>
-            = database?.departmentsDao()!!.getEntityById(id)
+    fun getDepartmentEntityById(id: Int): LiveData<Departments> =
+        database?.departmentsDao()!!.getEntityById(id)
 
-    fun getUnitEntityById(id: Int) : LiveData<Units>
-            = database?.unitsDao()!!.getEntityById(id)
+    fun getUnitEntityById(id: Int): LiveData<Units> = database?.unitsDao()!!.getEntityById(id)
 
-    fun getUnitEntitiesByIds(ids: Array<Int>) : LiveData<List<Units>>
-            = database?.unitsDao()!!.getEntitiesByIds(ids)
+    fun getUnitEntitiesByIds(ids: Array<Int>): LiveData<List<Units>> =
+        database?.unitsDao()!!.getEntitiesByIds(ids)
 
-    fun getPostEntitiesByIds(ids: Array<Int>) : LiveData<List<Posts>>
-            = database?.postsDao()!!.getEntitiesByIds(ids)
+    fun getPostEntitiesByIds(ids: Array<Int>): LiveData<List<Posts>> =
+        database?.postsDao()!!.getEntitiesByIds(ids)
 
-    suspend fun getPersonListByLastNameTag(tag: String) : LiveData<List<Persons>>
-            = withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByLastNameTag(tag) }
-    suspend fun getPersonListByNameTag(tag: String) : LiveData<List<Persons>>
-            = withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByNameTag(tag) }
-    suspend fun getPersonListByPatronymicTag(tag: String) : LiveData<List<Persons>>
-            = withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByPatronymicTag(tag) }
-    suspend fun getPersonListByMobilePhoneTag(tag: String) : LiveData<List<Persons>>
-            = withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByMobilePhoneTag(tag) }
+    suspend fun getPersonListByLastNameTag(tag: String): LiveData<List<Persons>> =
+        withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByLastNameTag(tag) }
 
-    fun getSecondaryEntities(parentId: Int) : LiveData<List<Units>>
-            = database?.unitsDao()!!.getSecondaryEntities(parentId)
+    suspend fun getPersonListByNameTag(tag: String): LiveData<List<Persons>> =
+        withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByNameTag(tag) }
 
-    fun getUnitEntitiesByParentId(parentId: Int) : LiveData<List<Units>>
-            = database?.unitsDao()!!.getEntitiesByParentId(parentId)
+    suspend fun getPersonListByPatronymicTag(tag: String): LiveData<List<Persons>> =
+        withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByPatronymicTag(tag) }
 
-    fun getUnitEntitiesByParentByDepartmentId(departmentId: Int) : LiveData<List<Units>>
-            = database?.departmentsDao()!!.getUnitEntitiesByParentByDepartmentId(departmentId)
+    suspend fun getPersonListByMobilePhoneTag(tag: String): LiveData<List<Persons>> =
+        withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByMobilePhoneTag(tag) }
+
+    fun getSecondaryEntities(parentId: Int): LiveData<List<Units>> =
+        database?.unitsDao()!!.getSecondaryEntities(parentId)
+
+    fun getUnitEntitiesByParentId(parentId: Int): LiveData<List<Units>> =
+        database?.unitsDao()!!.getEntitiesByParentId(parentId)
+
+    fun getUnitEntitiesByParentByDepartmentId(departmentId: Int): LiveData<List<Units>> =
+        database?.departmentsDao()!!.getUnitEntitiesByParentByDepartmentId(departmentId)
 
 
-    fun getUpcomingPersonWithBirthday(period: String) : LiveData<List<Persons>> {
-        return when(period) {
+    fun getUpcomingPersonWithBirthday(period: String): LiveData<List<Persons>> {
+        return when (period) {
             "TODAY" -> {
                 database?.personsDao()!!.getEntitiesByTodayBirth()
             }
@@ -99,7 +99,9 @@ class DataModel(private val context: Context) {
             "IN_A_WEEK" -> {
                 database?.personsDao()!!.getEntitiesByInAWeekBirth()
             }
-            else -> { liveData {}}
+            else -> {
+                liveData {}
+            }
         }
     }
 }

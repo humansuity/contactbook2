@@ -19,8 +19,8 @@ interface MiriadaApiRetrofitService {
         @Query("hardwareid") hardwareid: String,
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
-        @Header("Authorization") token:String,
-        @Query("version") version:String
+        @Header("Authorization") token: String,
+        @Query("version") version: String
     ): Response<StandardJsonResponse>
 
     /* Получение информации о клиенте и его правах */
@@ -31,7 +31,7 @@ interface MiriadaApiRetrofitService {
         @Query("hardwareid") hardwareid: String,
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
-        @Header("Authorization") token:String
+        @Header("Authorization") token: String
     ): Response<IdentityScopesResponse>
 
     /* Получение базы данных с сервера */
@@ -39,6 +39,6 @@ interface MiriadaApiRetrofitService {
     suspend fun requestGetDownloadDB(
         @Query("realm") realm: String,
         @Query("grant_type") grant_type: String,
-        @Header("Authorization") token:String
+        @Header("Authorization") token: String
     ): Response<ResponseBody>
 }

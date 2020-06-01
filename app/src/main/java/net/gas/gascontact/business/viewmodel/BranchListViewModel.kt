@@ -3,7 +3,6 @@ package net.gas.gascontact.business.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.graphics.PointF
 import android.util.Log
 import android.widget.Toast
@@ -31,8 +30,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class BranchListViewModel(application: Application)
-    : AndroidViewModel(application) {
+class BranchListViewModel(application: Application) : AndroidViewModel(application) {
 
     val context: Context = application.applicationContext
     val dataModel = DataModel(context)
@@ -55,7 +53,7 @@ class BranchListViewModel(application: Application)
 
     var unitFragmentCallback: (() -> Unit)? = null
     var initUnitFragmentCallback: (() -> Unit)? = null
-    var departmentFragmentCallback: (() -> Unit) ? = null
+    var departmentFragmentCallback: (() -> Unit)? = null
     var personFragmentCallBack: (() -> Unit)? = null
     var callIntentCallback: ((Intent) -> Unit)? = null
     var sendEmailIntentCallback: ((Intent) -> Unit)? = null
@@ -90,8 +88,8 @@ class BranchListViewModel(application: Application)
         deleteDownloadedDatabase()
     }
 
-    fun getPostByPersonId(id: Int) : LiveData<Posts>
-            = liveData { emitSource(dataModel.getPostEntityById(id)) }
+    fun getPostByPersonId(id: Int): LiveData<Posts> =
+        liveData { emitSource(dataModel.getPostEntityById(id)) }
 
     fun onDepartmentItemClick(id: Int) {
         spinnerState.value = true
@@ -168,12 +166,15 @@ class BranchListViewModel(application: Application)
     fun getPersonListByLastNameTag(sequence: String): LiveData<List<Persons>> {
         return liveData { emitSource(dataModel.getPersonListByLastNameTag(sequence)) }
     }
+
     fun getPersonListByNameTag(sequence: String): LiveData<List<Persons>> {
         return liveData { emitSource(dataModel.getPersonListByNameTag(sequence)) }
     }
+
     fun getPersonListByPatronymicTag(sequence: String): LiveData<List<Persons>> {
         return liveData { emitSource(dataModel.getPersonListByPatronymicTag(sequence)) }
     }
+
     fun getPersonListByMobilePhoneTag(sequence: String): LiveData<List<Persons>> {
         return liveData { emitSource(dataModel.getPersonListByMobilePhoneTag(sequence)) }
     }
@@ -197,7 +198,8 @@ class BranchListViewModel(application: Application)
     }
 
 
-    fun getPhotoEntity(id: Int?) : LiveData<Photos> = liveData { emitSource(dataModel.getPhotoEntityById(id!!)) }
+    fun getPhotoEntity(id: Int?): LiveData<Photos> =
+        liveData { emitSource(dataModel.getPhotoEntityById(id!!)) }
 
 
     fun setupPostEntity(id: Int?) {
@@ -216,7 +218,8 @@ class BranchListViewModel(application: Application)
 
 
     fun setUpcomingPersonsWithBirthday(period: String) {
-        birthdayPersonList = liveData { emitSource(dataModel.getUpcomingPersonWithBirthday(period)) }
+        birthdayPersonList =
+            liveData { emitSource(dataModel.getUpcomingPersonWithBirthday(period)) }
     }
 
     fun deleteDownloadedDatabase() {
@@ -235,35 +238,48 @@ class BranchListViewModel(application: Application)
     fun tryToLogin(realm: String?, username: String?, password: String?) {
         Log.e("login", "$realm, $username, $password")
         var tokens: TokenResponse
-        val keycloackservice: KeycloackRetrofitService = KeycloackRetrofitFactory.makeRetrofitService()
+        val keycloackservice: KeycloackRetrofitService =
+            KeycloackRetrofitFactory.makeRetrofitService()
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = keycloackservice.requestGrant(
                     realm!!, "microservicegasclient",
-                    ORGANIZATIONUNITLIST.find {it.code == realm}!!.secret,
+                    ORGANIZATIONUNITLIST.find { it.code == realm }!!.secret,
                     "password", username!!, password!!
                 )
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         response.body()?.let {
                             tokens = it
-                            Log.e("Controller ", "CheckValidPassword success");
+                            Log.e("Controller ", "CheckValidPassword success")
                             userLoginState.value = tokens.access_token
                         }
                     } else {
-                        Toast.makeText(context, "Ошибка авторизации, проверьте введённые данные", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            context,
+                            "Ошибка авторизации, проверьте введённые данные",
+                            Toast.LENGTH_LONG
+                        ).show()
                         userLoginState.value = ""
                     }
                 }
             } catch (e: HttpException) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Ошибка авторизации, проверьте подключение к сети организации", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        "Ошибка авторизации, проверьте подключение к сети организации",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
                 Log.e("Controller", "Exception in CheckValidPassword  ${e.message}")
             } catch (e: Throwable) {
                 Log.e("Controller", "Ooops: Something else went wrong")
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Ошибка авторизации, проверьте подключение к сети организации", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        "Ошибка авторизации, проверьте подключение к сети организации",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
 
             }
@@ -319,7 +335,7 @@ class BranchListViewModel(application: Application)
             val pathToSaveFile = File(context.filesDir.toURI())
             val fullPath = File(pathToSaveFile, url.path.split("/").last())
             fileOutputStream = FileOutputStream(fullPath)
-            while(true) {
+            while (true) {
                 val len = body.byteStream().read(buffer)
                 if (len != -1) {
                     fileOutputStream.write(buffer, 0, len)
@@ -327,8 +343,7 @@ class BranchListViewModel(application: Application)
                     val currentDatabaseSize = currentDatabaseSize.toFloat()
                     val percent = currentFileSize.div(currentDatabaseSize).times(100)
                     dbDownloadingProgressState.postValue(PointF(percent, percent))
-                }
-                else break
+                } else break
             }
         } catch (e: Exception) {
             viewModelScope.launch(Dispatchers.Main) {
@@ -351,7 +366,8 @@ class BranchListViewModel(application: Application)
                     putUpdateDatabaseDateToConfig()
                     isUnitFragmentActive = false
                     onDatabaseUpdated?.invoke(true)
-                    Toast.makeText(context, "Updating database successful", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Updating database successful", Toast.LENGTH_SHORT)
+                        .show()
                 } else {
                     onDatabaseUpdated?.invoke(false)
                     Toast.makeText(context, "Updating database invalid", Toast.LENGTH_SHORT).show()
@@ -394,7 +410,11 @@ class BranchListViewModel(application: Application)
                     }
                 } catch (e: HttpException) {
                     Log.e(logTag, "Exception in $logTag, exception: ${e.message}")
-                    Toast.makeText(context, "Ошибка авторизации, проверьте введённые данные", Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        context,
+                        "Ошибка авторизации, проверьте введённые данные",
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                 } catch (e: Throwable) {
                     Log.e(logTag, "Ooops: Something else went wrong ${e.message}")

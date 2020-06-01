@@ -12,14 +12,16 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = Units::class,
             parentColumns = ["id"],
-            childColumns = ["unit_id"]),
+            childColumns = ["unit_id"]
+        ),
         ForeignKey(
             entity = Departments::class,
             parentColumns = ["id"],
-            childColumns = ["department_id"])
+            childColumns = ["department_id"]
+        )
     ]
 )
-data class Relation (
+data class Relation(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "unit_id", index = true) val unitID: Int?,
     @ColumnInfo(name = "department_id", index = true) val departmentID: Int?

@@ -18,12 +18,15 @@ import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.databinding.PersonItemBirthdayBinding
 import net.gas.gascontact.utils.GlideApp
 
-class BirthdayPersonListAdapterOptimized(private val mViewModel: BranchListViewModel, private val viewLifecycleOwner: LifecycleOwner)
-    : RecyclerView.Adapter<BirthdayPersonListAdapterOptimized.ViewHolder>() {
+class BirthdayPersonListAdapterOptimized(
+    private val mViewModel: BranchListViewModel,
+    private val viewLifecycleOwner: LifecycleOwner
+) : RecyclerView.Adapter<BirthdayPersonListAdapterOptimized.ViewHolder>() {
 
     private var list: List<Persons> = emptyList()
 
-    inner class ViewHolder(val binding: PersonItemBirthdayBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: PersonItemBirthdayBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         @ExperimentalStdlibApi
         fun bind(item: Persons) {
             binding.apply {
@@ -71,9 +74,10 @@ class BirthdayPersonListAdapterOptimized(private val mViewModel: BranchListViewM
                     .load(binding.root.context.resources.getDrawable(R.drawable.ic_user_30))
                     .into(binding.image)
 
-            mViewModel.getPostByPersonId(item.postID!!.toInt()).observe(viewLifecycleOwner, Observer {
-                binding.postItem = it.name
-            })
+            mViewModel.getPostByPersonId(item.postID!!.toInt())
+                .observe(viewLifecycleOwner, Observer {
+                    binding.postItem = it.name
+                })
         }
     }
 

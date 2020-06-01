@@ -33,7 +33,6 @@ abstract class DataBoundListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
     }
 
 
-
     override fun onViewAttachedToWindow(holder: DataBoundViewHolder) {
         super.onViewAttachedToWindow(holder)
         holder.markAttach()
