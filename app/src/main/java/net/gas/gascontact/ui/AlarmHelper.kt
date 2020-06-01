@@ -47,8 +47,8 @@ class AlarmHelper {
 
             val executeTime = DateTime(DateTimeZone.forID("Europe/Minsk"))
                 .withDayOfMonth(DateTime(DateTimeZone.forID("Europe/Minsk")).dayOfMonth)
-                .withHourOfDay(9)
-                .withMinuteOfHour(5)
+                .withHourOfDay(hour)
+                .withMinuteOfHour(minute)
 
             setAlarm(context, executeTime.millis)
             setupNotificationState(context, state = true)

@@ -8,7 +8,6 @@ import android.graphics.PointF
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
-import com.commonsware.cwac.saferoom.SQLCipherUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
