@@ -10,6 +10,6 @@ import net.gas.gascontact.business.database.entities.Photos
 interface PhotosDao {
 
     @Query("select * from photos where id = :id")
-    fun getEntityById(id: Int) : LiveData<Photos>
+    fun getEntityById(id: Int): LiveData<Photos>
 
 }

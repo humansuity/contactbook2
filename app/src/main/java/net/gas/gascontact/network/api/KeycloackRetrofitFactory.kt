@@ -12,7 +12,7 @@ object KeycloackRetrofitFactory {
 
     fun makeRetrofitService(): KeycloackRetrofitService {
         return Retrofit.Builder()
-            .baseUrl(   BASE_URL)
+            .baseUrl(BASE_URL)
             .client(makeOkHttpClient())
             .addConverterFactory(MoshiConverterFactory.create())
             .build().create(KeycloackRetrofitService::class.java)

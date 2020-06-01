@@ -1,25 +1,21 @@
 package net.gas.gascontact.business.adapters
 
-import android.graphics.Color
-import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.HorizontalScrollView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import net.gas.gascontact.R
 import net.gas.gascontact.business.database.entities.Units
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.databinding.UnitRecyclerItemBinding
 import net.gas.gascontact.utils.GlideApp
 
-class UnitListAdapterOptimized(private val mViewModel: BranchListViewModel)
-    : RecyclerView.Adapter<UnitListAdapterOptimized.ViewHolder>() {
+class UnitListAdapterOptimized(private val mViewModel: BranchListViewModel) :
+    RecyclerView.Adapter<UnitListAdapterOptimized.ViewHolder>() {
 
     private lateinit var items: List<Units>
 
-    inner class ViewHolder(val binding: UnitRecyclerItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: UnitRecyclerItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Units) {
             binding.apply {
                 unitItem = item

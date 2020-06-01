@@ -1,6 +1,5 @@
 package net.gas.gascontact.business.adapters
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,12 +9,13 @@ import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.databinding.DepartmentRecyclerItemBinding
 import net.gas.gascontact.utils.GlideApp
 
-class DepartmentListAdapterOptimized(private val mViewModel: BranchListViewModel)
-    : RecyclerView.Adapter<DepartmentListAdapterOptimized.ViewHolder>() {
+class DepartmentListAdapterOptimized(private val mViewModel: BranchListViewModel) :
+    RecyclerView.Adapter<DepartmentListAdapterOptimized.ViewHolder>() {
 
     private lateinit var items: List<Departments>
 
-    inner class ViewHolder(val binding: DepartmentRecyclerItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: DepartmentRecyclerItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Departments) {
             binding.apply {
                 departmentItem = item

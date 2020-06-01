@@ -10,18 +10,18 @@ import net.gas.gascontact.business.database.entities.Units
 interface UnitsDao {
 
     @Query("select * from units where parent_id = 0 order by rangir")
-    fun getPrimaryEntities() : LiveData<List<Units>>
+    fun getPrimaryEntities(): LiveData<List<Units>>
 
     @Query("select * from units where parent_id = :parent_id order by rangir")
-    fun getSecondaryEntities(parent_id: Int) : LiveData<List<Units>>
+    fun getSecondaryEntities(parent_id: Int): LiveData<List<Units>>
 
     @Query("select * from units where parent_id = (select parent_id from units where id = :parent_id) order by rangir")
-    fun getEntitiesByParentId(parent_id: Int) : LiveData<List<Units>>
+    fun getEntitiesByParentId(parent_id: Int): LiveData<List<Units>>
 
     @Query("select * from units where id = :id")
-    fun getEntityById(id: Int) : LiveData<Units>
+    fun getEntityById(id: Int): LiveData<Units>
 
     @Query("select * from units where id in (:ids)")
-    fun getEntitiesByIds(ids: Array<Int>) : LiveData<List<Units>>
+    fun getEntitiesByIds(ids: Array<Int>): LiveData<List<Units>>
 
 }

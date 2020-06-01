@@ -52,7 +52,11 @@ class DepartmentListFragment : Fragment() {
         viewModel.onUnitFragmentBackPressed = {
             if (!departmentList.isNullOrEmpty()) {
                 viewModel.unitList = liveData(Dispatchers.IO) {
-                    emitSource(viewModel.dataModel.getUnitEntitiesByParentByDepartmentId(departmentList!![0].id))
+                    emitSource(
+                        viewModel.dataModel.getUnitEntitiesByParentByDepartmentId(
+                            departmentList!![0].id
+                        )
+                    )
                 }
                 viewModel.appToolbarStateCallback?.invoke("Филиалы", true)
             }
@@ -67,9 +71,10 @@ class DepartmentListFragment : Fragment() {
     override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
         try {
             val animation = AnimationUtils.loadAnimation(context, nextAnim)
-            animation.setAnimationListener(object: Animation.AnimationListener {
+            animation.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationRepeat(animation: Animation?) {
                 }
+
                 override fun onAnimationStart(animation: Animation?) {
                 }
 

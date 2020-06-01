@@ -74,8 +74,7 @@ class AlertFragment : Fragment() {
                 lvblock.startAnim(800)
                 alertContainer.visibility = View.GONE
                 progressContainer.visibility = View.VISIBLE
-            }
-            else {
+            } else {
                 lvblock.stopAnim()
                 progressContainer.visibility = View.GONE
             }

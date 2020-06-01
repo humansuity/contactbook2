@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -27,9 +26,9 @@ class BirthdayPersonListFragment : Fragment() {
     private lateinit var listAdapter: BirthdayPersonListAdapterOptimized
 
     companion object {
-        fun newInstance(key: String, value: String) : BirthdayPersonListFragment  {
+        fun newInstance(key: String, value: String): BirthdayPersonListFragment {
             val fragment = BirthdayPersonListFragment()
-            fragment.arguments = Bundle().apply { putString(key,value) }
+            fragment.arguments = Bundle().apply { putString(key, value) }
             return fragment
         }
     }

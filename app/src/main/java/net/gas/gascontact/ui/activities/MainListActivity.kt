@@ -102,14 +102,14 @@ class MainListActivity : AppCompatActivity() {
     }
 
 
-    private fun getDatabaseSize() : Long {
+    private fun getDatabaseSize(): Long {
         return if (preferences.contains(Var.APP_DATABASE_SIZE)) {
             preferences.getLong(Var.APP_DATABASE_SIZE, 0)
         } else 0
     }
 
 
-    private fun getDatabaseUpdateTime() : String {
+    private fun getDatabaseUpdateTime(): String {
         return if (preferences.contains(Var.APP_DATABASE_UPDATE_TIME)) {
             preferences.getString(Var.APP_DATABASE_UPDATE_TIME, "Не определена")!!
         } else "Не определена"
@@ -175,7 +175,9 @@ class MainListActivity : AppCompatActivity() {
                 } else {
                     createLoginFragment("DOWNLOAD")
                 }
-            } else { viewModel.onNetworkErrorCallback?.invoke("NO_INTERNET_CONNECTION") }
+            } else {
+                viewModel.onNetworkErrorCallback?.invoke("NO_INTERNET_CONNECTION")
+            }
         }
 
 
@@ -232,7 +234,8 @@ class MainListActivity : AppCompatActivity() {
         }
 
         viewModel.appToolbarStateCallback = { value, navButtonState ->
-            if (navButtonState) main_toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_back_20)
+            if (navButtonState) main_toolbar.navigationIcon =
+                resources.getDrawable(R.drawable.ic_back_20)
             else main_toolbar.navigationIcon = null
             main_toolbar.title = value
         }
@@ -253,7 +256,7 @@ class MainListActivity : AppCompatActivity() {
     }
 
 
-    private fun checkInternetConnection() : Boolean {
+    private fun checkInternetConnection(): Boolean {
         val connectManager = applicationContext
             .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectManager.activeNetworkInfo
@@ -263,16 +266,19 @@ class MainListActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray)
-    {
+        grantResults: IntArray
+    ) {
         when (requestCode) {
             Var.STORAGE_PERMISSION_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] ==
-                    PackageManager.PERMISSION_GRANTED) {
+                    PackageManager.PERMISSION_GRANTED
+                ) {
                     createLoginFragment("DOWNLOAD")
-                }
-                else { Snackbar.make(root,
-                    "Права не предоставлены!", Snackbar.LENGTH_LONG).show()
+                } else {
+                    Snackbar.make(
+                        root,
+                        "Права не предоставлены!", Snackbar.LENGTH_LONG
+                    ).show()
                 }
                 return
             }
@@ -295,7 +301,7 @@ class MainListActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
             }
@@ -322,7 +328,8 @@ class MainListActivity : AppCompatActivity() {
         val margins = InsetDrawable(background, 50)
         dialog.window?.setBackgroundDrawable(margins)
 
-        view.findViewById<Button>(R.id.btnSetupForWeekDaysNotifs).setOnClickListener { dialog.dismiss() }
+        view.findViewById<Button>(R.id.btnSetupForWeekDaysNotifs)
+            .setOnClickListener { dialog.dismiss() }
         view.findViewById<Button>(R.id.btnSetupForHolidaysNotifs).setOnClickListener {
             if (checkInternetConnection()) {
                 createLoginFragment("UPDATE")
@@ -376,7 +383,8 @@ class MainListActivity : AppCompatActivity() {
                 R.animator.enter_from_right,
                 R.animator.exit_to_left,
                 R.animator.enter_from_left,
-                R.animator.exit_to_right)
+                R.animator.exit_to_right
+            )
             replace(R.id.fragmentHolder, fragment)
         }
     }
@@ -391,7 +399,8 @@ class MainListActivity : AppCompatActivity() {
                 R.animator.enter_from_right,
                 R.animator.exit_to_left,
                 R.animator.enter_from_left,
-                R.animator.exit_to_right)
+                R.animator.exit_to_right
+            )
             replace(R.id.fragmentHolder, fragment)
         }
     }
@@ -406,7 +415,8 @@ class MainListActivity : AppCompatActivity() {
                 R.animator.enter_from_right,
                 R.animator.exit_to_left,
                 R.animator.enter_from_left,
-                R.animator.exit_to_right)
+                R.animator.exit_to_right
+            )
             replace(R.id.fragmentHolder, fragment)
         }
     }

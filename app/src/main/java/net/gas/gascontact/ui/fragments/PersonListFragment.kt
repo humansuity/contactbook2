@@ -54,9 +54,10 @@ class PersonListFragment : Fragment() {
     override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
         try {
             val animation = AnimationUtils.loadAnimation(context, nextAnim)
-            animation.setAnimationListener(object: Animation.AnimationListener {
+            animation.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationRepeat(animation: Animation?) {
                 }
+
                 override fun onAnimationStart(animation: Animation?) {
                     viewModel.spinnerState.value = true
                 }

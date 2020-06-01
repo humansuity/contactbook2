@@ -30,9 +30,9 @@ class LoginFragment : Fragment() {
 
 
     companion object {
-        fun newInstance(key: String, value: String) : LoginFragment  {
+        fun newInstance(key: String, value: String): LoginFragment {
             val fragment = LoginFragment()
-            fragment.arguments = Bundle().apply { putString(key,value) }
+            fragment.arguments = Bundle().apply { putString(key, value) }
             return fragment
         }
     }
@@ -50,8 +50,6 @@ class LoginFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
-
-
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -83,11 +81,17 @@ class LoginFragment : Fragment() {
 
         if (downloadType == "UPDATE") {
             viewModel.appToolbarStateCallback?.invoke("Авторизация", true)
-            val preferences = context?.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            val preferences =
+                context?.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
             if (preferences != null) {
                 preferences.getString("REALM", "topgas")
                 if (preferences.contains("REALM")) {
-                    spinner.setSelection(realmArray.indexOf(ORGANIZATIONUNITLIST.find { it.code == preferences.getString("REALM", "topgas") }?.name))
+                    spinner.setSelection(realmArray.indexOf(ORGANIZATIONUNITLIST.find {
+                        it.code == preferences.getString(
+                            "REALM",
+                            "topgas"
+                        )
+                    }?.name))
                     spinner.isEnabled = false
                     spinner.isActivated = false
                 }
@@ -111,7 +115,11 @@ class LoginFragment : Fragment() {
 
         loginButton.setOnClickListener {
             isLoginButtonActive = true
-            viewModel.tryToLogin(ORGANIZATIONUNITLIST.find { it.name == selectedRealm }?.code, loginUsernameText.text.toString(), loginPasswordText.text.toString())
+            viewModel.tryToLogin(
+                ORGANIZATIONUNITLIST.find { it.name == selectedRealm }?.code,
+                loginUsernameText.text.toString(),
+                loginPasswordText.text.toString()
+            )
         }
 
         viewModel.userLoginState.observe(viewLifecycleOwner, Observer {

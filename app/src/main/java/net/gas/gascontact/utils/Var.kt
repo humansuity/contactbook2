@@ -1,18 +1,11 @@
 package net.gas.gascontact.utils
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.graphics.Point
 import android.util.Log
-import net.gas.gascontact.business.BirthdayAlarmReceiver
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
-import org.joda.time.LocalDate
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
-import java.util.*
 
 object Var {
 
@@ -37,18 +30,19 @@ object Var {
     const val HOLIDAY_NOTIFICATION_SCHEDULE_TIME = "notification-schedule-time-holiday"
 
 
-    fun stringMD5(key: String) : String {
+    fun stringMD5(key: String): String {
         val md = MessageDigest.getInstance("MD5")
         return BigInteger(1, md.digest(key.toByteArray()))
             .toString(16).padStart(32, '0')
     }
 
-    private fun checkIfDatabaseFileExists(context: Context)
-            = File(context.filesDir.path + "/" + DATABASE_NAME).exists()
+    private fun checkIfDatabaseFileExists(context: Context) =
+        File(context.filesDir.path + "/" + DATABASE_NAME).exists()
 
-    private fun checkIfRoomDatabaseExists(context: Context) = context.getDatabasePath(Var.DATABASE_NAME).exists()
+    private fun checkIfRoomDatabaseExists(context: Context) =
+        context.getDatabasePath(Var.DATABASE_NAME).exists()
 
-    fun checkIfDatabaseValid(context: Context, viewModel: BranchListViewModel) : Boolean {
+    fun checkIfDatabaseValid(context: Context, viewModel: BranchListViewModel): Boolean {
         return when {
             checkIfRoomDatabaseExists(context) -> {
                 Log.e("Database", "Room db exists")

@@ -18,11 +18,13 @@ import net.gas.gascontact.utils.Var
 import org.joda.time.LocalDate
 import org.joda.time.Years
 
-class NotificationHelper(private val context: Context, private val personList: List<Persons>,
-                         private val unitList: List<Units>, private val postList: List<Posts>) {
+class NotificationHelper(
+    private val context: Context, private val personList: List<Persons>,
+    private val unitList: List<Units>, private val postList: List<Posts>
+) {
 
-    private val notificationManager
-            = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+    private val notificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
     private var NOTIFICATION_ID = 100
     private val NOTIFICATION_GROUP_KEY = "unique_group_key"
     private var yearSampleOne = "лет"
@@ -44,18 +46,20 @@ class NotificationHelper(private val context: Context, private val personList: L
 
 
     fun createNotification() {
-        val realm = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE).getString("REALM", "")
+        val realm = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
+            .getString("REALM", "")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val summaryNotification = NotificationCompat.Builder(context, Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
-                .setChannelId(Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
-                .setContentTitle("День рождения")
-                .setContentText(ORGANIZATIONUNITLIST.find { realm == it.code }?.name)
-                .setSmallIcon(R.drawable.ic_gift_30)
-                .setGroup(NOTIFICATION_GROUP_KEY)
-                .setAutoCancel(true)
-                .setGroupSummary(true)
-                .build()
+            val summaryNotification =
+                NotificationCompat.Builder(context, Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
+                    .setChannelId(Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
+                    .setContentTitle("День рождения")
+                    .setContentText(ORGANIZATIONUNITLIST.find { realm == it.code }?.name)
+                    .setSmallIcon(R.drawable.ic_gift_30)
+                    .setGroup(NOTIFICATION_GROUP_KEY)
+                    .setAutoCancel(true)
+                    .setGroupSummary(true)
+                    .build()
             notificationManager?.notify(1, summaryNotification)
 
             personList.forEach {
@@ -68,23 +72,24 @@ class NotificationHelper(private val context: Context, private val personList: L
                     intentToMainActivity, PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
-                val notification = NotificationCompat.Builder(context, Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
-                    .setChannelId(Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
-                    .setContentTitle(
-                        "${it.lastName} ${it.firstName} ${it.patronymic}, ${getAge(
-                            getRawAge(it.birthday)
-                        )}"
-                    )
-                    .setSmallIcon(R.drawable.ic_gift_30)
-                    .setStyle(
-                        NotificationCompat.InboxStyle()
-                            .addLine("${getPost(it.postID)}")
-                            .addLine("${getUnit(it.unitID)}")
-                    )
-                    .setAutoCancel(true)
-                    .setContentIntent(pendingIntent)
-                    .setGroup(NOTIFICATION_GROUP_KEY)
-                    .build()
+                val notification =
+                    NotificationCompat.Builder(context, Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
+                        .setChannelId(Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
+                        .setContentTitle(
+                            "${it.lastName} ${it.firstName} ${it.patronymic}, ${getAge(
+                                getRawAge(it.birthday)
+                            )}"
+                        )
+                        .setSmallIcon(R.drawable.ic_gift_30)
+                        .setStyle(
+                            NotificationCompat.InboxStyle()
+                                .addLine("${getPost(it.postID)}")
+                                .addLine("${getUnit(it.unitID)}")
+                        )
+                        .setAutoCancel(true)
+                        .setContentIntent(pendingIntent)
+                        .setGroup(NOTIFICATION_GROUP_KEY)
+                        .build()
                 notificationManager?.notify(NOTIFICATION_ID++, notification)
             }
         } else {
@@ -98,22 +103,23 @@ class NotificationHelper(private val context: Context, private val personList: L
                     intentToMainActivity, PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
-                val notification = NotificationCompat.Builder(context, Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
-                    .setContentTitle(
-                        "${it.lastName} " +
-                        "${it.firstName} " +
-                        "${it.patronymic}, " +
-                         getAge(getRawAge(it.birthday))
-                    )
-                    .setSmallIcon(R.drawable.ic_gift_30)
-                    .setStyle(
-                        NotificationCompat.InboxStyle()
-                            .addLine("${getPost(it.postID)}")
-                            .addLine("${getUnit(it.unitID)}")
-                    )
-                    .setAutoCancel(true)
-                    .setContentIntent(pendingIntent)
-                    .build()
+                val notification =
+                    NotificationCompat.Builder(context, Var.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
+                        .setContentTitle(
+                            "${it.lastName} " +
+                                    "${it.firstName} " +
+                                    "${it.patronymic}, " +
+                                    getAge(getRawAge(it.birthday))
+                        )
+                        .setSmallIcon(R.drawable.ic_gift_30)
+                        .setStyle(
+                            NotificationCompat.InboxStyle()
+                                .addLine("${getPost(it.postID)}")
+                                .addLine("${getUnit(it.unitID)}")
+                        )
+                        .setAutoCancel(true)
+                        .setContentIntent(pendingIntent)
+                        .build()
                 notificationManager?.notify(NOTIFICATION_ID++, notification)
             }
         }
@@ -124,7 +130,7 @@ class NotificationHelper(private val context: Context, private val personList: L
 
     private fun getUnit(unitID: Int?) = unitList.find { it.id == unitID }?.name
 
-    private fun getRawAge(birthday: String?) : String {
+    private fun getRawAge(birthday: String?): String {
         val birthdaySplit = birthday?.split("-")
         return if (birthdaySplit?.size == 3) {
             Years.yearsBetween(

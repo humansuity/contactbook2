@@ -10,10 +10,11 @@ import android.widget.TextView
 import net.gas.gascontact.R
 
 
-class SpinnerRealmAdapter(context: Context, resource: Int,
-                          private val realmArray: ArrayList<String>,
-                          private val icons: ArrayList<Int>)
-    : ArrayAdapter<String>(context, resource) {
+class SpinnerRealmAdapter(
+    context: Context, resource: Int,
+    private val realmArray: ArrayList<String>,
+    private val icons: ArrayList<Int>
+) : ArrayAdapter<String>(context, resource) {
 
     override fun getCount(): Int {
         return realmArray.size
@@ -23,7 +24,8 @@ class SpinnerRealmAdapter(context: Context, resource: Int,
         var viewHolder = ViewHolder()
         var view: View = View(context)
         if (convertView == null) {
-            val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val layoutInflater =
+                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             view = layoutInflater.inflate(R.layout.spinner_realm_row, parent, false)
             viewHolder.realmName = view.findViewById(R.id.realmDescription) as TextView
             viewHolder.icon = view.findViewById(R.id.realmIcon) as ImageView
@@ -43,7 +45,7 @@ class SpinnerRealmAdapter(context: Context, resource: Int,
     }
 
 
-    private final inner class ViewHolder {
+    private inner class ViewHolder {
         var icon: ImageView? = null
         var realmName: TextView? = null
     }
