@@ -53,7 +53,9 @@ class MainListActivity : AppCompatActivity() {
         if (!isOpenedViaIntent()) {
             /** Create unitlist fragment
              * - start point of an app for user **/
-            createInitFragment()
+            if (Var.checkIfDatabaseValid(applicationContext, viewModel)) {
+                createInitFragment()
+            }
         }
     }
 
