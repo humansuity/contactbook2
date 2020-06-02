@@ -63,6 +63,9 @@ class BirthdayNotificationService : LifecycleService() {
                                     createBirthdayNotification(personList, unitList, postList)
                                 }
                             })
+                    } else {
+                        stopForeground(true)
+                        stopSelf()
                     }
                 })
         } else {
@@ -72,6 +75,9 @@ class BirthdayNotificationService : LifecycleService() {
         }
         return super.onStartCommand(intent, flags, startId)
     }
+
+
+
 
 
     override fun onDestroy() {
