@@ -22,35 +22,38 @@
         app:titleMargins="4dp" />
 
 
-    <FrameLayout
+    <fragment
         android:id="@+id/fragmentHolder"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/app_nav_graph"/>
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="35dp"
-            android:backgroundTint="#FFFFFF"
-            android:clickable="true"
-            android:padding="0dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_menu_40"
-            android:tint="#1B5267"
-            app:backgroundTint="#758DA1"
-            app:borderWidth="2dp"
-            app:elevation="10dp"
-            app:useCompatPadding="false" />
-
-    </FrameLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="#FFFFFF"
+        android:clickable="true"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_menu_40"
+        android:tint="#1B5267"
+        app:backgroundTint="#758DA1"
+        app:borderWidth="2dp"
+        app:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:useCompatPadding="false" />
 
     <ProgressBar
         android:id="@+id/unitProgressbar"

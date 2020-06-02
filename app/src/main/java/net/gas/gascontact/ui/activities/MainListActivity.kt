@@ -50,15 +50,14 @@ class MainListActivity : AppCompatActivity() {
         preferences = getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
         initResources()
 
-        if (!isOpenedViaIntent()) {
-            /** Create unitlist fragment
-             * - start point of an app for user **/
-            if (Var.checkIfDatabaseValid(applicationContext, viewModel)) {
-                createInitFragment()
-            } else {
-                createAlertFragment()
-            }
-        }
+        /** check if app launched from notification **/
+//        if (!isOpenedViaIntent()) {
+//            /** Create unitlist fragment
+//             * - start point of an app for user **/
+//            viewModel.setupPrimaryUnitList()
+//        }
+
+        viewModel.setupPrimaryUnitList()
     }
 
     private fun initResources() {
@@ -97,12 +96,6 @@ class MainListActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
-    }
-
-
-    override fun onBackPressed() {
-        viewModel.onUnitFragmentBackPressed?.invoke()
-        super.onBackPressed()
     }
 
 
@@ -303,6 +296,8 @@ class MainListActivity : AppCompatActivity() {
         }
         return super.onPrepareOptionsMenu(menu)
     }
+
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

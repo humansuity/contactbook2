@@ -24,4 +24,7 @@ interface UnitsDao {
     @Query("select * from units where id in (:ids)")
     fun getEntitiesByIds(ids: Array<Int>): LiveData<List<Units>>
 
+
+    @Query("select count(*) from units where parent_id = :id")
+    fun getEntitiesAmountByParentID(id: Int): Int
 }

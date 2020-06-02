@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/app_nav_graph"
+    app:startDestination="@id/unitListFragment">
+
+    <fragment
+        android:id="@+id/unitListFragment"
+        android:name="net.gas.gascontact.ui.fragments.UnitListFragment"
+        android:label="UnitListFragment" >
+        <action
+            android:id="@+id/action_unitListFragment_self"
+            app:destination="@id/unitListFragment" />
+        <action
+            android:id="@+id/action_unitListFragment_to_departmentListFragment"
+            app:destination="@id/departmentListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/departmentListFragment"
+        android:name="net.gas.gascontact.ui.fragments.DepartmentListFragment"
+        android:label="DepartmentListFragment" />
+</navigation>

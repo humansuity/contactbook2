@@ -9,19 +9,22 @@
         <variable
             name="viewModel"
             type="net.gas.gascontact.business.viewmodel.BranchListViewModel" />
+        <variable
+            name="unitFragment"
+            type="net.gas.gascontact.ui.fragments.UnitListFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/list_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="@{ () -> unitFragment.onItemClicked() }"
         android:background="?android:attr/selectableItemBackground"
-        android:onClick="@{ () -> viewModel.onUnitItemClick(unitItem.id) }"
         android:orientation="vertical">
 
 
         <EditText
-            android:id="@+id/txt"
+            android:id="@+id/unitName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -32,7 +35,7 @@
             android:gravity="center_vertical"
             android:inputType="textNoSuggestions"
             android:maxLines="1"
-            android:onClick="@{ () -> viewModel.onUnitItemClick(unitItem.id) }"
+            android:onClick="@{ () -> unitFragment.onItemClicked() }"
             android:paddingTop="18dp"
             android:paddingBottom="18dp"
             android:scrollbars="none"
@@ -54,9 +57,9 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginStart="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/txt"
+            app:layout_constraintBottom_toBottomOf="@+id/unitName"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txt" />
+            app:layout_constraintTop_toTopOf="@+id/unitName" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -69,7 +69,6 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     var onUnitFragmentBackPressed: (() -> Unit)? = null
     var onCreateUnitListFragment: (() -> Unit)? = null
     var parentId = -1
-    var i = 0
     var fragmentType: String = ""
     var isUnitFragmentActive = false
     var isPersonFragmentActive = false
@@ -79,13 +78,13 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     var unitId = 0
 
     fun onUnitItemClick(id: Int) {
-        spinnerState.value = true
-        unitId = id
-        viewModelScope.launch(Dispatchers.Default) {
-            launch(Dispatchers.Main) { initUnitFragmentCallback?.invoke() }
-            unitList = withContext(Dispatchers.IO) { dataModel.getSecondaryEntities(id) }
-        }
-        deleteDownloadedDatabase()
+//        spinnerState.value = true
+//        unitId = id
+//        viewModelScope.launch(Dispatchers.Default) {
+//            launch(Dispatchers.Main) { initUnitFragmentCallback?.invoke() }
+//            unitList = withContext(Dispatchers.IO) { dataModel.getSecondaryEntities(id) }
+//        }
+//        deleteDownloadedDatabase()
     }
 
     fun getPostByPersonId(id: Int): LiveData<Posts> =
@@ -251,7 +250,7 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
                     if (response.isSuccessful) {
                         response.body()?.let {
                             tokens = it
-                            Log.e("Controller ", "CheckValidPassword success")
+                            Log.e("Controller ", "CheckValidPassworddelete success")
                             userLoginState.value = tokens.access_token
                         }
                     } else {
@@ -423,6 +422,9 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
             }
         }
     }
+
+
+    fun getPrimaryUnitList() = dataModel.getPrimaryUnitEntities()
 
 
 }
