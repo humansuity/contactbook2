@@ -2,11 +2,14 @@ package net.gas.gascontact.ui
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.content.edit
 import net.gas.gascontact.business.BirthdayAlarmReceiver
+import net.gas.gascontact.business.BootReceiver
 import net.gas.gascontact.utils.Var
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
@@ -91,6 +94,26 @@ class AlarmHelper {
 
             alarmManager?.cancel(pendingIntent)
             Log.e("Alarm", "Notification alarm was cancelled")
+        }
+
+
+        fun cancelBootReceiver(context: Context) {
+            val receiver = ComponentName(context, BootReceiver::class.java)
+            context.packageManager.setComponentEnabledSetting(
+                receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP
+            )
+        }
+
+
+        fun setupBootReceiver(context: Context) {
+            val receiver = ComponentName(context, BootReceiver::class.java)
+            context.packageManager.setComponentEnabledSetting(
+                receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP
+            )
         }
 
 
