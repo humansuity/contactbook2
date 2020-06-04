@@ -55,15 +55,9 @@ class AboutAppFragment : Fragment() {
         holidayTimeText.text = AlarmHelper.getHolidayScheduleTime(requireContext())
 
         notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AlarmHelper.setupNotificationState(requireContext(), state = true)
-                AlarmHelper.setupNotificationAlarmForNextDay(requireContext())
-                Snackbar.make(root, "Уведомления активны", Snackbar.LENGTH_LONG).show()
-            } else {
-                AlarmHelper.setupNotificationState(requireContext(), state = false)
-                AlarmHelper.cancelNotificationAlarm(requireContext())
-                Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_LONG).show()
-            }
+            if (isChecked) enableNotificationAlarm()
+            else disableNotificationAlarm()
+
         }
 
         try {
@@ -87,6 +81,22 @@ class AboutAppFragment : Fragment() {
                 Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_LONG).show()
         }
 
+    }
+
+
+    private fun disableNotificationAlarm() {
+        AlarmHelper.setupNotificationState(requireContext(), state = false)
+        AlarmHelper.cancelNotificationAlarm(requireContext())
+        AlarmHelper.cancelBootReceiver(requireContext())
+        Snackbar.make(root, "Уведомления отключены", Snackbar.LENGTH_LONG).show()
+    }
+
+
+    private fun enableNotificationAlarm() {
+        AlarmHelper.setupNotificationState(requireContext(), state = true)
+        AlarmHelper.setupNotificationAlarmForNextDay(requireContext())
+        AlarmHelper.setupBootReceiver(requireContext())
+        Snackbar.make(root, "Уведомления активны", Snackbar.LENGTH_LONG).show()
     }
 
 
