@@ -77,7 +77,11 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     private var currentDatabaseSize: Long = 0
     var unitId = 0
 
+    var onUnitItemClickedCallback: ((Int) -> Unit)? = null
+
+
     fun onUnitItemClick(id: Int) {
+        onUnitItemClickedCallback?.invoke(id)
 //        spinnerState.value = true
 //        unitId = id
 //        viewModelScope.launch(Dispatchers.Default) {

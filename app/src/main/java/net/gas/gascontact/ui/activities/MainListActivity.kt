@@ -131,6 +131,21 @@ class MainListActivity : AppCompatActivity() {
 
 
     private fun setupCallbacksAndListeners() {
+
+        viewModel.onUnitItemClickedCallback = { id ->
+            viewModel.dataModel.getSecondaryEntities(id).observe(this, Observer {unitList ->
+                if (!unitList.isNullOrEmpty()) {
+                    /** Create here unit fragment with list of secondary units **/
+
+
+
+                } else {
+                    /** Create here department fragment **/
+                }
+            })
+        }
+
+
         viewModel.callIntentCallback = {
             startActivity(it)
         }
