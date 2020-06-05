@@ -1,21 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/app_nav_graph"
-    app:startDestination="@id/unitListFragment">
-
+    app:startDestination="@id/UnitListFragment">
     <fragment
-        android:id="@+id/unitListFragment"
-        android:name="net.gas.gascontact.ui.fragments.UnitListFragment"
-        android:label="UnitListFragment" >
+        android:id="@+id/UnitListFragment"
+        android:name="net.gas.gascontact.ui.fragments.UnitListFragmentNavigation"
+        android:label="UnitListFragmentNavigation" >
         <action
-            android:id="@+id/action_unitListFragment_self"
-            app:destination="@id/unitListFragment" />
+            android:id="@+id/fromUnitListFragmentToAlertFragment"
+            app:destination="@id/AlertFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/UnitListFragment"
+            app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_unitListFragment_to_departmentListFragment"
-            app:destination="@id/departmentListFragment" />
+            android:id="@+id/fromUnitListFragmentToDepartmentListFragment"
+            app:destination="@id/MainNavigationFlow"
+            app:enterAnim="@animator/slide_in_right"
+            app:exitAnim="@anim/fragment_close_exit" />
+        <action
+            android:id="@+id/actionToSelf"
+            app:destination="@id/UnitListFragment" >
+        </action>
+        <argument
+            android:name="listOfUnits"
+            app:argType="net.gas.gascontact.business.database.entities.Units[]" />
     </fragment>
     <fragment
-        android:id="@+id/departmentListFragment"
-        android:name="net.gas.gascontact.ui.fragments.DepartmentListFragment"
-        android:label="DepartmentListFragment" />
+        android:id="@+id/AlertFragment"
+        android:name="net.gas.gascontact.ui.fragments.AlertFragment"
+        android:label="AlertFragment" >
+        <action
+            android:id="@+id/fromAlertFragmentToLoginFragment"
+            app:destination="@id/LoginFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/fromAlertFragmentToUnitListFragment"
+            app:destination="@id/UnitListFragment"
+            app:popUpTo="@id/AlertFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/LoginFragment"
+        android:name="net.gas.gascontact.ui.fragments.LoginFragment"
+        android:label="LoginFragment" >
+        <argument
+            android:name="TYPE"
+            app:argType="string"
+            android:defaultValue='"DOWNLOAD"' />
+    </fragment>
+    <navigation
+        android:id="@+id/MainNavigationFlow"
+        app:startDestination="@id/DepartmentListFragment" >
+        <fragment
+            android:id="@+id/DepartmentListFragment"
+            android:name="net.gas.gascontact.ui.fragments.DepartmentListFragment"
+            android:label="DepartmentListFragment">
+            <action
+                android:id="@+id/fromDepartmentListFragmentToPersonListFragment"
+                app:destination="@id/PersonListFragment"
+                app:enterAnim="@animator/slide_in_right"
+                app:popEnterAnim="@android:anim/slide_out_right" />
+            <argument
+                android:name="ID"
+                app:argType="integer" />
+        </fragment>
+        <fragment
+            android:id="@+id/PersonListFragment"
+            android:name="net.gas.gascontact.ui.fragments.PersonListFragment"
+            android:label="PersonListFragment">
+            <action
+                android:id="@+id/action_personListFragment_to_personAdditionalFragment"
+                app:destination="@id/PersonAdditionalFragment" />
+            <argument
+                android:name="unitID"
+                app:argType="integer"
+                android:defaultValue="0" />
+            <argument
+                android:name="departmentID"
+                app:argType="integer" />
+        </fragment>
+        <fragment
+            android:id="@+id/PersonAdditionalFragment"
+            android:name="net.gas.gascontact.ui.fragments.PersonAdditionalFragment"
+            android:label="PersonAdditionalFragment" />
+    </navigation>
 </navigation>

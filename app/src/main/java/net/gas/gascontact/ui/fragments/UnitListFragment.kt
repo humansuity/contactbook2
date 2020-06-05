@@ -54,21 +54,6 @@ open class UnitListFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
-
-
-
-        viewModel.getPrimaryUnitList().observe(viewLifecycleOwner, Observer {
-
-//            listAdapter = UnitListAdapterOptimized(viewModel)
-//            listAdapter.setupList(it)
-//            binding.recyclerView.adapter = listAdapter
-//            viewModel.spinnerState.value = false
-//            unitList = it
-
-
-        })
-
-
     }
 
 

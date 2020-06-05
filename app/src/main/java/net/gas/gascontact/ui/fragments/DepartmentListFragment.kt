@@ -1,6 +1,7 @@
 package net.gas.gascontact.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.search_fragment.*
 import kotlinx.coroutines.Dispatchers
 import net.gas.gascontact.R
 import net.gas.gascontact.business.adapters.DepartmentListAdapterOptimized
@@ -49,16 +52,13 @@ class DepartmentListFragment : Fragment() {
         viewModel.floatingButtonState.value = true
         viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")
 
-        viewModel.onUnitFragmentBackPressed = {
-            if (!departmentList.isNullOrEmpty()) {
-                viewModel.unitList = liveData(Dispatchers.IO) {
-                    emitSource(
-                        viewModel.dataModel.getUnitEntitiesByParentByDepartmentId(
-                            departmentList!![0].id
-                        )
-                    )
-                }
-                viewModel.appToolbarStateCallback?.invoke("Филиалы", true)
+        val unitID = arguments?.let { DepartmentListFragmentArgs.fromBundle(it).ID }
+
+        viewModel.onDepartmentItemClickedCallback = { departmentID ->
+            if (unitID != null) {
+                val action = DepartmentListFragmentDirections
+                    .fromDepartmentListFragmentToPersonListFragment(unitID, departmentID)
+                findNavController().navigate(action)
             }
         }
 
@@ -66,41 +66,15 @@ class DepartmentListFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
-    }
 
-    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
-        try {
-            val animation = AnimationUtils.loadAnimation(context, nextAnim)
-            animation.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationRepeat(animation: Animation?) {
-                }
-
-                override fun onAnimationStart(animation: Animation?) {
-                }
-
-                override fun onAnimationEnd(animation: Animation?) {
-                    viewModel.departmentList.observe(viewLifecycleOwner, Observer {
-                        listAdapter = DepartmentListAdapterOptimized(viewModel)
-                        listAdapter.setupList(it)
-                        binding.recyclerView.adapter = listAdapter
-                        viewModel.spinnerState.value = false
-                        departmentList = it
-                    })
-                }
-            })
-            return animation
-        } catch (e: Exception) {
-            viewModel.departmentList.observe(viewLifecycleOwner, Observer {
+        if (unitID != null) {
+            viewModel.getDepartmentList(unitID).observe(viewLifecycleOwner, Observer {
                 listAdapter = DepartmentListAdapterOptimized(viewModel)
                 listAdapter.setupList(it)
                 binding.recyclerView.adapter = listAdapter
                 viewModel.spinnerState.value = false
                 departmentList = it
             })
-            return null
         }
-
     }
-
-
 }

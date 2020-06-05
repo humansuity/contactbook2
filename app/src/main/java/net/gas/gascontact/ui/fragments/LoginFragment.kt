@@ -29,15 +29,6 @@ class LoginFragment : Fragment() {
     private var isLoginButtonActive = false
 
 
-    companion object {
-        fun newInstance(key: String, value: String): LoginFragment {
-            val fragment = LoginFragment()
-            fragment.arguments = Bundle().apply { putString(key, value) }
-            return fragment
-        }
-    }
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -75,7 +66,7 @@ class LoginFragment : Fragment() {
         val icons = arrayListOf<Int>()
         ORGANIZATIONUNITLIST.forEach { icons.add(it.image) }
         ORGANIZATIONUNITLIST.forEach { realmArray.add(it.name) }
-        val adapter = SpinnerRealmAdapter(context!!, R.layout.spinner_realm_row, realmArray, icons)
+        val adapter = SpinnerRealmAdapter(requireContext(), R.layout.spinner_realm_row, realmArray, icons)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 

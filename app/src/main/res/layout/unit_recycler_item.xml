@@ -9,16 +9,13 @@
         <variable
             name="viewModel"
             type="net.gas.gascontact.business.viewmodel.BranchListViewModel" />
-        <variable
-            name="unitFragment"
-            type="net.gas.gascontact.ui.fragments.UnitListFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/list_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{ () -> unitFragment.onItemClicked() }"
+        android:onClick="@{ () -> viewModel.onUnitItemClick(unitItem.id) }"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical">
 
@@ -29,13 +26,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
-            android:background="@android:color/transparent"
+            android:background="?android:attr/selectableItemBackground"
             android:focusable="false"
             android:fontFamily="sans-serif-thin"
             android:gravity="center_vertical"
             android:inputType="textNoSuggestions"
             android:maxLines="1"
-            android:onClick="@{ () -> unitFragment.onItemClicked() }"
+            android:onClick="@{ () -> viewModel.onUnitItemClick(unitItem.id) }"
             android:paddingTop="18dp"
             android:paddingBottom="18dp"
             android:scrollbars="none"

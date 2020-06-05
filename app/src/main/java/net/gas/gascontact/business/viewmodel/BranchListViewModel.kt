@@ -36,7 +36,6 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     val dataModel = DataModel(context)
 
     var unitList: LiveData<List<Units>> = MutableLiveData()
-    var departmentList: LiveData<List<Departments>> = MutableLiveData()
     var personList: LiveData<List<Persons>> = MutableLiveData()
     var birthdayPersonList: LiveData<List<Persons>> = MutableLiveData()
 
@@ -75,33 +74,23 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     var sharedDatabaseSize: Long = 0
     lateinit var databaseUpdateTime: String
     private var currentDatabaseSize: Long = 0
-    var unitId = 0
 
     var onUnitItemClickedCallback: ((Int) -> Unit)? = null
+    var onDepartmentItemClickedCallback: ((Int) -> Unit)? = null
+
+    var isPrimaryList = true
 
 
     fun onUnitItemClick(id: Int) {
         onUnitItemClickedCallback?.invoke(id)
-//        spinnerState.value = true
-//        unitId = id
-//        viewModelScope.launch(Dispatchers.Default) {
-//            launch(Dispatchers.Main) { initUnitFragmentCallback?.invoke() }
-//            unitList = withContext(Dispatchers.IO) { dataModel.getSecondaryEntities(id) }
-//        }
-//        deleteDownloadedDatabase()
+        deleteDownloadedDatabase()
     }
 
     fun getPostByPersonId(id: Int): LiveData<Posts> =
         liveData { emitSource(dataModel.getPostEntityById(id)) }
 
     fun onDepartmentItemClick(id: Int) {
-        spinnerState.value = true
-        viewModelScope.launch(Dispatchers.Default) {
-            personList = liveData(Dispatchers.IO) {
-                emitSource(dataModel.getPersonsEntitiesByIds(unitId, id))
-            }
-        }
-        departmentFragmentCallback?.invoke()
+        onDepartmentItemClickedCallback?.invoke(id)
     }
 
 
@@ -157,6 +146,12 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
             setNotificationAlarm()
         }
     }
+
+
+    fun getPrimaryUnitList() = liveData(Dispatchers.IO) { emitSource(dataModel.getPrimaryUnitEntities()) }
+
+    fun getDepartmentList(id: Int) = liveData(Dispatchers.IO) { emitSource(dataModel.getDepartmentEntitiesById(id)) }
+
 
     private fun setNotificationAlarm() {
         val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
@@ -427,8 +422,6 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-
-    fun getPrimaryUnitList() = dataModel.getPrimaryUnitEntities()
 
 
 }

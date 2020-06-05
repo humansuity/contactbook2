@@ -40,46 +40,27 @@ class PersonListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        val unitID = arguments?.let { PersonListFragmentArgs.fromBundle(it).unitID }
+        val departmentID = arguments?.let { PersonListFragmentArgs.fromBundle(it).departmentID }
+
         viewModel = ViewModelProvider(requireActivity()).get(BranchListViewModel::class.java)
         viewModel.floatingButtonState.value = true
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")
 
+
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
-    }
 
-    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
-        try {
-            val animation = AnimationUtils.loadAnimation(context, nextAnim)
-            animation.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationRepeat(animation: Animation?) {
-                }
-
-                override fun onAnimationStart(animation: Animation?) {
-                    viewModel.spinnerState.value = true
-                }
-
-                override fun onAnimationEnd(animation: Animation?) {
-                    listAdapter = PersonListAdapterOptimized(viewModel, viewLifecycleOwner)
-                    viewModel.personList.observe(viewLifecycleOwner, Observer {
-                        listAdapter.setupList(it)
-                        binding.recyclerView.adapter = listAdapter
-                        viewModel.spinnerState.value = false
-                    })
-                }
-            })
-            return animation
-        } catch (e: Exception) {
-            listAdapter = PersonListAdapterOptimized(viewModel, viewLifecycleOwner)
-            viewModel.personList.observe(viewLifecycleOwner, Observer {
+        listAdapter = PersonListAdapterOptimized(viewModel, viewLifecycleOwner)
+        if (unitID != null && departmentID != null) {
+            viewModel.dataModel.getPersonsEntitiesByIds(unitID, departmentID).observe(viewLifecycleOwner, Observer {
                 listAdapter.setupList(it)
                 binding.recyclerView.adapter = listAdapter
                 viewModel.spinnerState.value = false
             })
-            return null
         }
     }
 }

@@ -31,8 +31,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
         android:name="androidx.navigation.fragment.NavHostFragment"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/app_nav_graph"/>
+        app:defaultNavHost="true" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
