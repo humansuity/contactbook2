@@ -24,15 +24,16 @@
 
     <fragment
         android:id="@+id/fragmentHolder"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        app:defaultNavHost="true" />
-
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
@@ -52,17 +53,22 @@
         app:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:useCompatPadding="false" />
+        app:useCompatPadding="false"
+        android:focusable="true" />
 
-    <ProgressBar
+    <com.iitr.kaishu.nsidedprogressbar.NSidedProgressBar
         android:id="@+id/unitProgressbar"
-        style="@android:style/Widget.DeviceDefault.ProgressBar.Large"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:visibility="invisible"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
+        app:nsidedProg_baseSpeed="5"
+        app:nsidedProg_primaryColor="#ffffff"
+        app:nsidedProg_primaryRimWidth="17"
+        app:nsidedProg_secondaryColor="#586F82"
+        app:nsidedProg_secondaryRimWidth="10"
+        app:nsidedProg_sideCount="3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

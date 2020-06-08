@@ -27,6 +27,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
+            android:clickable="false"
             android:focusable="false"
             android:fontFamily="sans-serif-thin"
             android:gravity="center_vertical"
@@ -55,7 +56,8 @@
             android:layout_marginStart="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/unitName"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/unitName" />
+            app:layout_constraintTop_toTopOf="@+id/unitName"
+            app:srcCompat="@drawable/ic_group_25" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

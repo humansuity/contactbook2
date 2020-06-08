@@ -77,22 +77,29 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
 
     var onUnitItemClickedCallback: ((Int) -> Unit)? = null
     var onDepartmentItemClickedCallback: ((Int) -> Unit)? = null
+    var onPersonItemClickedCallback: ((Int) -> Unit)? = null
 
-    var isPrimaryList = true
+    var isFirstEntry = true
 
-
-    fun onUnitItemClick(id: Int) {
-        onUnitItemClickedCallback?.invoke(id)
+    fun onUnitItemClick(unitID: Int) {
+        spinnerState.value = true
+        onUnitItemClickedCallback?.invoke(unitID)
         deleteDownloadedDatabase()
+    }
+
+    fun onDepartmentItemClick(departmentID: Int) {
+        spinnerState.value = true
+        onDepartmentItemClickedCallback?.invoke(departmentID)
+    }
+
+    fun onPersonItemClick(personID: Int) {
+        spinnerState.value = true
+        onPersonItemClickedCallback?.invoke(personID)
     }
 
     fun getPostByPersonId(id: Int): LiveData<Posts> =
         liveData { emitSource(dataModel.getPostEntityById(id)) }
-
-    fun onDepartmentItemClick(id: Int) {
-        onDepartmentItemClickedCallback?.invoke(id)
-    }
-
+    
 
     fun downloadDatabase() {
         checkPermissionsCallBack?.invoke()
@@ -178,11 +185,7 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     }
 
 
-    fun onPersonItemClick(id: Int) {
-        spinnerState.value = true
-        personEntity = liveData { emitSource(dataModel.getPersonEntityById(id)) }
-        personFragmentCallBack?.invoke()
-    }
+
 
 
     fun setupPersonInfo(id: Int) {

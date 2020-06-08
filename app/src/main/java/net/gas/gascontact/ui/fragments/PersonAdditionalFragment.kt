@@ -14,6 +14,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import androidx.databinding.DataBindingUtil
@@ -55,17 +57,48 @@ class PersonAdditionalFragment : Fragment() {
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
         viewModel.isPersonFragmentActive = false
 
-        viewModel.personEntity.observe(viewLifecycleOwner, Observer {
-            setupData(it)
-            setupListeners(it)
+
+        arguments?.let {
+            val person = PersonAdditionalFragmentArgs.fromBundle(it).person
+            setupData(person)
+            setupListeners(person)
             updateUI()
-            viewModel.spinnerState.value = false
-        })
+        }
 
         viewModel.floatingButtonState.value = false
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         return binding.root
+    }
+
+
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        var animation = super.onCreateAnimation(transit, enter, nextAnim)
+        if (animation == null && nextAnim != 0)
+            animation = AnimationUtils.loadAnimation(requireContext(), nextAnim)
+
+        if (animation != null) {
+            view?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            animation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {
+                }
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    view?.setLayerType(View.LAYER_TYPE_NONE, null)
+                    viewModel.viewModelScope.launch {
+                        delay(200)
+                        viewModel.spinnerState.postValue(false)
+                    }
+
+                }
+
+                override fun onAnimationStart(animation: Animation?) {
+                }
+
+            })
+        }
+
+        return animation
     }
 
     @ExperimentalStdlibApi

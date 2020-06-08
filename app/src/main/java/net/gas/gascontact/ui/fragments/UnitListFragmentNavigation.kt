@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -40,31 +42,31 @@ class UnitListFragmentNavigation : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
-        val unitList = arguments?.let { UnitListFragmentNavigationArgs.fromBundle(it).listOfUnits }
-        binding.apply {
-            listAdapter = UnitListAdapterOptimized(viewModel)
-            unitList?.toList()?.let { listAdapter.setupList(it) }
-            recyclerView.adapter = listAdapter
-            viewModel.spinnerState.value = false
-        }
-
-
         viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")
         viewModel.floatingButtonState.value = true
 
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        val unitList = arguments?.let { UnitListFragmentNavigationArgs.fromBundle(it).listOfUnits }
+        binding.apply {
+            if (unitList != null) {
+                listAdapter = UnitListAdapterOptimized(viewModel)
+                listAdapter.setupList(unitList.toList())
+                recyclerView.apply {
+                    adapter = listAdapter
+                    layoutManager = LinearLayoutManager(context)
+                    addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+                }
+                if (viewModel.isFirstEntry) {
+                    viewModel.isFirstEntry = false
+                    viewModel.spinnerState.value = false
+                }
+            }
         }
-
-
 
         viewModel.onUnitItemClickedCallback = { id ->
             viewModel.dataModel.getSecondaryEntities(id).observe(viewLifecycleOwner, Observer { unitList ->
                 if (!unitList.isNullOrEmpty()) {
+                    /** Navigation to itself if selected branch has subsidiaries **/
                     val action = UnitListFragmentNavigationDirections.actionToSelf(unitList.toTypedArray())
-                    viewModel.isPrimaryList = false
                     findNavController().navigate(action)
                 } else {
                     val arguments = Bundle()
@@ -73,6 +75,30 @@ class UnitListFragmentNavigation : Fragment() {
                 }
             })
         }
+    }
+
+
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        var animation = super.onCreateAnimation(transit, enter, nextAnim)
+        if (animation == null && nextAnim != 0)
+            animation = AnimationUtils.loadAnimation(requireContext(), nextAnim)
+
+        if (animation != null) {
+            view?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            animation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {
+                }
+                override fun onAnimationStart(animation: Animation?) {
+                }
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    view?.setLayerType(View.LAYER_TYPE_NONE, null)
+                    viewModel.spinnerState.value = false
+                }
+            })
+        }
+
+        return animation
     }
 
 }

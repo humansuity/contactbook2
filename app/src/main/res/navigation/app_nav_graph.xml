@@ -19,9 +19,15 @@
             android:id="@+id/fromUnitListFragmentToDepartmentListFragment"
             app:destination="@id/MainNavigationFlow"
             app:enterAnim="@animator/slide_in_right"
-            app:exitAnim="@anim/fragment_close_exit" />
+            app:exitAnim="@animator/slide_out_left"
+            app:popEnterAnim="@animator/slide_in_left"
+            app:popExitAnim="@animator/slide_out_right" />
         <action
             android:id="@+id/actionToSelf"
+            app:enterAnim="@animator/slide_in_right"
+            app:exitAnim="@animator/slide_out_left"
+            app:popEnterAnim="@animator/slide_in_left"
+            app:popExitAnim="@animator/slide_out_right"
             app:destination="@id/UnitListFragment" >
         </action>
         <argument
@@ -35,19 +41,19 @@
         <action
             android:id="@+id/fromAlertFragmentToLoginFragment"
             app:destination="@id/LoginFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@animator/slide_in_right"
+            app:exitAnim="@animator/slide_out_left"
+            app:popEnterAnim="@animator/slide_in_left"
+            app:popExitAnim="@animator/slide_out_right" />
         <action
             android:id="@+id/fromAlertFragmentToUnitListFragment"
             app:destination="@id/UnitListFragment"
             app:popUpTo="@id/AlertFragment"
             app:popUpToInclusive="true"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@animator/slide_in_right"
+            app:exitAnim="@animator/slide_out_left"
+            app:popEnterAnim="@animator/slide_in_left"
+            app:popExitAnim="@animator/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/LoginFragment"
@@ -69,7 +75,9 @@
                 android:id="@+id/fromDepartmentListFragmentToPersonListFragment"
                 app:destination="@id/PersonListFragment"
                 app:enterAnim="@animator/slide_in_right"
-                app:popEnterAnim="@android:anim/slide_out_right" />
+                app:exitAnim="@animator/slide_out_left"
+                app:popEnterAnim="@animator/slide_in_left"
+                app:popExitAnim="@animator/slide_out_right" />
             <argument
                 android:name="ID"
                 app:argType="integer" />
@@ -78,9 +86,6 @@
             android:id="@+id/PersonListFragment"
             android:name="net.gas.gascontact.ui.fragments.PersonListFragment"
             android:label="PersonListFragment">
-            <action
-                android:id="@+id/action_personListFragment_to_personAdditionalFragment"
-                app:destination="@id/PersonAdditionalFragment" />
             <argument
                 android:name="unitID"
                 app:argType="integer"
@@ -88,10 +93,21 @@
             <argument
                 android:name="departmentID"
                 app:argType="integer" />
+            <action
+                android:id="@+id/fromPersonListFragmentToPersonAdditionalFragment"
+                app:destination="@id/personAdditionalFragment"
+                app:enterAnim="@animator/slide_in_right"
+                app:exitAnim="@animator/slide_out_left"
+                app:popEnterAnim="@animator/slide_in_left"
+                app:popExitAnim="@animator/slide_out_right"/>
         </fragment>
         <fragment
-            android:id="@+id/PersonAdditionalFragment"
+            android:id="@+id/personAdditionalFragment"
             android:name="net.gas.gascontact.ui.fragments.PersonAdditionalFragment"
-            android:label="PersonAdditionalFragment" />
+            android:label="PersonAdditionalFragment" >
+            <argument
+                android:name="person"
+                app:argType="net.gas.gascontact.business.database.entities.Persons" />
+        </fragment>
     </navigation>
 </navigation>

@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.gas.gascontact.R
@@ -48,19 +49,54 @@ class PersonListFragment : Fragment() {
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")
 
-
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
-        listAdapter = PersonListAdapterOptimized(viewModel, viewLifecycleOwner)
         if (unitID != null && departmentID != null) {
-            viewModel.dataModel.getPersonsEntitiesByIds(unitID, departmentID).observe(viewLifecycleOwner, Observer {
-                listAdapter.setupList(it)
-                binding.recyclerView.adapter = listAdapter
-                viewModel.spinnerState.value = false
+            viewModel.dataModel.getPersonsEntitiesByIds(unitID, departmentID)
+                .observe(viewLifecycleOwner, Observer {
+                    listAdapter = PersonListAdapterOptimized(viewModel, viewLifecycleOwner)
+                    listAdapter.setupList(it)
+                    binding.recyclerView.adapter = listAdapter
+                })
+        }
+
+        viewModel.onPersonItemClickedCallback = { personID ->
+            viewModel.dataModel.getPersonEntityById(personID)
+                .observe(viewLifecycleOwner, Observer { person ->
+                    val action = PersonListFragmentDirections
+                        .fromPersonListFragmentToPersonAdditionalFragment(person)
+                    findNavController().navigate(action)
+                })
+        }
+    }
+
+
+
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        var animation = super.onCreateAnimation(transit, enter, nextAnim)
+        if (animation == null && nextAnim != 0)
+            animation = AnimationUtils.loadAnimation(requireContext(), nextAnim)
+
+        if (animation != null) {
+            view?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            animation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {
+                }
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    view?.setLayerType(View.LAYER_TYPE_NONE, null)
+                    viewModel.spinnerState.value = false
+                }
+
+                override fun onAnimationStart(animation: Animation?) {
+                }
+
             })
         }
+
+        return animation
     }
 }

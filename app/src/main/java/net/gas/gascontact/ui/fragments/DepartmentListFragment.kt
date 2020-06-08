@@ -54,14 +54,6 @@ class DepartmentListFragment : Fragment() {
 
         val unitID = arguments?.let { DepartmentListFragmentArgs.fromBundle(it).ID }
 
-        viewModel.onDepartmentItemClickedCallback = { departmentID ->
-            if (unitID != null) {
-                val action = DepartmentListFragmentDirections
-                    .fromDepartmentListFragmentToPersonListFragment(unitID, departmentID)
-                findNavController().navigate(action)
-            }
-        }
-
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -72,9 +64,42 @@ class DepartmentListFragment : Fragment() {
                 listAdapter = DepartmentListAdapterOptimized(viewModel)
                 listAdapter.setupList(it)
                 binding.recyclerView.adapter = listAdapter
-                viewModel.spinnerState.value = false
                 departmentList = it
             })
         }
+
+        viewModel.onDepartmentItemClickedCallback = { departmentID ->
+            if (unitID != null) {
+                val action = DepartmentListFragmentDirections
+                    .fromDepartmentListFragmentToPersonListFragment(unitID, departmentID)
+                findNavController().navigate(action)
+            }
+        }
+    }
+
+
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        var animation = super.onCreateAnimation(transit, enter, nextAnim)
+        if (animation == null && nextAnim != 0)
+            animation = AnimationUtils.loadAnimation(requireContext(), nextAnim)
+
+        if (animation != null) {
+            view?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            animation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {
+                }
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    view?.setLayerType(View.LAYER_TYPE_NONE, null)
+                    viewModel.spinnerState.value = false
+                }
+
+                override fun onAnimationStart(animation: Animation?) {
+                }
+
+            })
+        }
+
+        return animation
     }
 }

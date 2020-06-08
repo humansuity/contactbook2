@@ -66,6 +66,7 @@ class MainListActivity : AppCompatActivity() {
             navController.setGraph(R.navigation.app_nav_graph)
             navigateToAlertFragment()
         } else {
+            viewModel.spinnerState.value = true
             viewModel.getPrimaryUnitList().observe(this, Observer {
                 val bundle = Bundle()
                 bundle.putParcelableArray("listOfUnits", it.toTypedArray())
@@ -313,6 +314,11 @@ class MainListActivity : AppCompatActivity() {
             }
         }
         return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onBackPressed() {
+        viewModel.spinnerState.value = true
+        super.onBackPressed()
     }
 
 
