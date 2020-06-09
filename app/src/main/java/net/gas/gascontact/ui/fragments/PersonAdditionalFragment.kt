@@ -89,6 +89,7 @@ class PersonAdditionalFragment : Fragment() {
                 }
 
                 override fun onAnimationStart(animation: Animation?) {
+                    viewModel.viewModelScope.launch(Dispatchers.IO) { delay(200) }
                 }
 
             })
@@ -100,7 +101,7 @@ class PersonAdditionalFragment : Fragment() {
     @ExperimentalStdlibApi
     private fun setupData(personEntity: Persons) {
         viewModel.viewModelScope.launch(Dispatchers.IO) {
-            delay(100)
+            delay(200)
             viewModel.setupPostEntity(personEntity.postID!!.toInt())
             viewModel.setupUnitEntity(personEntity.unitID!!.toInt())
             viewModel.setupDepartmentEntity(personEntity.departmentID!!.toInt())

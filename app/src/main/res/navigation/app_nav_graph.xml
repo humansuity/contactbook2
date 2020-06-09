@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/app_nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_nav_graph"
     app:startDestination="@id/UnitListFragment">
     <fragment
         android:id="@+id/UnitListFragment"
@@ -129,7 +131,7 @@
         app:popExitAnim="@anim/fragment_close_exit"/>
     <fragment
         android:id="@+id/birthdayPersonListFragment3"
-        android:name="net.gas.gascontact.ui.fragments.BirthdayPersonListFragment"
+        android:name="net.gas.gascontact.ui.fragments.BirthdayPeriodFragment"
         android:label="BirthdayPersonListFragment" />
     <action
         android:id="@+id/actionToBirthdayPersonListFragment"
@@ -155,6 +157,16 @@
         android:label="SearchFragment" />
     <action android:id="@+id/actionToSearchFragment"
         app:destination="@id/searchFragment"
+        app:enterAnim="@anim/fragment_open_enter"
+        app:exitAnim="@anim/fragment_open_exit"
+        app:popEnterAnim="@anim/fragment_close_enter"
+        app:popExitAnim="@anim/fragment_close_exit"/>
+    <fragment
+        android:id="@+id/personAdditionalFragment2"
+        android:name="net.gas.gascontact.ui.fragments.PersonAdditionalFragment"
+        android:label="PersonAdditionalFragment" />
+    <action android:id="@+id/actionToAdditionalPersonFragmentGlobal"
+        app:destination="@id/personAdditionalFragment2"
         app:enterAnim="@anim/fragment_open_enter"
         app:exitAnim="@anim/fragment_open_exit"
         app:popEnterAnim="@anim/fragment_close_enter"
