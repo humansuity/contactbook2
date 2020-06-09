@@ -35,7 +35,7 @@ interface MiriadaApiRetrofitService {
     ): Response<IdentityScopesResponse>
 
     /* Получение базы данных с сервера */
-    @GET("downloadcontactbookdb")
+    @GET("downloadcontactbookdb/v1")
     suspend fun requestGetDownloadDB(
         @Query("realm") realm: String,
         @Query("grant_type") grant_type: String,

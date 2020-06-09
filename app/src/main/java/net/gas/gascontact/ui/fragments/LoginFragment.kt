@@ -6,12 +6,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_first_login.*
 import net.gas.gascontact.R
 import net.gas.gascontact.business.adapters.SpinnerRealmAdapter
@@ -74,8 +77,7 @@ class LoginFragment : Fragment() {
             viewModel.appToolbarStateCallback?.invoke("Авторизация", true)
             val preferences =
                 context?.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
-            if (preferences != null) {
-                preferences.getString("REALM", "topgas")
+            preferences?.let {
                 if (preferences.contains("REALM")) {
                     spinner.setSelection(realmArray.indexOf(ORGANIZATIONUNITLIST.find {
                         it.code == preferences.getString(
@@ -86,8 +88,6 @@ class LoginFragment : Fragment() {
                     spinner.isEnabled = false
                     spinner.isActivated = false
                 }
-            } else {
-                Toast.makeText(context, "Возникла ошибка!!!", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -116,11 +116,37 @@ class LoginFragment : Fragment() {
         viewModel.userLoginState.observe(viewLifecycleOwner, Observer {
             if (isLoginButtonActive) {
                 if (!it.isNullOrBlank()) {
-                    viewModel.afterSuccessLoginCallback?.invoke()
+                    findNavController().navigate(R.id.AlertFragment)
                     viewModel.makeRequestToDatabase(it, selectedRealm, downloadType)
                 }
             }
         })
+    }
+
+
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        var animation = super.onCreateAnimation(transit, enter, nextAnim)
+        if (animation == null && nextAnim != 0)
+            animation = AnimationUtils.loadAnimation(requireContext(), nextAnim)
+
+        if (animation != null) {
+            view?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            animation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {
+                }
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    view?.setLayerType(View.LAYER_TYPE_NONE, null)
+                    viewModel.spinnerState.value = false
+                }
+
+                override fun onAnimationStart(animation: Animation?) {
+                }
+
+            })
+        }
+
+        return animation
     }
 
 

@@ -28,13 +28,6 @@ class AlertFragment : Fragment() {
         val viewModel = ViewModelProvider(requireActivity())
             .get(BranchListViewModel::class.java)
 
-
-        Toast.makeText(
-            requireContext(),
-            "Alert fragment created",
-            Toast.LENGTH_SHORT
-        ).show()
-
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
 
         lvblock.setViewColor(Color.parseColor("#89b2c9"))

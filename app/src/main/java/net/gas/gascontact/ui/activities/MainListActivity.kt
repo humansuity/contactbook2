@@ -18,11 +18,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
@@ -30,7 +28,6 @@ import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.gascontact.R
-import net.gas.gascontact.business.database.entities.Units
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.ui.AlarmHelper
 import net.gas.gascontact.ui.NotificationHelper
@@ -66,12 +63,7 @@ class MainListActivity : AppCompatActivity() {
             navController.setGraph(R.navigation.app_nav_graph)
             navigateToAlertFragment()
         } else {
-            viewModel.spinnerState.value = true
-            viewModel.getPrimaryUnitList().observe(this, Observer {
-                val bundle = Bundle()
-                bundle.putParcelableArray("listOfUnits", it.toTypedArray())
-                navController.setGraph(R.navigation.app_nav_graph, bundle)
-            })
+            setupStartNavGraph()
         }
     }
 
@@ -83,6 +75,16 @@ class MainListActivity : AppCompatActivity() {
         putAlarmScheduleTimeToPrefs()
         createNotificationChannels()
         setupObservers()
+    }
+
+
+    private fun setupStartNavGraph() {
+        viewModel.spinnerState.value = true
+        viewModel.getPrimaryUnitList().observe(this, Observer {
+            val bundle = Bundle()
+            bundle.putParcelableArray("listOfUnits", it.toTypedArray())
+            navController.setGraph(R.navigation.app_nav_graph, bundle)
+        })
     }
 
 
@@ -219,17 +221,7 @@ class MainListActivity : AppCompatActivity() {
                 viewModel.updateDatabase()
                 startActivity(intent)
             } else {
-                if (supportFragmentManager.backStackEntryCount > 0) {
-
-                    val firstFragment: FragmentManager.BackStackEntry =
-                        supportFragmentManager.getBackStackEntryAt(0)
-
-                    supportFragmentManager.popBackStack(
-                        firstFragment.id,
-                        FragmentManager.POP_BACK_STACK_INCLUSIVE
-                    )
-                    navigateToUnitListFragment()
-                } else navigateToUnitListFragment()
+                navigateToStartPoint()
             }
         }
 
@@ -243,10 +235,7 @@ class MainListActivity : AppCompatActivity() {
 
         viewModel.onCreateUnitListFragment = {
             viewModel.dataModel.updateDatabase()
-            viewModel.getPrimaryUnitList().observe(this, Observer {
-                val action = AlertFragmentDirections.fromAlertFragmentToUnitListFragment(it.toTypedArray())
-                navController.navigate(action)
-            })
+            navigateToStartPoint()
         }
 
         viewModel.appToolbarStateCallback = { value, navButtonState ->
@@ -257,7 +246,7 @@ class MainListActivity : AppCompatActivity() {
         }
 
         floatingActionButton.setOnClickListener {
-            createSearchFragment()
+            navController.navigate(R.id.actionToSearchFragment)
         }
     }
 
@@ -316,12 +305,6 @@ class MainListActivity : AppCompatActivity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
-    override fun onBackPressed() {
-        viewModel.spinnerState.value = true
-        super.onBackPressed()
-    }
-
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -332,10 +315,10 @@ class MainListActivity : AppCompatActivity() {
                 openAlertDialog()
             }
             R.id.action_settings -> {
-                createAboutAppFragment()
+                navController.navigate(R.id.actionToAboutAppFragment)
             }
             R.id.action_birthday -> {
-                createViewPagerFragment()
+                navController.navigate(R.id.actionToBirthdayPersonListFragment)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -351,11 +334,11 @@ class MainListActivity : AppCompatActivity() {
         val margins = InsetDrawable(background, 50)
         dialog.window?.setBackgroundDrawable(margins)
 
-        view.findViewById<Button>(R.id.btnSetupForWeekDaysNotifs)
+        view.findViewById<Button>(R.id.btnCancelUpdate)
             .setOnClickListener { dialog.dismiss() }
-        view.findViewById<Button>(R.id.btnSetupForHolidaysNotifs).setOnClickListener {
+        view.findViewById<Button>(R.id.btnUpdate).setOnClickListener {
             if (checkInternetConnection()) {
-                navigateToLoginFragment("UPDATE")
+                navController.navigate(R.id.actionToLoginFragmentGlobal)
             }
             dialog.dismiss()
         }
@@ -467,6 +450,7 @@ class MainListActivity : AppCompatActivity() {
 
 
     private fun navigateToAlertFragment() {
+        viewModel.spinnerState.value = false
         if (navController.currentDestination?.id == R.id.UnitListFragment) {
             val action = UnitListFragmentNavigationDirections.fromUnitListFragmentToAlertFragment()
             navController.navigate(action)
@@ -475,7 +459,10 @@ class MainListActivity : AppCompatActivity() {
     }
 
 
-    private fun navigateToUnitListFragment() {
-
+    private fun navigateToStartPoint() {
+        if (Var.checkIfDatabaseValid(applicationContext, viewModel))
+            setupStartNavGraph()
+        else
+            navController.navigate(R.id.AlertFragment)
     }
 }

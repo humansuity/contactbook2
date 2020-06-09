@@ -18,4 +18,7 @@ interface DepartmentsDao {
 
     @Query("select * from departments where id = :id")
     fun getEntityById(id: Int): LiveData<Departments>
+
+    @Query("select * from departments where parent_id = :parent_id order by rangir")
+    fun getSecondaryEntities(parent_id: Int): LiveData<List<Departments>>
 }

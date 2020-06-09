@@ -8,6 +8,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -21,7 +22,7 @@ import net.gas.gascontact.databinding.PersonListFragmentBinding
 class PersonListFragment : Fragment() {
 
     private lateinit var binding: PersonListFragmentBinding
-    private lateinit var viewModel: BranchListViewModel
+    private val viewModel by activityViewModels<BranchListViewModel>()
     private lateinit var listAdapter: PersonListAdapterOptimized
 
 
@@ -34,6 +35,7 @@ class PersonListFragment : Fragment() {
             container, false
         )
         binding.lifecycleOwner = viewLifecycleOwner
+        viewModel.spinnerState.value = true
         return binding.root
     }
 
@@ -44,7 +46,6 @@ class PersonListFragment : Fragment() {
         val unitID = arguments?.let { PersonListFragmentArgs.fromBundle(it).unitID }
         val departmentID = arguments?.let { PersonListFragmentArgs.fromBundle(it).departmentID }
 
-        viewModel = ViewModelProvider(requireActivity()).get(BranchListViewModel::class.java)
         viewModel.floatingButtonState.value = true
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")

@@ -66,9 +66,9 @@
         app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
         app:nsidedProg_baseSpeed="5"
         app:nsidedProg_primaryColor="#ffffff"
-        app:nsidedProg_primaryRimWidth="17"
-        app:nsidedProg_secondaryColor="#586F82"
+        app:nsidedProg_primaryRimWidth="20"
+        app:nsidedProg_secondaryColor="#2FB88C"
         app:nsidedProg_secondaryRimWidth="10"
-        app:nsidedProg_sideCount="3" />
+        app:nsidedProg_sideCount="6" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

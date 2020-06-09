@@ -30,6 +30,7 @@ class UnitListFragmentNavigation : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        viewModel.spinnerState.value = true
         binding = DataBindingUtil.inflate(
             inflater, R.layout.units_list_fragment,
             container, false
@@ -62,16 +63,27 @@ class UnitListFragmentNavigation : Fragment() {
             }
         }
 
-        viewModel.onUnitItemClickedCallback = { id ->
-            viewModel.dataModel.getSecondaryEntities(id).observe(viewLifecycleOwner, Observer { unitList ->
+        viewModel.onUnitItemClickedCallback = { unitID ->
+            viewModel.dataModel.getUnitSecondaryEntities(unitID).observe(viewLifecycleOwner, Observer { unitList ->
                 if (!unitList.isNullOrEmpty()) {
-                    /** Navigation to itself if selected branch has subsidiaries **/
+                    /** Navigation to itself if the selected branch has subsidiaries **/
                     val action = UnitListFragmentNavigationDirections.actionToSelf(unitList.toTypedArray())
                     findNavController().navigate(action)
                 } else {
-                    val arguments = Bundle()
-                    arguments.putInt("ID", id)
-                    findNavController().navigate(R.id.fromUnitListFragmentToDepartmentListFragment, arguments)
+                    /** Navigation to department list if the selected branch has no subsidiaries **/
+                    viewModel.getDepartmentListByUnitID(unitID)
+                        .observe(viewLifecycleOwner, Observer { primaryDepartments ->
+                            if (!primaryDepartments.isNullOrEmpty()) {
+                                val fragmentArguments = Bundle()
+                                fragmentArguments.putParcelableArray("departmentList", primaryDepartments.toTypedArray())
+                                fragmentArguments.putInt("unitID", unitID)
+
+                                findNavController().navigate(
+                                    R.id.fromUnitListFragmentToDepartmentListFragment,
+                                    fragmentArguments
+                                )
+                            }
+                        })
                 }
             })
         }

@@ -157,7 +157,7 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
 
     fun getPrimaryUnitList() = liveData(Dispatchers.IO) { emitSource(dataModel.getPrimaryUnitEntities()) }
 
-    fun getDepartmentList(id: Int) = liveData(Dispatchers.IO) { emitSource(dataModel.getDepartmentEntitiesById(id)) }
+    fun getDepartmentListByUnitID(id: Int) = liveData(Dispatchers.IO) { emitSource(dataModel.getDepartmentEntitiesById(id)) }
 
 
     private fun setNotificationAlarm() {
@@ -406,6 +406,8 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
                                 "Не удаётся скачать базу данных! Ошибка ${response.code()}",
                                 Toast.LENGTH_LONG
                             ).show()
+                            onDatabaseUpdated?.invoke(false)
+                            spinnerState.value = false
                             downloadSpinnerState.value = false
                         }
                     }

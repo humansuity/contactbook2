@@ -20,6 +20,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -38,7 +39,7 @@ import net.gas.gascontact.utils.GlideApp
 class PersonAdditionalFragment : Fragment() {
 
     private lateinit var binding: PersonAdditionalFragmentBinding
-    private lateinit var viewModel: BranchListViewModel
+    private val viewModel by activityViewModels<BranchListViewModel>()
     private var photoByteArray: ByteArray? = null
 
 
@@ -51,8 +52,7 @@ class PersonAdditionalFragment : Fragment() {
             inflater, R.layout.person_additional_fragment,
             container, false
         )
-        viewModel = ViewModelProvider(requireActivity())
-            .get(BranchListViewModel::class.java)
+        viewModel.spinnerState.value = true
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
         viewModel.isPersonFragmentActive = false
@@ -85,11 +85,7 @@ class PersonAdditionalFragment : Fragment() {
 
                 override fun onAnimationEnd(animation: Animation?) {
                     view?.setLayerType(View.LAYER_TYPE_NONE, null)
-                    viewModel.viewModelScope.launch {
-                        delay(200)
-                        viewModel.spinnerState.postValue(false)
-                    }
-
+                    viewModel.spinnerState.value = false
                 }
 
                 override fun onAnimationStart(animation: Animation?) {

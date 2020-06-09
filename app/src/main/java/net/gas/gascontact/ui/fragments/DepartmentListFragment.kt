@@ -1,7 +1,6 @@
 package net.gas.gascontact.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,17 +8,14 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.liveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.search_fragment.*
-import kotlinx.coroutines.Dispatchers
 import net.gas.gascontact.R
 import net.gas.gascontact.business.adapters.DepartmentListAdapterOptimized
-import net.gas.gascontact.business.database.entities.Departments
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.databinding.DepartmentsListFragmentBinding
 
@@ -27,9 +23,8 @@ class DepartmentListFragment : Fragment() {
 
 
     private lateinit var binding: DepartmentsListFragmentBinding
-    private lateinit var viewModel: BranchListViewModel
+    private val viewModel by activityViewModels<BranchListViewModel>()
     private lateinit var listAdapter: DepartmentListAdapterOptimized
-    private var departmentList: List<Departments>? = null
 
 
     override fun onCreateView(
@@ -40,6 +35,7 @@ class DepartmentListFragment : Fragment() {
             container, false
         )
         binding.lifecycleOwner = viewLifecycleOwner
+        viewModel.spinnerState.value = true
         return binding.root
     }
 
@@ -47,34 +43,52 @@ class DepartmentListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity()).get(BranchListViewModel::class.java)
         viewModel.appToolbarStateCallback?.invoke("Отделы", true)
         viewModel.floatingButtonState.value = true
         viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")
-
-        val unitID = arguments?.let { DepartmentListFragmentArgs.fromBundle(it).ID }
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
-        if (unitID != null) {
-            viewModel.getDepartmentList(unitID).observe(viewLifecycleOwner, Observer {
-                listAdapter = DepartmentListAdapterOptimized(viewModel)
-                listAdapter.setupList(it)
-                binding.recyclerView.adapter = listAdapter
-                departmentList = it
-            })
+        val departmentList = arguments?.let { DepartmentListFragmentArgs.fromBundle(it).departmentList }
+        val unitID = arguments?.let { DepartmentListFragmentArgs.fromBundle(it).unitID }
+
+        departmentList?.let {
+            listAdapter = DepartmentListAdapterOptimized(viewModel)
+            listAdapter.setupList(it.toList())
+            binding.recyclerView.adapter = listAdapter
         }
 
-        viewModel.onDepartmentItemClickedCallback = { departmentID ->
-            if (unitID != null) {
-                val action = DepartmentListFragmentDirections
-                    .fromDepartmentListFragmentToPersonListFragment(unitID, departmentID)
-                findNavController().navigate(action)
-            }
+
+        viewModel.onDepartmentItemClickedCallback = { innerDepartmentID ->
+            viewModel.dataModel.getDepartmentSecondaryEntities(innerDepartmentID)
+                .observe(viewLifecycleOwner, Observer { departments ->
+                    if (!departments.isNullOrEmpty()) {
+                        /** Navigation to itself if the selected department has subsidiaries **/
+                        unitID?.let {
+                            val action = DepartmentListFragmentDirections.actionToSelf(departments.toTypedArray(), unitID)
+                            findNavController().navigate(action)
+                        }
+                    } else {
+                        /** Navigation to person list if the selected department has no subsidiaries **/
+                        unitID?.let {
+                            val action = DepartmentListFragmentDirections
+                                .fromDepartmentListFragmentToPersonListFragment(unitID, innerDepartmentID)
+                            findNavController().navigate(action)
+                        }
+                    }
+                })
         }
+
+//        viewModel.onDepartmentItemClickedCallback = {
+//            if (unitID != null) {
+//                val action = DepartmentListFragmentDirections
+//                    .fromDepartmentListFragmentToPersonListFragment(unitID, it)
+//                findNavController().navigate(action)
+//            }
+//        }
     }
 
 

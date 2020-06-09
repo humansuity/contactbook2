@@ -102,7 +102,7 @@ class AboutAppFragment : Fragment() {
         view.findViewById<Button>(R.id.btnSetupForWeekDaysNotifs)
             .setOnClickListener { openTimePicker(dialog, AlarmHelper.WEEKDAYS) }
 
-        view.findViewById<Button>(R.id.btnSetupForHolidaysNotifs)
+        view.findViewById<Button>(R.id.btnSetupForHolidays)
             .setOnClickListener { openTimePicker(dialog, AlarmHelper.HOLIDAYS) }
 
         dialog.show()
