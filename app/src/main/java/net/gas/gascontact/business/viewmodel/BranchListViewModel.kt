@@ -75,6 +75,9 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     lateinit var databaseUpdateTime: String
     private var currentDatabaseSize: Long = 0
 
+    var screenOrientation: Int = 0
+    var isPrimaryList = true
+
     var onUnitItemClickedCallback: ((Int) -> Unit)? = null
     var onDepartmentItemClickedCallback: ((Int) -> Unit)? = null
     var onPersonItemClickedCallback: ((Int) -> Unit)? = null

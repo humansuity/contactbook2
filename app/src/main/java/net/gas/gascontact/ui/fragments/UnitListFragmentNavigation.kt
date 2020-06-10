@@ -1,6 +1,8 @@
 package net.gas.gascontact.ui.fragments
 
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +19,14 @@ import net.gas.gascontact.R
 import net.gas.gascontact.business.adapters.UnitListAdapterOptimized
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.databinding.UnitsListFragmentBinding
+import net.gas.gascontact.utils.Var
 
 class UnitListFragmentNavigation : Fragment() {
 
     private lateinit var binding: UnitsListFragmentBinding
     private val viewModel by activityViewModels<BranchListViewModel>()
     private lateinit var listAdapter: UnitListAdapterOptimized
-
+    private val screenOrientation by lazy { activity?.resources?.configuration?.orientation!! }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +48,7 @@ class UnitListFragmentNavigation : Fragment() {
 
         viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")
         viewModel.floatingButtonState.value = true
+        Var.hideSpinnerOnOrientationChanged(viewModel, screenOrientation)
 
         val unitList = arguments?.let { UnitListFragmentNavigationArgs.fromBundle(it).listOfUnits }
         binding.apply {
@@ -56,6 +60,7 @@ class UnitListFragmentNavigation : Fragment() {
                     layoutManager = LinearLayoutManager(context)
                     addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
                 }
+                viewModel.appToolbarStateCallback?.invoke("Филиалы", !unitList[0].name?.contains("ГПО")!!)
                 if (viewModel.isFirstEntry) {
                     viewModel.isFirstEntry = false
                     viewModel.spinnerState.value = false

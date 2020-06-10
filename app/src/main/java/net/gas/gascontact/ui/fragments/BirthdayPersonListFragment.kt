@@ -87,7 +87,6 @@ class BirthdayPersonListFragment : Fragment() {
                 .observe(viewLifecycleOwner, Observer { person ->
                     val bundle = Bundle()
                     bundle.putParcelable("person", person)
-
                     findNavController().navigate(R.id.actionToAdditionalPersonFragmentGlobal, bundle)
                 })
         }

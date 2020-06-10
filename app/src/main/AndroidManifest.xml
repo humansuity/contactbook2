@@ -42,7 +42,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activities.MainListActivity" />
-        <activity android:name=".ui.fragments.AboutAppFragment" />
 
         <meta-data
             android:name="preloaded_fonts"

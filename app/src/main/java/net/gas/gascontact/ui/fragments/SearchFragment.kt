@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.search_fragment.*
@@ -17,11 +18,13 @@ import net.gas.gascontact.business.adapters.PersonListAdapter
 import net.gas.gascontact.business.database.entities.Persons
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.databinding.SearchFragmentBinding
+import net.gas.gascontact.utils.Var
 
 class SearchFragment : Fragment() {
 
     private lateinit var binding: SearchFragmentBinding
     private lateinit var viewModel: BranchListViewModel
+    private val screenOrientation by lazy { activity?.resources?.configuration?.orientation!! }
 
 
     override fun onCreateView(
@@ -53,6 +56,7 @@ class SearchFragment : Fragment() {
                 viewModel.appToolbarStateCallback?.invoke("Филиалы", false)
             }
         }
+        Var.hideSpinnerOnOrientationChanged(viewModel, screenOrientation)
 
         val listAdapter = PersonListAdapter(viewModel, viewLifecycleOwner)
 
@@ -63,6 +67,17 @@ class SearchFragment : Fragment() {
                 DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
             )
             setupSearchViewListeners(binding, listAdapter)
+        }
+
+
+        viewModel.onPersonItemClickedCallback = { personID ->
+            viewModel.dataModel.getPersonEntityById(personID)
+                .observe(viewLifecycleOwner, Observer { person ->
+                    val bundle = Bundle()
+                    bundle.putParcelable("person", person)
+
+                    findNavController().navigate(R.id.actionToAdditionalPersonFragmentGlobal, bundle)
+                })
         }
 
     }

@@ -1,6 +1,7 @@
 package net.gas.gascontact.utils
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.util.Log
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import java.io.File
@@ -61,7 +62,16 @@ object Var {
         }
     }
 
+
     fun checkDownloadedFile(context: Context) = checkIfDatabaseFileExists(context)
+
+
+    fun hideSpinnerOnOrientationChanged(viewModel: BranchListViewModel, orientation: Int) {
+        if (viewModel.screenOrientation != orientation) {
+            viewModel.screenOrientation = orientation
+            viewModel.spinnerState.value = false
+        }
+    }
 
 
 }

@@ -18,6 +18,7 @@ import net.gas.gascontact.R
 import net.gas.gascontact.business.adapters.DepartmentListAdapterOptimized
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.databinding.DepartmentsListFragmentBinding
+import net.gas.gascontact.utils.Var
 
 class DepartmentListFragment : Fragment() {
 
@@ -25,6 +26,7 @@ class DepartmentListFragment : Fragment() {
     private lateinit var binding: DepartmentsListFragmentBinding
     private val viewModel by activityViewModels<BranchListViewModel>()
     private lateinit var listAdapter: DepartmentListAdapterOptimized
+    private val screenOrientation by lazy { activity?.resources?.configuration?.orientation!! }
 
 
     override fun onCreateView(
@@ -46,6 +48,7 @@ class DepartmentListFragment : Fragment() {
         viewModel.appToolbarStateCallback?.invoke("Отделы", true)
         viewModel.floatingButtonState.value = true
         viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")
+        Var.hideSpinnerOnOrientationChanged(viewModel, screenOrientation)
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)

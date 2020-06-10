@@ -18,12 +18,14 @@ import net.gas.gascontact.R
 import net.gas.gascontact.business.adapters.PersonListAdapterOptimized
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.databinding.PersonListFragmentBinding
+import net.gas.gascontact.utils.Var
 
 class PersonListFragment : Fragment() {
 
     private lateinit var binding: PersonListFragmentBinding
     private val viewModel by activityViewModels<BranchListViewModel>()
     private lateinit var listAdapter: PersonListAdapterOptimized
+    private val screenOrientation by lazy { activity?.resources?.configuration?.orientation!! }
 
 
     override fun onCreateView(
@@ -49,6 +51,7 @@ class PersonListFragment : Fragment() {
         viewModel.floatingButtonState.value = true
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.optionMenuStateCallback?.invoke("FULLY_VISIBLE")
+        Var.hideSpinnerOnOrientationChanged(viewModel, screenOrientation)
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)

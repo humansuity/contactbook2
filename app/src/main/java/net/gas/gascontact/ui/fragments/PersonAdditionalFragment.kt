@@ -35,12 +35,14 @@ import net.gas.gascontact.business.database.entities.Photos
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.databinding.PersonAdditionalFragmentBinding
 import net.gas.gascontact.utils.GlideApp
+import net.gas.gascontact.utils.Var
 
 class PersonAdditionalFragment : Fragment() {
 
     private lateinit var binding: PersonAdditionalFragmentBinding
     private val viewModel by activityViewModels<BranchListViewModel>()
     private var photoByteArray: ByteArray? = null
+    private val screenOrientation by lazy { activity?.resources?.configuration?.orientation!! }
 
 
     @ExperimentalStdlibApi
@@ -56,6 +58,7 @@ class PersonAdditionalFragment : Fragment() {
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
         viewModel.isPersonFragmentActive = false
+        Var.hideSpinnerOnOrientationChanged(viewModel, screenOrientation)
 
 
         arguments?.let {
