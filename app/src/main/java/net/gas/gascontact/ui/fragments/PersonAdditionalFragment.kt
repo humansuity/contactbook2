@@ -468,7 +468,7 @@ class PersonAdditionalFragment : Fragment() {
                         photoByteArray = byteArray
                         GlideApp.with(requireContext())
                             .asBitmap()
-                            .placeholder(R.drawable.ic_user_30)
+                            .placeholder(R.drawable.person_undefined)
                             .load(byteArray)
                             .apply(RequestOptions().transform(RoundedCorners(30)))
                             .into(binding.image)
@@ -476,7 +476,7 @@ class PersonAdditionalFragment : Fragment() {
                         launch(Dispatchers.Main) {
                             GlideApp.with(binding.root.context)
                                 .asDrawable()
-                                .load(binding.root.context.resources.getDrawable(R.drawable.ic_user_30))
+                                .load(binding.root.context.resources.getDrawable(R.drawable.person_undefined))
                                 .into(binding.image)
                         }
                     }
@@ -484,7 +484,7 @@ class PersonAdditionalFragment : Fragment() {
             } else {
                 GlideApp.with(requireContext())
                     .asDrawable()
-                    .load(requireContext().resources.getDrawable(R.drawable.ic_user_30))
+                    .load(requireContext().resources.getDrawable(R.drawable.person_undefined))
                     .into(binding.image)
             }
         })

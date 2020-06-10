@@ -50,10 +50,6 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     var dbDownloadingProgressState: MutableLiveData<PointF> = MutableLiveData()
     var userLoginState: MutableLiveData<String> = MutableLiveData()
 
-    var unitFragmentCallback: (() -> Unit)? = null
-    var initUnitFragmentCallback: (() -> Unit)? = null
-    var departmentFragmentCallback: (() -> Unit)? = null
-    var personFragmentCallBack: (() -> Unit)? = null
     var callIntentCallback: ((Intent) -> Unit)? = null
     var sendEmailIntentCallback: ((Intent) -> Unit)? = null
     var addContactIntentCallBack: ((Intent) -> Unit)? = null
@@ -76,7 +72,6 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     private var currentDatabaseSize: Long = 0
 
     var screenOrientation: Int = 0
-    var isPrimaryList = true
 
     var onUnitItemClickedCallback: ((Int) -> Unit)? = null
     var onDepartmentItemClickedCallback: ((Int) -> Unit)? = null
@@ -149,13 +144,7 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
         addContactIntentCallBack?.invoke(intent)
     }
 
-    fun setupPrimaryUnitList() {
-        spinnerState.value = true
-        unitList = liveData(Dispatchers.IO) {
-            emitSource(dataModel.getPrimaryUnitEntities())
-            setNotificationAlarm()
-        }
-    }
+
 
 
     fun getPrimaryUnitList() = liveData(Dispatchers.IO) { emitSource(dataModel.getPrimaryUnitEntities()) }
@@ -163,7 +152,7 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     fun getDepartmentListByUnitID(id: Int) = liveData(Dispatchers.IO) { emitSource(dataModel.getDepartmentEntitiesById(id)) }
 
 
-    private fun setNotificationAlarm() {
+    fun setNotificationAlarm() {
         val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
         if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_INIT_STATE, false)) {
             AlarmHelper.setupInitialNotificationAlarm(context)
@@ -299,7 +288,6 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
                     onCreateUnitListFragment?.invoke()
                     putUpdateDatabaseDateToConfig()
                     updateDatabase()
-                    setupPrimaryUnitList()
                 }
             }
         }

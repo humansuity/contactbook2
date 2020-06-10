@@ -60,11 +60,13 @@ class UnitListFragmentNavigation : Fragment() {
                     layoutManager = LinearLayoutManager(context)
                     addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
                 }
-                viewModel.appToolbarStateCallback?.invoke("Филиалы", !unitList[0].name?.contains("ГПО")!!)
+                viewModel.appToolbarStateCallback
+                    ?.invoke("Филиалы", !unitList[0].name?.contains("ГПО")!!)
                 if (viewModel.isFirstEntry) {
                     viewModel.isFirstEntry = false
                     viewModel.spinnerState.value = false
                 }
+                viewModel.setNotificationAlarm()
             }
         }
 
