@@ -2,7 +2,13 @@ package net.gas.gascontact.business.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.gas.gascontact.R
 import net.gas.gascontact.business.database.entities.Units
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
@@ -20,7 +26,6 @@ class UnitListAdapterOptimized(private val mViewModel: BranchListViewModel) :
             binding.apply {
                 unitItem = item
                 viewModel = mViewModel
-                loadIcon(binding)
                 executePendingBindings()
             }
         }
@@ -32,12 +37,6 @@ class UnitListAdapterOptimized(private val mViewModel: BranchListViewModel) :
         return ViewHolder(binding)
     }
 
-    private fun loadIcon(binding: UnitRecyclerItemBinding) {
-        GlideApp.with(binding.root.context)
-            .asDrawable()
-            .load(binding.root.context.resources.getDrawable(R.drawable.ic_book_25))
-            .into(binding.imageView)
-    }
 
     fun setupList(items: List<Units>) {
         this.items = items

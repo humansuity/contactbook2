@@ -56,7 +56,7 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
                                 launch(Dispatchers.Main) {
                                     GlideApp.with(context)
                                         .asBitmap()
-                                        .placeholder(R.drawable.ic_user_30)
+                                        .placeholder(R.drawable.person_undefined)
                                         .load(byteArray)
                                         .apply(RequestOptions().transform(RoundedCorners(30)))
                                         .into(binding.image)
@@ -65,7 +65,7 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
                                 launch(Dispatchers.Main) {
                                     GlideApp.with(binding.root.context)
                                         .asDrawable()
-                                        .load(binding.root.context.resources.getDrawable(R.drawable.ic_user_30))
+                                        .load(binding.root.context.resources.getDrawable(R.drawable.person_undefined))
                                         .into(binding.image)
                                 }
                             }
@@ -74,7 +74,7 @@ class PersonListAdapter(viewModel: ViewModel, private val lifecycleOwner: Lifecy
                 } else {
                     GlideApp.with(context)
                         .asDrawable()
-                        .load(context.resources.getDrawable(R.drawable.ic_user_30))
+                        .load(context.resources.getDrawable(R.drawable.person_undefined))
                         .into(binding.image)
                 }
 

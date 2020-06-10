@@ -14,10 +14,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -32,12 +35,14 @@ import net.gas.gascontact.business.database.entities.Photos
 import net.gas.gascontact.business.viewmodel.BranchListViewModel
 import net.gas.gascontact.databinding.PersonAdditionalFragmentBinding
 import net.gas.gascontact.utils.GlideApp
+import net.gas.gascontact.utils.Var
 
 class PersonAdditionalFragment : Fragment() {
 
     private lateinit var binding: PersonAdditionalFragmentBinding
-    private lateinit var viewModel: BranchListViewModel
+    private val viewModel by activityViewModels<BranchListViewModel>()
     private var photoByteArray: ByteArray? = null
+    private val screenOrientation by lazy { activity?.resources?.configuration?.orientation!! }
 
 
     @ExperimentalStdlibApi
@@ -49,18 +54,19 @@ class PersonAdditionalFragment : Fragment() {
             inflater, R.layout.person_additional_fragment,
             container, false
         )
-        viewModel = ViewModelProvider(requireActivity())
-            .get(BranchListViewModel::class.java)
+        viewModel.spinnerState.value = true
         viewModel.appToolbarStateCallback?.invoke("Сотрудники", true)
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
         viewModel.isPersonFragmentActive = false
+        Var.hideSpinnerOnOrientationChanged(viewModel, screenOrientation)
 
-        viewModel.personEntity.observe(viewLifecycleOwner, Observer {
-            setupData(it)
-            setupListeners(it)
+
+        arguments?.let {
+            val person = PersonAdditionalFragmentArgs.fromBundle(it).person
+            setupData(person)
+            setupListeners(person)
             updateUI()
-            viewModel.spinnerState.value = false
-        })
+        }
 
         viewModel.floatingButtonState.value = false
         binding.lifecycleOwner = viewLifecycleOwner
@@ -68,10 +74,37 @@ class PersonAdditionalFragment : Fragment() {
         return binding.root
     }
 
+
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        var animation = super.onCreateAnimation(transit, enter, nextAnim)
+        if (animation == null && nextAnim != 0)
+            animation = AnimationUtils.loadAnimation(requireContext(), nextAnim)
+
+        if (animation != null) {
+            view?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            animation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {
+                }
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    view?.setLayerType(View.LAYER_TYPE_NONE, null)
+                    viewModel.spinnerState.value = false
+                }
+
+                override fun onAnimationStart(animation: Animation?) {
+                    viewModel.viewModelScope.launch(Dispatchers.IO) { delay(200) }
+                }
+
+            })
+        }
+
+        return animation
+    }
+
     @ExperimentalStdlibApi
     private fun setupData(personEntity: Persons) {
         viewModel.viewModelScope.launch(Dispatchers.IO) {
-            delay(100)
+            delay(200)
             viewModel.setupPostEntity(personEntity.postID!!.toInt())
             viewModel.setupUnitEntity(personEntity.unitID!!.toInt())
             viewModel.setupDepartmentEntity(personEntity.departmentID!!.toInt())
@@ -435,7 +468,7 @@ class PersonAdditionalFragment : Fragment() {
                         photoByteArray = byteArray
                         GlideApp.with(requireContext())
                             .asBitmap()
-                            .placeholder(R.drawable.ic_user_30)
+                            .placeholder(R.drawable.person_undefined)
                             .load(byteArray)
                             .apply(RequestOptions().transform(RoundedCorners(30)))
                             .into(binding.image)
@@ -443,7 +476,7 @@ class PersonAdditionalFragment : Fragment() {
                         launch(Dispatchers.Main) {
                             GlideApp.with(binding.root.context)
                                 .asDrawable()
-                                .load(binding.root.context.resources.getDrawable(R.drawable.ic_user_30))
+                                .load(binding.root.context.resources.getDrawable(R.drawable.person_undefined))
                                 .into(binding.image)
                         }
                     }
@@ -451,7 +484,7 @@ class PersonAdditionalFragment : Fragment() {
             } else {
                 GlideApp.with(requireContext())
                     .asDrawable()
-                    .load(requireContext().resources.getDrawable(R.drawable.ic_user_30))
+                    .load(requireContext().resources.getDrawable(R.drawable.person_undefined))
                     .into(binding.image)
             }
         })

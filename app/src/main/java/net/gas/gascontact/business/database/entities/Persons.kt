@@ -1,8 +1,10 @@
 package net.gas.gascontact.business.database.entities
 
+import android.os.Parcelable
 import androidx.room.*
+import kotlinx.android.parcel.Parcelize
 
-
+@Parcelize
 @Entity(
     tableName = "persons",
     foreignKeys =
@@ -54,4 +56,4 @@ data class Persons(
     @ColumnInfo(name = "short_phone") val shortPhone: String?,
     val patronymic: String?,
     val birthday: String?
-)
+) : Parcelable

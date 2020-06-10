@@ -48,14 +48,14 @@ class BirthdayPersonListAdapterOptimized(
                                 try {
                                     GlideApp.with(binding.root.context)
                                         .asBitmap()
-                                        .placeholder(R.drawable.ic_user_30)
+                                        .placeholder(R.drawable.person_undefined)
                                         .load(byteArray)
                                         .apply(RequestOptions().transform(RoundedCorners(30)))
                                         .into(binding.image)
                                 } catch (e: Exception) {
                                     GlideApp.with(binding.root.context)
                                         .asDrawable()
-                                        .load(binding.root.context.resources.getDrawable(R.drawable.ic_user_30))
+                                        .load(binding.root.context.resources.getDrawable(R.drawable.person_undefined))
                                         .into(binding.image)
                                 }
                             }
@@ -63,7 +63,7 @@ class BirthdayPersonListAdapterOptimized(
                             launch(Dispatchers.Main) {
                                 GlideApp.with(binding.root.context)
                                     .asDrawable()
-                                    .load(binding.root.context.resources.getDrawable(R.drawable.ic_user_30))
+                                    .load(binding.root.context.resources.getDrawable(R.drawable.person_undefined))
                                     .into(binding.image)
                             }
                     }
@@ -71,7 +71,7 @@ class BirthdayPersonListAdapterOptimized(
             } else
                 GlideApp.with(binding.root.context)
                     .asDrawable()
-                    .load(binding.root.context.resources.getDrawable(R.drawable.ic_user_30))
+                    .load(binding.root.context.resources.getDrawable(R.drawable.person_undefined))
                     .into(binding.image)
 
             mViewModel.getPostByPersonId(item.postID!!.toInt())

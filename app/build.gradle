@@ -126,4 +126,10 @@ dependencies {
     //sqlcipher
     implementation "net.zetetic:android-database-sqlcipher:4.4.0"
     implementation "androidx.sqlite:sqlite:2.1.0"
+
+    //COIL
+    implementation "io.coil-kt:coil:0.11.0"
+
+    //progressBAr
+    implementation 'com.kaishu.nspb:nsidedprogressbar:1.0.2'
 }
