@@ -61,7 +61,7 @@ class UnitListFragmentNavigation : Fragment() {
                     addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
                 }
                 viewModel.appToolbarStateCallback
-                    ?.invoke("Филиалы", !unitList[0].name?.contains("ГПО")!!)
+                    ?.invoke("Филиалы", unitList[0].parent_id != 0)
                 if (viewModel.isFirstEntry) {
                     viewModel.isFirstEntry = false
                     viewModel.spinnerState.value = false
