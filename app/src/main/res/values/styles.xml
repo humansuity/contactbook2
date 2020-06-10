@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#617880</item>
         <item name="colorPrimaryDark">#617880</item>
-        <item name="colorAccent">#627ca3</item>
+        <item name="colorAccent">#82B2C0</item>
     </style>
     <style name="FullscreenTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>

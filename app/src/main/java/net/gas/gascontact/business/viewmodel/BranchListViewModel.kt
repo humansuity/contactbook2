@@ -36,7 +36,6 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     val dataModel = DataModel(context)
 
     var unitList: LiveData<List<Units>> = MutableLiveData()
-    var departmentList: LiveData<List<Departments>> = MutableLiveData()
     var personList: LiveData<List<Persons>> = MutableLiveData()
     var birthdayPersonList: LiveData<List<Persons>> = MutableLiveData()
 
@@ -69,38 +68,41 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     var onUnitFragmentBackPressed: (() -> Unit)? = null
     var onCreateUnitListFragment: (() -> Unit)? = null
     var parentId = -1
-    var i = 0
     var fragmentType: String = ""
     var isUnitFragmentActive = false
     var isPersonFragmentActive = false
     var sharedDatabaseSize: Long = 0
     lateinit var databaseUpdateTime: String
     private var currentDatabaseSize: Long = 0
-    var unitId = 0
 
-    fun onUnitItemClick(id: Int) {
+    var screenOrientation: Int = 0
+    var isPrimaryList = true
+
+    var onUnitItemClickedCallback: ((Int) -> Unit)? = null
+    var onDepartmentItemClickedCallback: ((Int) -> Unit)? = null
+    var onPersonItemClickedCallback: ((Int) -> Unit)? = null
+
+    var isFirstEntry = true
+
+    fun onUnitItemClick(unitID: Int) {
         spinnerState.value = true
-        unitId = id
-        viewModelScope.launch(Dispatchers.Default) {
-            launch(Dispatchers.Main) { initUnitFragmentCallback?.invoke() }
-            unitList = withContext(Dispatchers.IO) { dataModel.getSecondaryEntities(id) }
-        }
+        onUnitItemClickedCallback?.invoke(unitID)
         deleteDownloadedDatabase()
+    }
+
+    fun onDepartmentItemClick(departmentID: Int) {
+        spinnerState.value = true
+        onDepartmentItemClickedCallback?.invoke(departmentID)
+    }
+
+    fun onPersonItemClick(personID: Int) {
+        spinnerState.value = true
+        onPersonItemClickedCallback?.invoke(personID)
     }
 
     fun getPostByPersonId(id: Int): LiveData<Posts> =
         liveData { emitSource(dataModel.getPostEntityById(id)) }
-
-    fun onDepartmentItemClick(id: Int) {
-        spinnerState.value = true
-        viewModelScope.launch(Dispatchers.Default) {
-            personList = liveData(Dispatchers.IO) {
-                emitSource(dataModel.getPersonsEntitiesByIds(unitId, id))
-            }
-        }
-        departmentFragmentCallback?.invoke()
-    }
-
+    
 
     fun downloadDatabase() {
         checkPermissionsCallBack?.invoke()
@@ -155,6 +157,12 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+
+    fun getPrimaryUnitList() = liveData(Dispatchers.IO) { emitSource(dataModel.getPrimaryUnitEntities()) }
+
+    fun getDepartmentListByUnitID(id: Int) = liveData(Dispatchers.IO) { emitSource(dataModel.getDepartmentEntitiesById(id)) }
+
+
     private fun setNotificationAlarm() {
         val preferences = context.getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
         if (!preferences.getBoolean(Var.APP_NOTIFICATION_ALARM_INIT_STATE, false)) {
@@ -180,11 +188,7 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     }
 
 
-    fun onPersonItemClick(id: Int) {
-        spinnerState.value = true
-        personEntity = liveData { emitSource(dataModel.getPersonEntityById(id)) }
-        personFragmentCallBack?.invoke()
-    }
+
 
 
     fun setupPersonInfo(id: Int) {
@@ -251,7 +255,7 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
                     if (response.isSuccessful) {
                         response.body()?.let {
                             tokens = it
-                            Log.e("Controller ", "CheckValidPassword success")
+                            Log.e("Controller ", "CheckValidPassworddelete success")
                             userLoginState.value = tokens.access_token
                         }
                     } else {
@@ -405,6 +409,8 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
                                 "Не удаётся скачать базу данных! Ошибка ${response.code()}",
                                 Toast.LENGTH_LONG
                             ).show()
+                            onDatabaseUpdated?.invoke(false)
+                            spinnerState.value = false
                             downloadSpinnerState.value = false
                         }
                     }
@@ -423,6 +429,7 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
             }
         }
     }
+
 
 
 }

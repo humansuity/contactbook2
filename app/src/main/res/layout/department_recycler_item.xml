@@ -21,12 +21,13 @@
 
 
         <EditText
-            android:id="@+id/txt"
+            android:id="@+id/unitName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
+            android:clickable="false"
             android:focusable="false"
             android:fontFamily="sans-serif-thin"
             android:gravity="center_vertical"
@@ -53,9 +54,10 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginStart="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/txt"
+            app:layout_constraintBottom_toBottomOf="@+id/unitName"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txt" />
+            app:layout_constraintTop_toTopOf="@+id/unitName"
+            app:srcCompat="@drawable/ic_group_25" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

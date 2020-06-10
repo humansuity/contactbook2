@@ -75,14 +75,19 @@ class DataModel(private val context: Context) {
     suspend fun getPersonListByMobilePhoneTag(tag: String): LiveData<List<Persons>> =
         withContext(Dispatchers.IO) { database?.personsDao()!!.getEntitiesByMobilePhoneTag(tag) }
 
-    fun getSecondaryEntities(parentId: Int): LiveData<List<Units>> =
+    fun getUnitSecondaryEntities(parentId: Int): LiveData<List<Units>> =
         database?.unitsDao()!!.getSecondaryEntities(parentId)
+
+    fun getDepartmentSecondaryEntities(parentId: Int): LiveData<List<Departments>> =
+        database?.departmentsDao()!!.getSecondaryEntities(parentId)
 
     fun getUnitEntitiesByParentId(parentId: Int): LiveData<List<Units>> =
         database?.unitsDao()!!.getEntitiesByParentId(parentId)
 
     fun getUnitEntitiesByParentByDepartmentId(departmentId: Int): LiveData<List<Units>> =
         database?.departmentsDao()!!.getUnitEntitiesByParentByDepartmentId(departmentId)
+
+    fun getUnitsAmountByParentID(parentId: Int) = database?.unitsDao()!!.getEntitiesAmountByParentID(parentId)
 
 
     fun getUpcomingPersonWithBirthday(period: String): LiveData<List<Persons>> {

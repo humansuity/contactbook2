@@ -22,45 +22,53 @@
         app:titleMargins="4dp" />
 
 
-    <FrameLayout
+    <fragment
         android:id="@+id/fragmentHolder"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
+        app:layout_constraintVertical_bias="0.0" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="43dp"
+        android:backgroundTint="#FFFFFF"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_menu_40"
+        android:tint="#1B5267"
+        app:backgroundTint="#758DA1"
+        app:borderWidth="2dp"
+        app:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:useCompatPadding="false" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="35dp"
-            android:backgroundTint="#FFFFFF"
-            android:clickable="true"
-            android:padding="0dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_menu_40"
-            android:tint="#1B5267"
-            app:backgroundTint="#758DA1"
-            app:borderWidth="2dp"
-            app:elevation="10dp"
-            app:useCompatPadding="false" />
-
-    </FrameLayout>
-
-    <ProgressBar
+    <com.iitr.kaishu.nsidedprogressbar.NSidedProgressBar
         android:id="@+id/unitProgressbar"
-        style="@android:style/Widget.DeviceDefault.ProgressBar.Large"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:visibility="invisible"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
+        app:nsidedProg_baseSpeed="5"
+        app:nsidedProg_primaryColor="#ffffff"
+        app:nsidedProg_primaryRimWidth="20"
+        app:nsidedProg_secondaryColor="#2FB88C"
+        app:nsidedProg_secondaryRimWidth="10"
+        app:nsidedProg_sideCount="6" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

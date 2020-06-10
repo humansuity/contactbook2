@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
@@ -21,10 +22,11 @@ import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.gas.gascontact.R
@@ -39,6 +41,7 @@ import java.util.*
 
 class MainListActivity : AppCompatActivity() {
     private val viewModel by viewModels<BranchListViewModel>()
+    private val navController by lazy { findNavController(R.id.fragmentHolder) }
     private var optionItemMenuFlag = ""
     private lateinit var preferences: SharedPreferences
 
@@ -50,13 +53,13 @@ class MainListActivity : AppCompatActivity() {
         preferences = getSharedPreferences(Var.APP_PREFERENCES, Context.MODE_PRIVATE)
         initResources()
 
+        /** check if app launched from notification **/
         if (!isOpenedViaIntent()) {
-            /** Create unitlist fragment
-             * - start point of an app for user **/
-            if (Var.checkIfDatabaseValid(applicationContext, viewModel)) {
-                createInitFragment()
+            if (!Var.checkIfDatabaseValid(applicationContext, viewModel)) {
+                navController.setGraph(R.navigation.app_nav_graph)
+                navigateToAlertFragment()
             } else {
-                createAlertFragment()
+                setupStartNavGraph()
             }
         }
     }
@@ -69,6 +72,16 @@ class MainListActivity : AppCompatActivity() {
         putAlarmScheduleTimeToPrefs()
         createNotificationChannels()
         setupObservers()
+    }
+
+
+    private fun setupStartNavGraph() {
+        viewModel.spinnerState.value = true
+        viewModel.getPrimaryUnitList().observe(this, Observer {
+            val bundle = Bundle()
+            bundle.putParcelableArray("listOfUnits", it.toTypedArray())
+            navController.setGraph(R.navigation.app_nav_graph, bundle)
+        })
     }
 
 
@@ -86,23 +99,22 @@ class MainListActivity : AppCompatActivity() {
     private fun isOpenedViaIntent(): Boolean {
         return if (intent.hasExtra("PERSON_ID")) {
             if (Var.checkIfDatabaseValid(applicationContext, viewModel)) {
-                viewModel.setupPersonInfo(intent.getIntExtra("PERSON_ID", 0))
-                createPersonAdditionalFragment(backStackFlag = false)
+                viewModel.dataModel.getPersonEntityById(intent.getIntExtra("PERSON_ID", 0))
+                    .observe(this, Observer { person ->
+                        val bundle = Bundle()
+                        bundle.putParcelable("person", person)
+                        navController.navigate(R.id.actionToAdditionalPersonFragmentGlobal, bundle)
+                    })
                 true
             } else false
         } else false
     }
 
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
-    }
-
-
-    override fun onBackPressed() {
-        viewModel.onUnitFragmentBackPressed?.invoke()
-        super.onBackPressed()
     }
 
 
@@ -146,22 +158,11 @@ class MainListActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(it, "Отправка на email"))
         }
 
-        viewModel.unitFragmentCallback = {
-            createDepartmentFragment()
-            viewModel.isUnitFragmentActive = true
-        }
 
         viewModel.addContactIntentCallBack = {
             startActivity(it)
         }
 
-        viewModel.departmentFragmentCallback = {
-            createPersonFragment()
-        }
-
-        viewModel.personFragmentCallBack = {
-            createPersonAdditionalFragment(true)
-        }
 
         viewModel.checkPermissionsCallBack = {
             if (checkInternetConnection()) {
@@ -174,10 +175,10 @@ class MainListActivity : AppCompatActivity() {
                             Var.STORAGE_PERMISSION_CODE
                         )
                     } else {
-                        createLoginFragment("DOWNLOAD")
+                        navigateToLoginFragment("DOWNLOAD")
                     }
                 } else {
-                    createLoginFragment("DOWNLOAD")
+                    navigateToLoginFragment("DOWNLOAD")
                 }
             } else {
                 viewModel.onNetworkErrorCallback?.invoke("NO_INTERNET_CONNECTION")
@@ -190,9 +191,6 @@ class MainListActivity : AppCompatActivity() {
             invalidateOptionsMenu()
         }
 
-        viewModel.initUnitFragmentCallback = {
-            createAddUnitListFragment()
-        }
 
         viewModel.onReceiveDatabaseSizeCallBack = {
             preferences.edit().putLong(Var.APP_DATABASE_SIZE, it).apply()
@@ -211,30 +209,21 @@ class MainListActivity : AppCompatActivity() {
                 viewModel.updateDatabase()
                 startActivity(intent)
             } else {
-                if (supportFragmentManager.backStackEntryCount > 0) {
-
-                    val firstFragment: FragmentManager.BackStackEntry =
-                        supportFragmentManager.getBackStackEntryAt(0)
-
-                    supportFragmentManager.popBackStack(
-                        firstFragment.id,
-                        FragmentManager.POP_BACK_STACK_INCLUSIVE
-                    )
-                    createUnitListFragment()
-                } else createUnitListFragment()
+                navigateToStartPoint()
             }
         }
 
         viewModel.onLoginCallback = {
-            createLoginFragment("DOWNLOAD")
+            navigateToLoginFragment("DOWNLOAD")
         }
 
         viewModel.afterSuccessLoginCallback = {
-            createAlertFragment()
+            navController.navigateUp()
         }
 
         viewModel.onCreateUnitListFragment = {
-            createUnitListFragment()
+            viewModel.dataModel.updateDatabase()
+            navigateToStartPoint()
         }
 
         viewModel.appToolbarStateCallback = { value, navButtonState ->
@@ -245,7 +234,7 @@ class MainListActivity : AppCompatActivity() {
         }
 
         floatingActionButton.setOnClickListener {
-            createSearchFragment()
+            navController.navigate(R.id.actionToSearchFragment)
         }
     }
 
@@ -267,6 +256,7 @@ class MainListActivity : AppCompatActivity() {
         return activeNetworkInfo?.isConnected ?: false
     }
 
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -277,7 +267,7 @@ class MainListActivity : AppCompatActivity() {
                 if (grantResults.isNotEmpty() && grantResults[0] ==
                     PackageManager.PERMISSION_GRANTED
                 ) {
-                    createLoginFragment("DOWNLOAD")
+                    navigateToLoginFragment("DOWNLOAD")
                 } else {
                     Snackbar.make(
                         root,
@@ -304,6 +294,7 @@ class MainListActivity : AppCompatActivity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -313,10 +304,10 @@ class MainListActivity : AppCompatActivity() {
                 openAlertDialog()
             }
             R.id.action_settings -> {
-                createAboutAppFragment()
+                navController.navigate(R.id.actionToAboutAppFragment)
             }
             R.id.action_birthday -> {
-                createViewPagerFragment()
+                navController.navigate(R.id.actionToBirthdayPersonListFragment)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -332,11 +323,11 @@ class MainListActivity : AppCompatActivity() {
         val margins = InsetDrawable(background, 50)
         dialog.window?.setBackgroundDrawable(margins)
 
-        view.findViewById<Button>(R.id.btnSetupForWeekDaysNotifs)
+        view.findViewById<Button>(R.id.btnCancelUpdate)
             .setOnClickListener { dialog.dismiss() }
-        view.findViewById<Button>(R.id.btnSetupForHolidaysNotifs).setOnClickListener {
+        view.findViewById<Button>(R.id.btnUpdate).setOnClickListener {
             if (checkInternetConnection()) {
-                createLoginFragment("UPDATE")
+                navController.navigate(R.id.actionToLoginFragmentGlobal)
             }
             dialog.dismiss()
         }
@@ -344,139 +335,29 @@ class MainListActivity : AppCompatActivity() {
     }
 
 
-    private fun createInitFragment() {
-        if (Var.checkIfDatabaseValid(applicationContext, viewModel)) {
-            if (!viewModel.isUnitFragmentActive) {
-                viewModel.setupPrimaryUnitList()
-                createUnitListFragment()
-            }
-        } else {
-            createAlertFragment()
+    private fun navigateToLoginFragment(type: String) {
+        if (navController.currentDestination?.id == R.id.AlertFragment) {
+            val action = AlertFragmentDirections.fromAlertFragmentToLoginFragment(type)
+            navController.navigate(action)
+            Log.e("Navigation", "Navigate to login fragment")
         }
     }
 
 
-    private fun createAlertFragment() {
-        if (isDestroyed) return
-        val fragment = AlertFragment()
-        supportFragmentManager.commit {
-            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            replace(R.id.fragmentHolder, fragment)
+    private fun navigateToAlertFragment() {
+        viewModel.spinnerState.value = false
+        if (navController.currentDestination?.id == R.id.UnitListFragment) {
+            val action = UnitListFragmentNavigationDirections.fromUnitListFragmentToAlertFragment()
+            navController.navigate(action)
         }
+        Log.e("Navigation", "Navigate to alert fragment, destination = ${navController.currentDestination}")
     }
 
 
-    private fun createUnitListFragment() {
-        viewModel.isUnitFragmentActive = true
-        if (isDestroyed) return
-        val fragment = UnitListFragment()
-        supportFragmentManager.commit {
-            setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-            replace(R.id.fragmentHolder, fragment, "INIT_FRAGMENT")
-        }
-    }
-
-
-    private fun createAddUnitListFragment() {
-        viewModel.appToolbarStateCallback?.invoke("Филиалы", true)
-        if (isDestroyed) return
-        val fragment = UnitListFragment()
-        supportFragmentManager.commit {
-            addToBackStack(null)
-            setCustomAnimations(
-                R.animator.enter_from_right,
-                R.animator.exit_to_left,
-                R.animator.enter_from_left,
-                R.animator.exit_to_right
-            )
-            replace(R.id.fragmentHolder, fragment)
-        }
-    }
-
-
-    private fun createDepartmentFragment() {
-        if (isDestroyed) return
-        val fragment = DepartmentListFragment()
-        supportFragmentManager.commit {
-            addToBackStack(null)
-            setCustomAnimations(
-                R.animator.enter_from_right,
-                R.animator.exit_to_left,
-                R.animator.enter_from_left,
-                R.animator.exit_to_right
-            )
-            replace(R.id.fragmentHolder, fragment)
-        }
-    }
-
-
-    private fun createPersonFragment() {
-        if (isDestroyed) return
-        val fragment = PersonListFragment()
-        supportFragmentManager.commit {
-            addToBackStack(null)
-            setCustomAnimations(
-                R.animator.enter_from_right,
-                R.animator.exit_to_left,
-                R.animator.enter_from_left,
-                R.animator.exit_to_right
-            )
-            replace(R.id.fragmentHolder, fragment)
-        }
-    }
-
-    private fun createPersonAdditionalFragment(backStackFlag: Boolean) {
-        if (isDestroyed) return
-        val fragment = PersonAdditionalFragment()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .replace(R.id.fragmentHolder, fragment)
-        if (backStackFlag)
-            fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
-        floatingActionButton.visibility = View.INVISIBLE
-    }
-
-    private fun createSearchFragment() {
-        if (isDestroyed) return
-        val fragment = SearchFragment()
-        supportFragmentManager.commit {
-            addToBackStack(null)
-            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-            replace(R.id.fragmentHolder, fragment)
-        }
-    }
-
-    private fun createAboutAppFragment() {
-        if (isDestroyed) return
-        val fragment = AboutAppFragment()
-        supportFragmentManager.commit {
-            addToBackStack(null)
-            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            replace(R.id.fragmentHolder, fragment)
-        }
-    }
-
-
-    private fun createViewPagerFragment() {
-        if (isDestroyed) return
-        val fragment = BirthdayPeriodFragment()
-        supportFragmentManager.commit {
-            addToBackStack(null)
-            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            replace(R.id.fragmentHolder, fragment)
-        }
-    }
-
-
-    private fun createLoginFragment(type: String) {
-        if (isDestroyed) return
-        val fragment = LoginFragment.newInstance("TYPE", type)
-        supportFragmentManager.beginTransaction()
-            .addToBackStack(null)
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .replace(R.id.fragmentHolder, fragment)
-            .commitAllowingStateLoss()
+    private fun navigateToStartPoint() {
+        if (Var.checkIfDatabaseValid(applicationContext, viewModel))
+            setupStartNavGraph()
+        else
+            navController.navigate(R.id.AlertFragment)
     }
 }
