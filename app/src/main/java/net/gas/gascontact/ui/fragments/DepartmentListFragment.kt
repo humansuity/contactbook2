@@ -84,14 +84,6 @@ class DepartmentListFragment : Fragment() {
                     }
                 })
         }
-
-//        viewModel.onDepartmentItemClickedCallback = {
-//            if (unitID != null) {
-//                val action = DepartmentListFragmentDirections
-//                    .fromDepartmentListFragmentToPersonListFragment(unitID, it)
-//                findNavController().navigate(action)
-//            }
-//        }
     }
 
 
