@@ -27,7 +27,7 @@ class MriradaAppTest1Appium(unittest.TestCase):
             'platformName': 'android',
             #'deviceName': 'emulator-5554',
             'deviceName': 'Galaxy_Nexus_API_28',
-            'appActivity': 'net.gas.gascontact.ui.activities.SplashActivity',
+            'appActivity': 'net.gas.gascontact.view.ui.activities.SplashActivity',
             'appPackage': 'net.gas.gascontact',
             'automationName': 'UiAutomator2',
         }

@@ -21,12 +21,12 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
         <receiver
-            android:name=".business.BirthdayAlarmReceiver"
+            android:name=".view.BirthdayAlarmReceiver"
             android:enabled="true"
             android:exported="true" />
 
         <receiver
-            android:name=".business.BootReceiver"
+            android:name=".view.BootReceiver"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
@@ -36,12 +36,12 @@
         </receiver>
 
         <service
-            android:name=".business.BirthdayNotificationService"
+            android:name=".view.BirthdayNotificationService"
             android:enabled="true"
             android:exported="true" />
 
         <activity
-            android:name=".ui.activities.SplashActivity"
+            android:name="net.gas.gascontact.view.ui.activities.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme"
@@ -52,7 +52,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.MainListActivity" />
+        <activity android:name="net.gas.gascontact.view.ui.activities.MainListActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

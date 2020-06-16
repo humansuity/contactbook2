@@ -5,10 +5,10 @@
     <data>
         <variable
             name="unitItem"
-            type="net.gas.gascontact.business.database.entities.Units" />
+            type="net.gas.gascontact.database.entities.Units" />
         <variable
             name="viewModel"
-            type="net.gas.gascontact.business.viewmodel.BranchListViewModel" />
+            type="net.gas.gascontact.view.viewmodel.BranchListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
