@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_nav_graph"
     app:startDestination="@id/UnitListFragment">
     <fragment
         android:id="@+id/UnitListFragment"
         android:name="net.gas.gascontact.view.ui.fragments.UnitListFragment"
-        android:label="UnitListFragmentNavigation" >
+        android:label="UnitListFragment">
         <action
             android:id="@+id/fromUnitListFragmentToAlertFragment"
             app:destination="@id/AlertFragment"
@@ -25,12 +26,11 @@
             app:popExitAnim="@animator/slide_out_right" />
         <action
             android:id="@+id/actionToSelf"
+            app:destination="@id/UnitListFragment"
             app:enterAnim="@animator/slide_in_right"
             app:exitAnim="@animator/slide_out_left"
             app:popEnterAnim="@animator/slide_in_left"
-            app:popExitAnim="@animator/slide_out_right"
-            app:destination="@id/UnitListFragment" >
-        </action>
+            app:popExitAnim="@animator/slide_out_right"></action>
         <argument
             android:name="listOfUnits"
             app:argType="net.gas.gascontact.database.entities.Units[]" />

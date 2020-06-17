@@ -102,7 +102,7 @@ class PersonAdditionalFragment : Fragment() {
 
     @ExperimentalStdlibApi
     private fun setupData(personEntity: Persons) {
-        viewModel.viewModelScope.launch(Dispatchers.IO) {
+        viewModel.viewModelScope.launch(Dispatchers.Default) {
             delay(200)
             viewModel.setupPostEntity(personEntity.postID!!.toInt())
             viewModel.setupUnitEntity(personEntity.unitID!!.toInt())
