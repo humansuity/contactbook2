@@ -5,7 +5,7 @@ import net.gas.gascontact.model.OrganizationUnit
 
 
 @JvmField
-val ORGANIZATIONUNITLIST = arrayOf<OrganizationUnit>(
+val ORGANIZATIONUNITLIST = arrayOf(
     OrganizationUnit(
         "Брестоблгаз",
         "brestoblgas",
@@ -30,7 +30,11 @@ val ORGANIZATIONUNITLIST = arrayOf<OrganizationUnit>(
         R.raw.grodnooblgas,
         "7d3348aa-5885-484e-87a6-33ef2286e232"
     ),
-    OrganizationUnit("Мингаз", "mingas", R.raw.mingas, "43ffc94e-009e-48ac-8790-fedafa2f3d6b"),
+    OrganizationUnit(
+        "Мингаз",
+        "mingas",
+        R.raw.mingas,
+        "43ffc94e-009e-48ac-8790-fedafa2f3d6b"),
     OrganizationUnit(
         "Минскоблгаз",
         "minskoblgas",

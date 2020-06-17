@@ -12,7 +12,7 @@ import net.gas.gascontact.R
 import net.gas.gascontact.view.adapters.BirthdayPagerAdapter
 import net.gas.gascontact.view.viewmodel.BranchListViewModel
 
-class BirthdayPeriodFragment : Fragment() {
+class BirthdayHolderFragment : Fragment() {
 
     private lateinit var viewModel: BranchListViewModel
 

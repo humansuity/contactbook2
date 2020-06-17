@@ -130,7 +130,7 @@
         app:popExitAnim="@anim/fragment_close_exit"/>
     <fragment
         android:id="@+id/birthdayPersonListFragment3"
-        android:name="net.gas.gascontact.view.ui.fragments.BirthdayPeriodFragment"
+        android:name="net.gas.gascontact.view.ui.fragments.BirthdayHolderFragment"
         android:label="BirthdayPersonListFragment" />
     <action
         android:id="@+id/actionToBirthdayPersonListFragment"
