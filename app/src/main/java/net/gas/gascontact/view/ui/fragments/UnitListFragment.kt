@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.gas.gascontact.R
 import net.gas.gascontact.databinding.UnitsListFragmentBinding
@@ -56,7 +55,6 @@ class UnitListFragment : Fragment() {
                 recyclerView.apply {
                     adapter = listAdapter
                     layoutManager = LinearLayoutManager(context)
-                    addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
                 }
                 viewModel.appToolbarStateCallback
                     ?.invoke("Филиалы", unitList[0].parent_id != 0)

@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.gas.gascontact.R
 import net.gas.gascontact.databinding.DepartmentsListFragmentBinding
@@ -51,7 +50,6 @@ class DepartmentListFragment : Fragment() {
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
         val departmentList = arguments?.let { DepartmentListFragmentArgs.fromBundle(it).departmentList }
