@@ -7,6 +7,9 @@ import androidx.room.RoomDatabase
 import net.gas.gascontact.database.daos.*
 import net.gas.gascontact.database.entities.*
 import net.gas.gascontact.utils.Constants
+import net.sqlcipher.database.SQLiteDatabase
+import net.sqlcipher.database.SQLiteDatabaseHook
+import net.sqlcipher.database.SupportFactory
 import java.io.File
 
 
@@ -37,21 +40,21 @@ abstract class ContactbookDatabase : RoomDatabase() {
             val pathToDatabase = context.filesDir.path + "/" + Constants.DATABASE_NAME
             if (INSTANCE == null) {
                 synchronized(ContactbookDatabase::class) {
-//                    val hook = object : SQLiteDatabaseHook {
-//                        override fun preKey(database: SQLiteDatabase?) {}
-//                        override fun postKey(database: SQLiteDatabase?) {
-//                            database?.rawExecSQL("PRAGMA cipher_compatibility = 3;")
-//                        }
-//                    }
-//                    val passphrase = SQLiteDatabase.getBytes(key.toCharArray())
-//
-//                    val supportFactory = SupportFactory(passphrase, hook)
+                    val hook = object : SQLiteDatabaseHook {
+                        override fun preKey(database: SQLiteDatabase?) {}
+                        override fun postKey(database: SQLiteDatabase?) {
+                            database?.rawExecSQL("PRAGMA cipher_compatibility = 3;")
+                        }
+                    }
+                    val passphrase = SQLiteDatabase.getBytes(key.toCharArray())
+
+                    val supportFactory = SupportFactory(passphrase, hook)
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,
                         ContactbookDatabase::class.java,
                         Constants.DATABASE_NAME
                     )
-                        //.openHelperFactory(supportFactory)
+                        .openHelperFactory(supportFactory)
                         .createFromFile(File(pathToDatabase))
                         .build()
 
