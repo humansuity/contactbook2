@@ -18,7 +18,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
@@ -80,6 +79,7 @@ class MainListActivity : AppCompatActivity() {
         viewModel.getPrimaryUnitList().observe(this, Observer {
             val bundle = Bundle()
             bundle.putParcelableArray("listOfUnits", it.toTypedArray())
+            bundle.putParcelableArray("listOfDepartments", null)
             navController.setGraph(R.navigation.app_nav_graph, bundle)
         })
     }

@@ -26,4 +26,8 @@ interface UnitsDao {
 
     @Query("select count(*) from units where parent_id = :id")
     fun getEntitiesAmountByParentID(id: Int): Int
+
+
+    @Query("select unit_id from relation where department_id = :id")
+    fun getEntityIdByDepartmentId(id: Int): LiveData<Int>
 }

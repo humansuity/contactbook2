@@ -1,6 +1,7 @@
 package net.gas.gascontact.view.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,14 +50,26 @@ class UnitListFragment : Fragment() {
         Constants.hideSpinnerOnOrientationChanged(viewModel, screenOrientation)
 
         val unitList = arguments?.let { UnitListFragmentArgs.fromBundle(it).listOfUnits }
+        val departmentList = arguments?.let { UnitListFragmentArgs.fromBundle(it).listOfDepartments }
         binding.apply {
-            if (unitList != null) {
+            unitList?.let {
                 listAdapter = UnitListAdapter(viewModel)
-                listAdapter.setupList(unitList.toList())
+
+                if (!departmentList.isNullOrEmpty())
+                    listAdapter.setupLists(unitList.toList(), departmentList.toList())
+                else
+                    listAdapter.setupLists(unitList.toList(), null)
+
+                Log.e("List Adapter", "${departmentList?.size}")
                 recyclerView.apply {
                     adapter = listAdapter
                     layoutManager = LinearLayoutManager(context)
-                    addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+                    addItemDecoration(
+                        DividerItemDecoration(
+                            context,
+                            DividerItemDecoration.VERTICAL
+                        )
+                    )
                 }
                 viewModel.appToolbarStateCallback
                     ?.invoke("Филиалы", unitList[0].parent_id != 0)
@@ -68,32 +81,105 @@ class UnitListFragment : Fragment() {
             }
         }
 
-        viewModel.onUnitItemClickedCallback = { unitID ->
-            viewModel.dataModel.getUnitSecondaryEntities(unitID).observe(viewLifecycleOwner, Observer { unitList ->
-                if (!unitList.isNullOrEmpty()) {
-                    /** Navigation to itself if the selected branch has subsidiaries **/
-                    val action = UnitListFragmentDirections.actionToSelf(unitList.toTypedArray())
-                    findNavController().navigate(action)
-                } else {
-                    /** Navigation to department list if the selected branch has no subsidiaries **/
-                    viewModel.getDepartmentListByUnitID(unitID)
-                        .observe(viewLifecycleOwner, Observer { primaryDepartments ->
-                            if (!primaryDepartments.isNullOrEmpty()) {
-                                val fragmentArguments = Bundle()
-                                fragmentArguments.putParcelableArray("departmentList", primaryDepartments.toTypedArray())
-                                fragmentArguments.putInt("unitID", unitID)
 
-                                findNavController().navigate(
-                                    R.id.fromUnitListFragmentToDepartmentListFragment,
-                                    fragmentArguments
-                                )
-                            }
-                        })
-                }
-            })
+        viewModel.onUnitItemClickedCallback = { clickedItemId, isDepartment ->
+            if (!isDepartment) {
+                viewModel.unitIdForUnitListFragment = clickedItemId
+                viewModel.dataModel.getUnitSecondaryEntities(clickedItemId).observe(viewLifecycleOwner,
+                    Observer { unitList ->
+                        if (!unitList.isNullOrEmpty()) {
+                            /** Navigation to itself if the selected branch has subsidiaries **/
+
+                            viewModel.getDepartmentListByUnitID(clickedItemId).observe(
+                                viewLifecycleOwner,
+                                Observer { departmentList ->
+
+                                    if (!departmentList.isNullOrEmpty()) {
+                                        val action = UnitListFragmentDirections.actionToSelf(
+                                            unitList.toTypedArray(),
+                                            departmentList.toTypedArray()
+                                        )
+                                        findNavController().navigate(action)
+                                    } else {
+                                        val action = UnitListFragmentDirections.actionToSelf(
+                                            unitList.toTypedArray(),
+                                            null
+                                        )
+                                        findNavController().navigate(action)
+                                    }
+
+                                }
+                            )
+                        } else {
+
+                            viewModel.getDepartmentListByUnitID(clickedItemId).observe(
+                                viewLifecycleOwner,
+                                Observer { primaryDepartments ->
+                                    if (!primaryDepartments.isNullOrEmpty()) {
+                                        val fragmentArguments = Bundle()
+                                        fragmentArguments.putParcelableArray(
+                                            "departmentList",
+                                            primaryDepartments.toTypedArray()
+                                        )
+                                        fragmentArguments.putInt("unitID", clickedItemId)
+
+                                        findNavController().navigate(
+                                            R.id.fromUnitListFragmentToDepartmentListFragment,
+                                            fragmentArguments
+                                        )
+                                    } else {
+                                        viewModel.dataModel.getPersonsByUnitId(clickedItemId).observe(
+                                            viewLifecycleOwner,
+                                            Observer { persons ->
+                                                if (!persons.isNullOrEmpty()) {
+                                                    val action = UnitListFragmentDirections
+                                                        .fromUnitListFragmentToPersonListFragment(
+                                                            viewModel.unitIdForUnitListFragment
+                                                        )
+                                                    findNavController().navigate(action)
+                                                }
+                                            }
+                                        )
+                                    }
+                                })
+                        }
+                    })
+            } else {
+                viewModel.dataModel.getDepartmentSecondaryEntities(clickedItemId).observe(
+                    viewLifecycleOwner,
+                    Observer { primaryDepartments ->
+                        if (!primaryDepartments.isNullOrEmpty()) {
+                            /** Navigation to departmentList if the selected department has subsidiaries **/
+                            val fragmentArguments = Bundle()
+                            fragmentArguments.putParcelableArray(
+                                "departmentList",
+                                primaryDepartments.toTypedArray()
+                            )
+                            fragmentArguments.putInt("unitID", viewModel.unitIdForUnitListFragment)
+
+                            findNavController().navigate(
+                                R.id.fromUnitListFragmentToDepartmentListFragment,
+                                fragmentArguments
+                            )
+                        } else {
+                            /** Navigation to person list if the selected department has no subsidiaries **/
+                            viewModel.dataModel.getUnitIdByDepartmentId(clickedItemId).observe(
+                                viewLifecycleOwner,
+                                Observer { unitId ->
+                                    val action = UnitListFragmentDirections
+                                        .fromUnitListFragmentToPersonListFragment(
+                                            unitId,
+                                            clickedItemId
+                                        )
+                                    findNavController().navigate(action)
+                                }
+                            )
+                        }
+                    }
+                )
+            }
         }
     }
-
 
     override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
         var animation = super.onCreateAnimation(transit, enter, nextAnim)
