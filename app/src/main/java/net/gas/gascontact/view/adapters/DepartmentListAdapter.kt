@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import net.gas.gascontact.database.entities.Departments
 import net.gas.gascontact.databinding.DepartmentRecyclerItemBinding
 import net.gas.gascontact.view.viewmodel.BranchListViewModel
+import java.util.*
 
 class DepartmentListAdapter(private val mViewModel: BranchListViewModel) :
     RecyclerView.Adapter<DepartmentListAdapter.ViewHolder>() {
@@ -29,8 +30,16 @@ class DepartmentListAdapter(private val mViewModel: BranchListViewModel) :
         return ViewHolder(binding)
     }
 
-    fun setupList(items: List<Departments>) {
-        this.items = items
+    fun setupList(departments: List<Departments>) {
+        for ((index, department) in departments.withIndex()) {
+            val regExpressionForListRang = "администрация|управление|управления".toRegex()
+            department.name?.let { name ->
+                if (regExpressionForListRang.containsMatchIn(name.toLowerCase(Locale.ROOT))) {
+                    if (departments.size > 1) Collections.swap(departments, index, 0)
+                }
+            }
+        }
+        this.items = departments
         notifyDataSetChanged()
     }
 

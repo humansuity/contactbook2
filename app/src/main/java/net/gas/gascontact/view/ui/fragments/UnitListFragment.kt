@@ -111,22 +111,30 @@ class UnitListFragment : Fragment() {
                                 }
                             )
                         } else {
-
                             viewModel.getDepartmentListByUnitID(clickedItemId).observe(
                                 viewLifecycleOwner,
                                 Observer { primaryDepartments ->
                                     if (!primaryDepartments.isNullOrEmpty()) {
-                                        val fragmentArguments = Bundle()
-                                        fragmentArguments.putParcelableArray(
-                                            "departmentList",
-                                            primaryDepartments.toTypedArray()
-                                        )
-                                        fragmentArguments.putInt("unitID", clickedItemId)
+                                        if (primaryDepartments.size > 1) {
+                                            val fragmentArguments = Bundle()
+                                            fragmentArguments.putParcelableArray(
+                                                "departmentList",
+                                                primaryDepartments.toTypedArray()
+                                            )
+                                            fragmentArguments.putInt("unitID", clickedItemId)
 
-                                        findNavController().navigate(
-                                            R.id.fromUnitListFragmentToDepartmentListFragment,
-                                            fragmentArguments
-                                        )
+                                            findNavController().navigate(
+                                                R.id.fromUnitListFragmentToDepartmentListFragment,
+                                                fragmentArguments
+                                            )
+                                        } else {
+                                            val action = UnitListFragmentDirections
+                                                .fromUnitListFragmentToPersonListFragment(
+                                                    clickedItemId,
+                                                    primaryDepartments[0].id
+                                                )
+                                            findNavController().navigate(action)
+                                        }
                                     } else {
                                         viewModel.dataModel.getPersonsByUnitId(clickedItemId).observe(
                                             viewLifecycleOwner,
@@ -134,7 +142,7 @@ class UnitListFragment : Fragment() {
                                                 if (!persons.isNullOrEmpty()) {
                                                     val action = UnitListFragmentDirections
                                                         .fromUnitListFragmentToPersonListFragment(
-                                                            viewModel.unitIdForUnitListFragment
+                                                            clickedItemId
                                                         )
                                                     findNavController().navigate(action)
                                                 }

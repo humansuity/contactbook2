@@ -7,6 +7,7 @@ import net.gas.gascontact.database.entities.Departments
 import net.gas.gascontact.database.entities.Units
 import net.gas.gascontact.databinding.UnitRecyclerItemBinding
 import net.gas.gascontact.view.viewmodel.BranchListViewModel
+import java.util.*
 
 class UnitListAdapter(private val mViewModel: BranchListViewModel) :
     RecyclerView.Adapter<UnitListAdapter.ViewHolder>() {
@@ -44,8 +45,27 @@ class UnitListAdapter(private val mViewModel: BranchListViewModel) :
 
 
     fun setupLists(units: List<Units>, departments: List<Departments>?) {
+        val regExpressionForListRang = "администрация|управление|управления".toRegex()
+        for ((index, unit) in units.withIndex()) {
+            unit.name?.let { name ->
+                if (regExpressionForListRang.containsMatchIn(name.toLowerCase(Locale.ROOT))) {
+                    if (units.size > 1) {
+                        Collections.swap(units, index, 0)
+                    }
+                }
+            }
+        }
         this.items = units
-        departments?.let { this.items = units + departments }
+        departments?.let {
+            for ((index, department) in departments.withIndex()) {
+                department.name?.let { name ->
+                    if (regExpressionForListRang.containsMatchIn(name.toLowerCase(Locale.ROOT))) {
+                        if (departments.size > 1) Collections.swap(departments, index, 0)
+                    }
+                }
+            }
+            this.items = departments + units
+        }
         notifyDataSetChanged()
     }
 
