@@ -45,10 +45,10 @@ class UnitListAdapter(private val mViewModel: BranchListViewModel) :
 
 
     fun setupLists(units: List<Units>, departments: List<Departments>?) {
-        val regExpressionForListRang = "администрация|управление|управления".toRegex()
+        val regExpressionForListRang = "администрация|аппарат управления|управление".toRegex()
         for ((index, unit) in units.withIndex()) {
             unit.name?.let { name ->
-                if (regExpressionForListRang.containsMatchIn(name.toLowerCase(Locale.ROOT))) {
+                if (regExpressionForListRang.matches(name.toLowerCase(Locale.ROOT))) {
                     if (units.size > 1) {
                         Collections.swap(units, index, 0)
                     }
