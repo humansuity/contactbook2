@@ -59,17 +59,11 @@ class AlarmHelper {
 
         fun setupInitialNotificationAlarm(context: Context) {
             val storedStringTime =
-                getStoredScheduleTime(
-                    context
-                )
+                getStoredScheduleTime(context)
             val hour =
-                getScheduleHour(
-                    storedStringTime
-                )
+                getScheduleHour(storedStringTime)
             val minute =
-                getScheduleMinute(
-                    storedStringTime
-                )
+                getScheduleMinute(storedStringTime)
 
             val executeTime = DateTime(DateTimeZone.forID("Europe/Minsk"))
                 .withDayOfMonth(DateTime(DateTimeZone.forID("Europe/Minsk")).dayOfMonth)

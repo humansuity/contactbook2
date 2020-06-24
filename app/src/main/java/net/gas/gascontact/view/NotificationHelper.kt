@@ -1,5 +1,6 @@
 package net.gas.gascontact.view
 
+
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -31,14 +32,14 @@ class NotificationHelper(
     private var yearSampleTwo = "год"
     private var yearSampleThree = "года"
 
+
     fun createNotificationChannel(id: String, name: String, description: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH).apply {
+            NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH).apply {
                 this.description = description
                 enableLights(true)
                 lightColor = Color.WHITE
-                enableVibration(true)
-                vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
+                enableVibration(false)
                 notificationManager?.createNotificationChannel(this)
             }
         }
@@ -76,9 +77,10 @@ class NotificationHelper(
                     NotificationCompat.Builder(context, Constants.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
                         .setChannelId(Constants.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL)
                         .setContentTitle(
-                            "${it.lastName} ${it.firstName} ${it.patronymic}, ${getAge(
-                                getRawAge(it.birthday)
-                            )}"
+                            "${it.lastName} " +
+                                    "${it.firstName} " +
+                                    "${it.patronymic}, " +
+                                    getAge(getRawAge(it.birthday))
                         )
                         .setSmallIcon(R.drawable.ic_gift_30)
                         .setStyle(
