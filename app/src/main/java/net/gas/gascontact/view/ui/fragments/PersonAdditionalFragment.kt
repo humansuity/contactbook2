@@ -3,6 +3,7 @@ package net.gas.gascontact.view.ui.fragments
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
@@ -58,7 +59,6 @@ class PersonAdditionalFragment : Fragment() {
         viewModel.optionMenuStateCallback?.invoke("INVISIBLE")
         viewModel.isPersonFragmentActive = false
         Constants.hideSpinnerOnOrientationChanged(viewModel, screenOrientation)
-
 
         arguments?.let {
             val person = PersonAdditionalFragmentArgs.fromBundle(it).person
@@ -239,6 +239,40 @@ class PersonAdditionalFragment : Fragment() {
             }
         }
 
+
+        binding.sendMessageViber.setOnClickListener {
+            when {
+                personEntity.mobilePhone.isNullOrBlank() ->
+                    Snackbar.make(
+                        binding.root, "Невозможно определить номер!",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                personEntity.mobilePhone.contains(",") -> {
+                    val optionArray = makeOptionMobileArray(personEntity.mobilePhone)
+                    val dialogBuilder = AlertDialog.Builder(context)
+                    dialogBuilder.setTitle("Выберите номер")
+                    dialogBuilder.setSingleChoiceItems(optionArray, -1)
+                    { dialog, which ->
+                        dialog.dismiss()
+                        openViberIntent(personEntity.mobilePhone)
+                    }
+                    dialogBuilder.create().show()
+                }
+                personEntity.mobilePhone.contains(";") -> {
+                    val optionArray = makeOptionMobileArray(personEntity.mobilePhone)
+                    val dialogBuilder = AlertDialog.Builder(context)
+                    dialogBuilder.setTitle("Выберите номер")
+                    dialogBuilder.setSingleChoiceItems(optionArray, -1)
+                    { dialog, which ->
+                        dialog.dismiss()
+                        openViberIntent(personEntity.mobilePhone)
+                    }
+                    dialogBuilder.create().show()
+                }
+                else -> openViberIntent(personEntity.mobilePhone)
+            }
+        }
+
         binding.mobileNumberFrame.setOnClickListener {
             when {
                 personEntity.mobilePhone.isNullOrBlank() ->
@@ -374,10 +408,31 @@ class PersonAdditionalFragment : Fragment() {
     @ExperimentalStdlibApi
     private fun openContactDialog(person: Persons, number: String, unit: String) {
         viewModel.spinnerState.value = true
-        GlobalScope.launch(Dispatchers.Default) {
-            launch(Dispatchers.Main) { createDialog(person, number, unit) }
-            viewModel.spinnerState.postValue(false)
+        createDialog(person, number, unit)
+        viewModel.spinnerState.value = false
+    }
+
+
+    private fun openViberIntent(mobilePhone: String) {
+        viewModel.spinnerState.value = true
+        if (checkViberPackage()) {
+            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                `package` = "com.viber.voip"
+                data = Uri.parse("sms:+375297086662")
+                putExtra("address", "+375297086662")
+                putExtra("sms_body", "text")
+            }
+            startActivity(intent)
         }
+        viewModel.spinnerState.value = false
+    }
+
+
+    private fun checkViberPackage() = try {
+        requireContext().packageManager.getPackageInfo("com.viber.voip", 0)
+        true
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
     }
 
     private fun formatNumber(phoneNumber: String, flag: String): String {
@@ -494,7 +549,7 @@ class PersonAdditionalFragment : Fragment() {
 
     @ExperimentalStdlibApi
     private fun createDialog(person: Persons, currentNumber: String, unit: String) {
-        val dialogBuilder = AlertDialog.Builder(context)
+        val dialogBuilder = AlertDialog.Builder(requireContext())
         val view = layoutInflater.inflate(R.layout.add_contact_dialog, null)
         dialogBuilder.setView(view)
         val dialog = dialogBuilder.create()
