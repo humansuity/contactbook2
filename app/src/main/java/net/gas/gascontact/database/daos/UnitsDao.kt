@@ -9,7 +9,7 @@ import net.gas.gascontact.database.entities.Units
 @Dao
 interface UnitsDao {
 
-    @Query("select * from units where parent_id = 0 order by rangir, name")
+    @Query("select * from units where parent_id = 0 order by rangir")
     fun getPrimaryEntities(): LiveData<List<Units>>
 
     @Query("select * from units where parent_id = :parent_id order by rangir, name")
