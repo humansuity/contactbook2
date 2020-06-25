@@ -30,6 +30,10 @@ interface PersonsDao {
     fun getEntities(): LiveData<List<Persons>>
 
 
+    @Query("select * from persons where unit_id = :unitId and department_id is null order by lastname")
+    fun getEntitiesByUnitId(unitId: Int): LiveData<List<Persons>>
+
+
     @Query("select persons.* from persons, posts where persons.post_id = posts.id and strftime('%m-%d', date(birthday)) = strftime('%m-%d', date('now')) order by rangir, lastname")
     fun getEntitiesByTodayBirth(): LiveData<List<Persons>>
 

@@ -57,8 +57,6 @@ abstract class ContactbookDatabase : RoomDatabase() {
                         .openHelperFactory(supportFactory)
                         .createFromFile(File(pathToDatabase))
                         .build()
-
-
                 }
             }
             return INSTANCE

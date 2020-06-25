@@ -4,8 +4,14 @@
 
     <data>
         <variable
-            name="unitItem"
-            type="net.gas.gascontact.database.entities.Units" />
+            name="itemName"
+            type="String" />
+        <variable
+            name="itemId"
+            type="Integer" />
+        <variable
+            name="isDepartmentItem"
+            type="Boolean" />
         <variable
             name="viewModel"
             type="net.gas.gascontact.view.viewmodel.BranchListViewModel" />

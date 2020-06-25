@@ -64,7 +64,6 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     var onUnitFragmentBackPressed: (() -> Unit)? = null
     var onCreateUnitListFragment: (() -> Unit)? = null
     var parentId = -1
-    var fragmentType: String = ""
     var isUnitFragmentActive = false
     var isPersonFragmentActive = false
     var sharedDatabaseSize: Long = 0
@@ -72,16 +71,17 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     private var currentDatabaseSize: Long = 0
 
     var screenOrientation: Int = 0
+    var unitIdForUnitListFragment = 0
 
-    var onUnitItemClickedCallback: ((Int) -> Unit)? = null
+    var onUnitItemClickedCallback: ((Int, Boolean) -> Unit)? = null
     var onDepartmentItemClickedCallback: ((Int) -> Unit)? = null
     var onPersonItemClickedCallback: ((Int) -> Unit)? = null
 
     var isFirstEntry = true
 
-    fun onUnitItemClick(unitID: Int) {
+    fun onUnitItemClick(itemId: Int, isDepartmentItem: Boolean) {
         spinnerState.value = true
-        onUnitItemClickedCallback?.invoke(unitID)
+        onUnitItemClickedCallback?.invoke(itemId, isDepartmentItem)
         deleteDownloadedDatabase()
     }
 

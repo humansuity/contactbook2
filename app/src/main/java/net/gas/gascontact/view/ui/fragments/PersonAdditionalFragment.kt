@@ -106,7 +106,9 @@ class PersonAdditionalFragment : Fragment() {
             delay(200)
             viewModel.setupPostEntity(personEntity.postID!!.toInt())
             viewModel.setupUnitEntity(personEntity.unitID!!.toInt())
-            viewModel.setupDepartmentEntity(personEntity.departmentID!!.toInt())
+            if (personEntity.departmentID != null)
+                viewModel.setupDepartmentEntity(personEntity.departmentID)
+            else binding.department = "Отдел не определён"
             launch(Dispatchers.Main) { startObserveEntities(personEntity) }
         }
         binding.name =
@@ -491,7 +493,7 @@ class PersonAdditionalFragment : Fragment() {
                 if (it != null)
                     binding.unit = it.name
                 else
-                    binding.post = "Филиал не определён"
+                    binding.unit = "Филиал не определён"
             })
 
         viewModel.departmentEntity
@@ -499,7 +501,7 @@ class PersonAdditionalFragment : Fragment() {
                 if (it != null)
                     binding.department = it.name
                 else
-                    binding.post = "Отдел не определён"
+                    binding.department = "Отдел не определён"
             })
 
         startObservePhoto(viewModel.photoEntity, personEntity.photoID)

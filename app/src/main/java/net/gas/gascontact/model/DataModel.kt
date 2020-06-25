@@ -81,13 +81,10 @@ class DataModel(private val context: Context) {
     fun getDepartmentSecondaryEntities(parentId: Int): LiveData<List<Departments>> =
         database?.departmentsDao()!!.getSecondaryEntities(parentId)
 
-    fun getUnitEntitiesByParentId(parentId: Int): LiveData<List<Units>> =
-        database?.unitsDao()!!.getEntitiesByParentId(parentId)
 
-    fun getUnitEntitiesByParentByDepartmentId(departmentId: Int): LiveData<List<Units>> =
-        database?.departmentsDao()!!.getUnitEntitiesByParentByDepartmentId(departmentId)
+    fun getPersonsByUnitId(unitId: Int) = database?.personsDao()!!.getEntitiesByUnitId(unitId)
 
-    fun getUnitsAmountByParentID(parentId: Int) = database?.unitsDao()!!.getEntitiesAmountByParentID(parentId)
+    fun getUnitIdByDepartmentId(departmentId: Int) = database?.unitsDao()!!.getEntityIdByDepartmentId(departmentId)
 
 
     fun getUpcomingPersonWithBirthday(period: String): LiveData<List<Persons>> {

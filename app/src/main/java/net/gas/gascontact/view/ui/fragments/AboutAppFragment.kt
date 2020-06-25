@@ -74,7 +74,7 @@ class AboutAppFragment : Fragment() {
         dbUpdateTimeTextField.text = databaseUpdateTime
 
 
-        alarmSettingWidget.setOnClickListener {
+        alarmTimeSettingWidget.setOnClickListener {
             if (AlarmHelper.getNotificationState(requireContext()))
                 openNotificationDialog()
             else

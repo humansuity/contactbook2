@@ -12,7 +12,7 @@ interface UnitsDao {
     @Query("select * from units where parent_id = 0 order by rangir")
     fun getPrimaryEntities(): LiveData<List<Units>>
 
-    @Query("select * from units where parent_id = :parent_id order by rangir")
+    @Query("select * from units where parent_id = :parent_id order by rangir, name")
     fun getSecondaryEntities(parent_id: Int): LiveData<List<Units>>
 
     @Query("select * from units where parent_id = (select parent_id from units where id = :parent_id) order by rangir")
@@ -26,4 +26,8 @@ interface UnitsDao {
 
     @Query("select count(*) from units where parent_id = :id")
     fun getEntitiesAmountByParentID(id: Int): Int
+
+
+    @Query("select unit_id from relation where department_id = :id")
+    fun getEntityIdByDepartmentId(id: Int): LiveData<Int>
 }

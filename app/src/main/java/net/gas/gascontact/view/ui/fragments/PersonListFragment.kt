@@ -57,12 +57,21 @@ class PersonListFragment : Fragment() {
         }
 
         if (unitID != null && departmentID != null) {
-            viewModel.dataModel.getPersonsEntitiesByIds(unitID, departmentID)
-                .observe(viewLifecycleOwner, Observer {
-                    listAdapter = PersonListAdapterOptimized(viewModel, viewLifecycleOwner)
-                    listAdapter.setupList(it)
-                    binding.recyclerView.adapter = listAdapter
-                })
+            if (departmentID != -1) {
+                viewModel.dataModel.getPersonsEntitiesByIds(unitID, departmentID)
+                    .observe(viewLifecycleOwner, Observer {
+                        listAdapter = PersonListAdapterOptimized(viewModel, viewLifecycleOwner)
+                        listAdapter.setupList(it)
+                        binding.recyclerView.adapter = listAdapter
+                    })
+            } else {
+                viewModel.dataModel.getPersonsByUnitId(unitID)
+                    .observe(viewLifecycleOwner, Observer {
+                        listAdapter = PersonListAdapterOptimized(viewModel, viewLifecycleOwner)
+                        listAdapter.setupList(it)
+                        binding.recyclerView.adapter = listAdapter
+                    })
+            }
         }
 
         viewModel.onPersonItemClickedCallback = { personID ->
