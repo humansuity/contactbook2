@@ -132,7 +132,4 @@ dependencies {
 
     //progressBAr
     implementation 'com.kaishu.nspb:nsidedprogressbar:1.0.2'
-
-    //Expandable CardView
-    implementation 'com.alespero:expandable-cardview:0.8'
 }
