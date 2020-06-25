@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.search_fragment.*
 import net.gas.gascontact.R
@@ -62,6 +63,9 @@ class SearchFragment : Fragment() {
         binding.apply {
             personList.layoutManager = LinearLayoutManager(context)
             personList.adapter = listAdapter
+            personList.addItemDecoration(
+                DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+            )
             setupSearchViewListeners(binding, listAdapter)
         }
 
