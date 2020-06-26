@@ -35,8 +35,6 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     val context: Context = application.applicationContext
     val dataModel = DataModel(context)
 
-    var unitList: LiveData<List<Units>> = MutableLiveData()
-    var personList: LiveData<List<Persons>> = MutableLiveData()
     var birthdayPersonList: LiveData<List<Persons>> = MutableLiveData()
 
     var personEntity: LiveData<Persons> = MutableLiveData()
@@ -72,10 +70,12 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
 
     var screenOrientation: Int = 0
     var unitIdForUnitListFragment = 0
+    var isOpenedViaIntent = false
 
     var onUnitItemClickedCallback: ((Int, Boolean) -> Unit)? = null
     var onDepartmentItemClickedCallback: ((Int) -> Unit)? = null
     var onPersonItemClickedCallback: ((Int) -> Unit)? = null
+    var onBackButtonPressed: (() -> Unit)? = null
 
     var isFirstEntry = true
 
@@ -143,8 +143,6 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     fun addNewContact(intent: Intent) {
         addContactIntentCallBack?.invoke(intent)
     }
-
-
 
 
     fun getPrimaryUnitList() = liveData(Dispatchers.IO) { emitSource(dataModel.getPrimaryUnitEntities()) }
