@@ -100,6 +100,7 @@ class MainListActivity : AppCompatActivity() {
     private fun isOpenedViaIntent(): Boolean {
         return if (intent.hasExtra("PERSON_ID")) {
             if (Constants.checkIfDatabaseValid(applicationContext, viewModel)) {
+                viewModel.isOpenedViaIntent = true
                 viewModel.dataModel.getPersonEntityById(intent.getIntExtra("PERSON_ID", 0))
                     .observe(this, Observer { person ->
                         navController.setGraph(R.navigation.birthday_nav_graph)
@@ -113,7 +114,8 @@ class MainListActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        viewModel.onBackButtonPressed?.invoke()
+        super.onBackPressed()
+        if (viewModel.isOpenedViaIntent) viewModel.onBackButtonPressed?.invoke()
     }
 
 
