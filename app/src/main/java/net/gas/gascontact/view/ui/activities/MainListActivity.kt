@@ -21,6 +21,7 @@ import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -101,16 +102,19 @@ class MainListActivity : AppCompatActivity() {
             if (Constants.checkIfDatabaseValid(applicationContext, viewModel)) {
                 viewModel.dataModel.getPersonEntityById(intent.getIntExtra("PERSON_ID", 0))
                     .observe(this, Observer { person ->
-                        navController.setGraph(R.navigation.app_nav_graph)
+                        navController.setGraph(R.navigation.birthday_nav_graph)
                         val bundle = Bundle()
                         bundle.putParcelable("person", person)
-                        navController.navigate(R.id.actionToAdditionalPersonFragmentGlobal, bundle)
+                        navController.navigate(R.id.personAdditionalFragment3, bundle)
                     })
                 true
             } else false
         } else false
     }
 
+    override fun onBackPressed() {
+        viewModel.onBackButtonPressed?.invoke()
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -139,19 +143,18 @@ class MainListActivity : AppCompatActivity() {
             emptyList(),
             emptyList(),
             emptyList()
-        )
-            .apply {
-                createNotificationChannel(
-                    Constants.FOREGROUND_NOTIFICATION_SERVICE_CHANNEL,
-                    Constants.FOREGROUND_NOTIFICATION_NAME,
-                    "Управление уведомлениями о днях рождения"
-                )
-                createNotificationChannel(
-                    Constants.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL,
-                    Constants.BIRTHDAY_NOTIFICATION_NAME,
-                    ""
-                )
-            }
+        ).apply {
+            createNotificationChannel(
+                Constants.FOREGROUND_NOTIFICATION_SERVICE_CHANNEL,
+                Constants.FOREGROUND_NOTIFICATION_NAME,
+                "Управление уведомлениями о днях рождения"
+            )
+            createNotificationChannel(
+                Constants.BIRTHDAY_NOTIFICATION_SERVICE_CHANNEL,
+                Constants.BIRTHDAY_NOTIFICATION_NAME,
+                ""
+            )
+        }
     }
 
 

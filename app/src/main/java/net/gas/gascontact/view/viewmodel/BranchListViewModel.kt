@@ -76,6 +76,7 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     var onUnitItemClickedCallback: ((Int, Boolean) -> Unit)? = null
     var onDepartmentItemClickedCallback: ((Int) -> Unit)? = null
     var onPersonItemClickedCallback: ((Int) -> Unit)? = null
+    var onBackButtonPressed: (() -> Unit)? = null
 
     var isFirstEntry = true
 
@@ -143,8 +144,6 @@ class BranchListViewModel(application: Application) : AndroidViewModel(applicati
     fun addNewContact(intent: Intent) {
         addContactIntentCallBack?.invoke(intent)
     }
-
-
 
 
     fun getPrimaryUnitList() = liveData(Dispatchers.IO) { emitSource(dataModel.getPrimaryUnitEntities()) }

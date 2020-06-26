@@ -18,8 +18,10 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -99,6 +101,7 @@ class PersonAdditionalFragment : Fragment() {
 
         return animation
     }
+
 
     @ExperimentalStdlibApi
     private fun setupData(personEntity: Persons) {
@@ -341,6 +344,11 @@ class PersonAdditionalFragment : Fragment() {
                 else -> {
                 }
             }
+        }
+
+
+        viewModel.onBackButtonPressed = {
+            requireActivity().finish()
         }
     }
 
