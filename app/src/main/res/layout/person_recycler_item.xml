@@ -5,13 +5,13 @@
     <data>
         <variable
             name="personItem"
-            type="net.gas.gascontact.business.database.entities.Persons" />
+            type="net.gas.gascontact.database.entities.Persons" />
         <variable
             name="postItem"
             type="String" />
         <variable
             name="viewModel"
-            type="net.gas.gascontact.business.viewmodel.BranchListViewModel" />
+            type="net.gas.gascontact.view.viewmodel.BranchListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

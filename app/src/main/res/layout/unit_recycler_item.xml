@@ -4,11 +4,17 @@
 
     <data>
         <variable
-            name="unitItem"
-            type="net.gas.gascontact.business.database.entities.Units" />
+            name="itemName"
+            type="String" />
+        <variable
+            name="itemId"
+            type="Integer" />
+        <variable
+            name="isDepartmentItem"
+            type="Boolean" />
         <variable
             name="viewModel"
-            type="net.gas.gascontact.business.viewmodel.BranchListViewModel" />
+            type="net.gas.gascontact.view.viewmodel.BranchListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
-        android:onClick="@{ () -> viewModel.onUnitItemClick(unitItem.id) }"
+        android:onClick="@{ () -> viewModel.onUnitItemClick(itemId, isDepartmentItem) }"
         android:orientation="vertical">
 
 
@@ -33,13 +39,13 @@
             android:gravity="center_vertical"
             android:inputType="textNoSuggestions"
             android:maxLines="1"
-            android:onClick="@{ () -> viewModel.onUnitItemClick(unitItem.id) }"
+            android:onClick="@{ () -> viewModel.onUnitItemClick(itemId, isDepartmentItem) }"
             android:paddingTop="18dp"
             android:paddingBottom="18dp"
             android:scrollbars="none"
             android:scrollHorizontally="true"
             android:singleLine="true"
-            android:text="@{ unitItem.name }"
+            android:text="@{ itemName }"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#191919"
             android:textSize="17sp"

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/birthday_nav_graph"
+    app:startDestination="@id/personAdditionalFragment3">
+
+    <fragment
+        android:id="@+id/personAdditionalFragment3"
+        android:name="net.gas.gascontact.view.ui.fragments.PersonAdditionalFragment"
+        android:label="PersonAdditionalFragment" />
+</navigation>
